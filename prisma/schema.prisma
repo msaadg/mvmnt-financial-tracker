@@ -1,0 +1,87 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// PowerUsers table
+model PowerUsers {
+  id            Int         @id @default(autoincrement())
+  username      String      @unique
+  password      String
+  role          String
+}
+
+// Referrals table
+model Referrals {
+  referralId    Int         @id @default(autoincrement())
+  name          String
+  donations     Donation[]
+}
+
+// Collectors table
+model Collectors {
+  collectorId   Int         @id @default(autoincrement())
+  name          String
+  donations     Donation[]
+  payments      Payment[]
+}
+
+// VendorsProjects table
+model VendorsProjects {
+  vendProjId    Int       @id @default(autoincrement())
+  name          String
+  expenses      Expenses[]
+}
+
+// Donation table
+model Donation {
+  transacId     Int       @id @default(autoincrement())
+  date          DateTime
+  amount        Int
+  donorName     String
+  referralId    Int
+  collectorId   Int
+  type          String
+  status        String
+  notes         String?
+
+  referral      Referrals?  @relation(fields: [referralId], references: [referralId], onDelete: Cascade)
+  collector     Collectors? @relation(fields: [collectorId], references: [collectorId], onDelete: Cascade)
+}
+
+// Expenses table
+model Expenses {
+  transacId     Int              @id @default(autoincrement())
+  date          DateTime
+  amount        Int
+  vendorProjId  Int
+  category      String
+  description   String?
+  status        String
+  
+  vendorProject VendorsProjects? @relation(fields: [vendorProjId], references: [vendProjId], onDelete: Cascade)
+  payments      Payment[]
+}
+
+// Payment table
+model Payment {
+  paymentId      Int         @id @default(autoincrement())
+  expenseId      Int?
+  collectorId    Int
+  type           String
+  amount         Int
+  
+  collector      Collectors? @relation(fields: [collectorId], references: [collectorId], onDelete: Cascade)
+  expense        Expenses?   @relation(fields: [expenseId], references: [transacId], onDelete: Cascade)
+}

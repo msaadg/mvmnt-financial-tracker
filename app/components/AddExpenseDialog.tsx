@@ -5,9 +5,10 @@ import { Input } from "@/app/components/ui/input";
 import { Label } from "@/app/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/app/components/ui/select";
 import { Textarea } from "@/app/components/ui/textarea";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Loader2 } from "lucide-react";
 import { useToast } from "@/app/hooks/use-toast";
 import { collectors } from "@/app/data/sampleData";
+import axios from "axios";
 
 interface FormCollectorEntry {
   name: string;
@@ -41,6 +42,7 @@ interface AddExpenseDialogProps {
 
 const AddExpenseDialog = ({ expense, onSubmit, triggerButton }: AddExpenseDialogProps) => {
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     vendorName: expense?.vendorName || "",
     amount: expense?.amount?.toString() || "",
@@ -58,7 +60,10 @@ const AddExpenseDialog = ({ expense, onSubmit, triggerButton }: AddExpenseDialog
     "Utility Company",
     "Marketing Agency",
     "Tech Solutions",
-    "Catering Services"
+    "Catering Services",
+    "Food Distribution Project",
+    "IT Services Ltd.",
+    "Education Program"
   ];
 
   const addCollector = () => {
@@ -80,37 +85,74 @@ const AddExpenseDialog = ({ expense, onSubmit, triggerButton }: AddExpenseDialog
     setFormData({ ...formData, collectors: newCollectors });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     
-    const action = expense ? "updated" : "added";
-    const submissionData: Expense = {
-      ...formData,
-      amount: parseFloat(formData.amount) || 0,
-      collectors: formData.collectors.map(c => ({
-        ...c,
-        amount: parseFloat(c.amount) || 0
-      }))
-    };
-    onSubmit?.(submissionData);
-    
-    toast({
-      title: `Expense ${action}`,
-      description: `The expense has been successfully ${action}.`,
-    });
-    
-    setOpen(false);
-    if (!expense) {
-      setFormData({
-        vendorName: "",
-        amount: "",
-        category: "",
-        paymentMethod: "",
-        date: "",
-        description: "",
-        invoiceNumber: "",
-        collectors: [{ name: "", type: "", amount: "" }]
+    try {
+      // Find the vendor/project ID from the list
+      const vendorIndex = vendors.indexOf(formData.vendorName);
+      const vendorProjId = vendorIndex >= 0 ? vendorIndex + 1 : 1;
+
+      // Prepare data for API
+      const apiData = {
+        date: formData.date,
+        amount: parseInt(formData.amount),
+        vendorProjId: vendorProjId,
+        category: formData.category,
+        description: formData.description,
+        status: "Paid" // Default status
+      };
+
+      // Call the API
+      const response = await axios.post('/api/expenses', apiData);
+      
+      const action = expense ? "updated" : "added";
+      
+      toast({
+        title: `Expense ${action}`,
+        description: `The expense has been successfully ${action}.`,
       });
+      
+      // Call onSubmit callback if provided
+      if (onSubmit) {
+        const submissionData: Expense = {
+          ...formData,
+          amount: parseFloat(formData.amount) || 0,
+          collectors: formData.collectors.map(c => ({
+            ...c,
+            amount: parseFloat(c.amount) || 0
+          }))
+        };
+        onSubmit(submissionData);
+      }
+      
+      setOpen(false);
+      
+      // Reset form if adding new expense
+      if (!expense) {
+        setFormData({
+          vendorName: "",
+          amount: "",
+          category: "",
+          paymentMethod: "",
+          date: "",
+          description: "",
+          invoiceNumber: "",
+          collectors: [{ name: "", type: "", amount: "" }]
+        });
+      }
+    } catch (error) {
+      console.error('Error creating expense:', error);
+      toast({
+        title: "Error",
+        description: axios.isAxiosError(error) 
+          ? error.response?.data?.message || "Failed to create expense"
+          : "An unexpected error occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -288,11 +330,18 @@ const AddExpenseDialog = ({ expense, onSubmit, triggerButton }: AddExpenseDialog
           </div>
 
           <div className="flex justify-end gap-3 pt-4">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+            <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={loading}>
               Cancel
             </Button>
-            <Button type="submit">
-              {expense ? "Update Expense" : "Add Expense"}
+            <Button type="submit" disabled={loading}>
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {expense ? "Updating..." : "Adding..."}
+                </>
+              ) : (
+                expense ? "Update Expense" : "Add Expense"
+              )}
             </Button>
           </div>
         </form>

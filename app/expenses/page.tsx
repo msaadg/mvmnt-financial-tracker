@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/app/components/ui/card";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { Label } from "@/app/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/app/components/ui/select";
 import { Badge } from "@/app/components/ui/badge";
-import { Download, Search, Edit, Trash2, FileText, Filter } from "lucide-react";
+import { Download, Search, Edit, Trash2, FileText, Filter, Loader2 } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/app/components/ui/table";
 import { sampleExpenses, collectors } from "@/app/data/sampleData";
 import AddExpenseDialog from "@/app/components/AddExpenseDialog";
@@ -15,6 +15,7 @@ import ExpenseReceiptDialog from "@/app/components/ExpenseReceiptDialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/app/components/ui/tooltip";
 import { useToast } from "@/app/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/app/components/ui/alert-dialog";
+import axios from "axios";
 
 const Expenses = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -28,15 +29,42 @@ const Expenses = () => {
   const [collectorFilter, setCollectorFilter] = useState("all");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
+  const [expenses, setExpenses] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const filteredExpenses = sampleExpenses.filter(expense => {
-    const matchesSearch = expense.vendorName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         expense.description.toLowerCase().includes(searchTerm.toLowerCase());
+  // Fetch expenses from API
+  useEffect(() => {
+    fetchExpenses();
+  }, []);
+
+  const fetchExpenses = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await axios.get('/api/expenses');
+      setExpenses(response.data.expenses || []);
+    } catch (err) {
+      console.error('Error fetching expenses:', err);
+      setError('Failed to load expenses from database');
+      // Fallback to sample data
+      setExpenses(sampleExpenses);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredExpenses = expenses.filter(expense => {
+    const vendorName = expense.vendorName || expense.vendorProject?.name || "";
+    const description = expense.description || "";
+    
+    const matchesSearch = vendorName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "all" || expense.status.toLowerCase() === statusFilter;
     const matchesCategory = categoryFilter === "all" || expense.category.toLowerCase() === categoryFilter;
-    const matchesPayment = paymentFilter === "all" || expense.paymentMethod.toLowerCase() === paymentFilter;
+    const matchesPayment = paymentFilter === "all" || expense.paymentMethod?.toLowerCase() === paymentFilter;
     const matchesCollector = collectorFilter === "all" || 
-                            expense.collectors?.some(c => c.name === collectorFilter);
+                            expense.collectors?.some((c: any) => c.name === collectorFilter);
     
     const expenseDate = new Date(expense.date);
     const matchesDateFrom = !dateFrom || expenseDate >= new Date(dateFrom);
@@ -106,7 +134,7 @@ const Expenses = () => {
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 sm:mb-8">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 sm:mb-8">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Expenses</h1>
           <p className="text-muted-foreground mt-2 text-sm sm:text-base">
@@ -119,10 +147,22 @@ const Expenses = () => {
             <span className="hidden sm:inline">Export CSV</span>
             <span className="sm:hidden">Export</span>
           </Button>
-          <AddExpenseDialog />
+          <AddExpenseDialog onSubmit={fetchExpenses} />
         </div>
       </div>
 
+      {error && (
+        <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <p className="text-sm text-yellow-800">{error}</p>
+        </div>
+      )}
+
+      {loading ? (
+        <div className="flex justify-center items-center py-12">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      ) : (
+        <>
       {/* Summary Card */}
       <Card className="mb-4 sm:mb-6">
         <CardContent className="pt-6">
@@ -284,7 +324,9 @@ const Expenses = () => {
                   <TableRow key={expense.id}>
                     <TableCell>
                       <div>
-                        <p className="font-medium text-foreground text-sm">{expense.vendorName}</p>
+                        <p className="font-medium text-foreground text-sm">
+                          {expense.vendorName || expense.vendorProject?.name || "N/A"}
+                        </p>
                         <p className="text-xs text-muted-foreground truncate max-w-[150px]">{expense.description}</p>
                       </div>
                     </TableCell>
@@ -297,7 +339,7 @@ const Expenses = () => {
                     <TableCell className="text-sm">{expense.paymentMethod}</TableCell>
                     <TableCell>
                       <div className="space-y-1 max-w-[200px]">
-                        {expense.collectors?.map((collector, index) => (
+                        {expense.collectors?.map((collector: any, index: number) => (
                           <div key={index} className="text-xs">
                             <span className="font-medium">{collector.name}</span>
                             <span className="text-muted-foreground block sm:inline"> ({collector.type}: {formatAmount(Number(collector.amount))})</span>
@@ -385,6 +427,8 @@ const Expenses = () => {
           </div>
         </CardContent>
         </Card>
+        </>
+      )}
 
         {selectedExpense && (
           <ExpenseReceiptDialog
