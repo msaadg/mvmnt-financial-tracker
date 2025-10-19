@@ -1,9 +1,9 @@
 // app/api/expenses/route.ts
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createExpense, getCollectorByName } from '@/app/lib/db';
 import { collectors } from '@/app/data/sampleData';
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { date, amount, vendorProjId, category, description, status } = body;
