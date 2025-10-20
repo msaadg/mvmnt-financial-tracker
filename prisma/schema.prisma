@@ -49,6 +49,7 @@ model Donation {
   transacId     Int       @id @default(autoincrement())
   date          DateTime
   amount        Int
+  paymentMethod String
   donorName     String
   referralId    Int
   collectorId   Int
@@ -65,6 +66,7 @@ model Expenses {
   transacId     Int              @id @default(autoincrement())
   date          DateTime
   amount        Int
+  paymentMethod String
   vendorProjId  Int
   category      String
   description   String?

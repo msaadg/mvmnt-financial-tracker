@@ -7,6 +7,7 @@ const prisma = new PrismaClient().$extends(withAccelerate());
 export async function createExpense(data: {
   date: Date;
   amount: number;
+  paymentMethod: string;
   vendorProjId: number;
   category: string;
   description?: string;
@@ -17,6 +18,7 @@ export async function createExpense(data: {
     data: {
       date: data.date,
       amount: data.amount,
+      paymentMethod: data.paymentMethod,
       vendorProjId: data.vendorProjId,
       category: data.category,
       description: data.description,

@@ -6,10 +6,10 @@ import { collectors } from '@/app/data/sampleData';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { date, amount, vendorProjId, category, description, status } = body;
+    const { date, amount, paymentMethod, vendorProjId, category, description, status } = body;
 
     // Validate required fields
-    if (!date || !amount || !vendorProjId || !category || !status) {
+    if (!date || !amount || !paymentMethod || !vendorProjId || !category || !status) {
       return NextResponse.json(
         { message: 'Missing required fields' },
         { status: 400 }
@@ -33,6 +33,7 @@ export async function POST(request: NextRequest) {
     const expense = await createExpense({
       date: new Date(date),
       amount: parseInt(amount),
+      paymentMethod: paymentMethod,
       vendorProjId: parseInt(vendorProjId),
       category,
       description,

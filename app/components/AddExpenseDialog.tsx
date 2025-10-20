@@ -98,6 +98,7 @@ const AddExpenseDialog = ({ expense, onSubmit, triggerButton }: AddExpenseDialog
       const apiData = {
         date: formData.date,
         amount: parseInt(formData.amount),
+        paymentMethod: formData.paymentMethod,
         vendorProjId: vendorProjId,
         category: formData.category,
         description: formData.description,
