@@ -4,6 +4,52 @@ import { withAccelerate } from '@prisma/extension-accelerate'
 
 const prisma = new PrismaClient().$extends(withAccelerate());
 
+export async function createDonation(data: {
+  date: Date;
+  amount: number;
+  paymentMethod: string;
+  donorName: string;
+  type: string;
+  notes?: string;
+  referral: string;
+  collector: string;
+}) {
+  // find referral and collector id
+  const referralEntry = await prisma.referrals.findFirst({
+    where: { name: data.referral },
+  });
+  const collectorEntry = await prisma.collectors.findFirst({
+    where: { name: data.collector },
+  });
+
+  if (!referralEntry) {
+    throw new Error(
+      `Referral "${data.referral}" not found in the database. Please seed the database first.`
+    );
+  }
+
+  if (!collectorEntry) {
+    throw new Error(
+      `Collector "${data.collector}" not found in the database. Please seed the database first.`
+    );
+  }
+
+  // create donation
+  return prisma.donation.create({
+    data: {
+      date: data.date,
+      amount: data.amount,
+      paymentMethod: data.paymentMethod,
+      donorName: data.donorName,
+      type: data.type,
+      notes: data.notes,
+      status: "Completed",
+      referralId: referralEntry?.referralId,
+      collectorId: collectorEntry?.collectorId
+    },
+  });
+}
+
 export async function createExpense(data: {
   date: Date;
   amount: number;
@@ -76,6 +122,21 @@ export async function getAllCollectors() {
 }
 
 export async function getCollectorByName(name: string) {
+  return prisma.collectors.findFirst({
+    where: {
+      name: name,
+    },
+    cacheStrategy: { ttl: 60 },
+  });
+}
+
+export async function getAllReferrals() {
+  return prisma.collectors.findMany({
+    cacheStrategy: { ttl: 60 },
+  });
+}
+
+export async function getReferralByName(name: string) {
   return prisma.collectors.findFirst({
     where: {
       name: name,

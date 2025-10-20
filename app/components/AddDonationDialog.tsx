@@ -8,6 +8,7 @@ import { Textarea } from "@/app/components/ui/textarea";
 import { Plus } from "lucide-react";
 import { useToast } from "@/app/hooks/use-toast";
 import { referrals, collectors } from "@/app/data/sampleData";
+import axios from "axios";
 
 interface AddDonationDialogProps {
   donation?: any;
@@ -17,6 +18,7 @@ interface AddDonationDialogProps {
 
 const AddDonationDialog = ({ donation, onSubmit, triggerButton }: AddDonationDialogProps) => {
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     donorName: donation?.donorName || "",
     amount: donation?.amount?.toString() || "",
@@ -37,29 +39,65 @@ const AddDonationDialog = ({ donation, onSubmit, triggerButton }: AddDonationDia
     "Ali Khan"
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    const action = donation ? "updated" : "added";
-    onSubmit?.(formData);
-    
-    toast({
-      title: `Donation ${action}`,
-      description: `The donation has been successfully ${action}.`,
-    });
-    
-    setOpen(false);
-    if (!donation) {
-      setFormData({
-        donorName: "",
-        amount: "",
-        type: "",
-        paymentMethod: "",
-        collector: "",
-        referral: "",
-        date: "",
-        notes: ""
+    setLoading(true);
+
+    try {
+      // Prepare API data
+      const apiData = {
+        date: formData.date,
+        amount: parseInt(formData.amount) || 0,
+        paymentMethod: formData.paymentMethod,
+        donorName: formData.donorName,
+        type: formData.type,
+        notes: formData.notes,
+        referral: formData.referral,
+        collector: formData.collector,
+      };
+
+      // POST or PUT depending on whether donation exists
+      const response = await axios.post("/api/donations", apiData);
+
+      const action = donation ? "updated" : "added";
+
+      toast({
+        title: `Donation ${action}`,
+        description: `The donation has been successfully ${action}.`,
       });
+
+      // Trigger onSubmit callback if provided
+      onSubmit?.({
+        ...formData,
+        amount: parseFloat(formData.amount) || 0,
+      });
+
+      setOpen(false);
+
+      // Reset form if adding new donation
+      if (!donation) {
+        setFormData({
+          donorName: "",
+          amount: "",
+          type: "",
+          paymentMethod: "",
+          collector: "",
+          referral: "",
+          date: "",
+          notes: "",
+        });
+      }
+    } catch (error) {
+      console.error("Error creating donation:", error);
+      toast({
+        title: "Error",
+        description: axios.isAxiosError(error)
+          ? error.response?.data?.message || "Failed to create donation"
+          : "An unexpected error occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
