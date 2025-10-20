@@ -100,11 +100,35 @@ export async function getVendorProjectByName(name: string) {
 }
 
 export async function getAllExpenses() {
-  return prisma.expenses.findMany({
+  const expenses = await prisma.expenses.findMany({
     include: {
       vendorProject: true,
-      payments: true,
+      payments: {
+        include: {
+          collector: true
+        }
+      }
     },
     cacheStrategy: { ttl: 60 },
   });
+
+  // Transform into the desired format
+  const formatted = expenses.map(expense => ({
+    id: expense.transacId,
+    vendorName: expense.vendorProject?.name || "Unknown Vendor",
+    amount: expense.amount,
+    category: expense.category,
+    paymentMethod: expense.paymentMethod,
+    date: expense.date.toISOString().split("T")[0], // format as YYYY-MM-DD
+    status: expense.status,
+    description: expense.description || "",
+    invoiceNumber: "INV-2025-000", // default value
+    collectors: expense.payments.map(p => ({
+      name: p.collector?.name || "Unknown Collector",
+      type: p.type,
+      amount: p.amount,
+    })),
+  }));
+
+  return formatted;
 }
