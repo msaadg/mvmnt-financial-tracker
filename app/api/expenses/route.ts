@@ -1,12 +1,11 @@
 // app/api/expenses/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { createExpense, getCollectorByName } from '@/app/lib/db';
-import { collectors } from '@/app/data/sampleData';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { date, amount, paymentMethod, vendorProjId, category, description, status } = body;
+    const { date, amount, paymentMethod, vendorProjId, category, description, status, collectors } = body;
 
     // Validate required fields
     if (!date || !amount || !paymentMethod || !vendorProjId || !category || !status) {
@@ -16,17 +15,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get a dummy collector from sampleData (using the first one)
-    const dummyCollectorName = collectors[0]; // "Muhammad Hassan"
-    
-    // Find the collector in the database
-    const collector = await getCollectorByName(dummyCollectorName);
-    
-    if (!collector) {
-      return NextResponse.json(
-        { message: `Collector "${dummyCollectorName}" not found in database. Please seed the database first.` },
-        { status: 404 }
-      );
+    // Find each collector in the database
+    for (const c of collectors) {
+      const collector = await getCollectorByName(c.name);
+      if (!collector) {
+        return NextResponse.json(
+          { message: `Collector "${collector}" not found in database. Please seed the database first.` },
+          { status: 404 }
+        );
+      }
     }
 
     // Create the expense
@@ -38,7 +35,7 @@ export async function POST(request: NextRequest) {
       category,
       description,
       status,
-      collectorId: collector.collectorId,
+      collectors: collectors,
     });
 
     return NextResponse.json({

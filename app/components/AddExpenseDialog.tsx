@@ -102,7 +102,12 @@ const AddExpenseDialog = ({ expense, onSubmit, triggerButton }: AddExpenseDialog
         vendorProjId: vendorProjId,
         category: formData.category,
         description: formData.description,
-        status: "Paid" // Default status
+        status: "Paid", // Default status
+        collectors: formData.collectors.map(c => ({
+          name: c.name,
+          type: c.type,
+          amount: parseInt(c.amount) || 0
+        }))
       };
 
       // Call the API

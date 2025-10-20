@@ -12,9 +12,14 @@ export async function createExpense(data: {
   category: string;
   description?: string;
   status: string;
-  collectorId: number;
+  collectors: {
+    name: string;
+    type: string;
+    amount: number;
+  }[];
 }) {
-  return prisma.expenses.create({
+  // create expense (initially no payments)
+  const expense = await prisma.expenses.create({
     data: {
       date: data.date,
       amount: data.amount,
@@ -23,6 +28,43 @@ export async function createExpense(data: {
       category: data.category,
       description: data.description,
       status: data.status,
+    },
+  });
+  
+  // add payments
+  for (const collector of data.collectors) {
+    createPayment(expense.transacId, collector);
+  }
+
+  return expense;
+}
+
+async function createPayment(
+  transacId: number,
+  data: {
+    name: string;
+    type: string;
+    amount: number;
+  }
+) {
+  // Find the collector in the database
+  const collector = await prisma.collectors.findFirst({
+    where: { name: data.name },
+  });
+
+  if (!collector) {
+    throw new Error(
+      `Collector "${data.name}" not found in the database. Please seed the database first.`
+    );
+  }
+
+  // Create the payment
+  return prisma.payment.create({
+    data: {
+      expenseId: transacId,
+      collectorId: collector.collectorId,
+      type: data.type,
+      amount: data.amount,
     },
   });
 }
