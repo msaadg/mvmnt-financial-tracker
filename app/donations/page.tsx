@@ -1,17 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/app/components/ui/card";
+import { 
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/app/components/ui/alert-dialog";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/app/components/ui/select";
 import { Badge } from "@/app/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/app/components/ui/table";
-import { Search, Download, Edit, FileText, Filter } from "lucide-react";
+import { Search, Download, Edit, FileText, Filter, Loader2, Trash2 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/app/components/ui/tooltip";
-import { sampleDonations } from "@/app/data/sampleData";
 import AddDonationDialog from "@/app/components/AddDonationDialog";
 import ReceiptDialog from "@/app/components/ReceiptDialog";
+import { exportDonationsToCSV } from "@/app/lib/pdfGenerator";
+import axios from "axios";
+import { useToast } from "@/app/hooks/use-toast";
 
 interface Donation {
   id: string;
@@ -36,8 +48,37 @@ const Donations = () => {
   const [paymentFilter, setPaymentFilter] = useState("all");
   const [selectedDonation, setSelectedDonation] = useState<Donation | null>(null);
   const [receiptDialogOpen, setReceiptDialogOpen] = useState(false);
+  const [editDonation, setEditDonation] = useState<Donation | null>(null);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [donationToDelete, setDonationToDelete] = useState<Donation | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  
+  // API integration
+  const [donations, setDonations] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
 
-  const filteredDonations = sampleDonations.filter(donation => {
+  useEffect(() => {
+    fetchDonations();
+  }, []);
+
+  const fetchDonations = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await axios.get('/api/donations');
+      setDonations(response.data.donations || []);
+    } catch (err) {
+      console.error('Error fetching donations:', err);
+      setError('Failed to load donations from database');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredDonations = donations.filter(donation => {
     const matchesSearch = donation.donorName.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "all" || donation.status.toLowerCase() === statusFilter;
     const matchesType = typeFilter === "all" || donation.type.toLowerCase() === typeFilter;
@@ -67,7 +108,84 @@ const Donations = () => {
     }).format(amount);
   };
 
+  const handleExportCSV = () => {
+    try {
+      const csvData = filteredDonations.map(d => ({
+        id: d.id.toString(),
+        donorName: d.donorName,
+        amount: d.amount,
+        type: d.type,
+        paymentMethod: d.paymentMethod,
+        collector: d.collector,
+        referral: d.referral,
+        date: d.date,
+        notes: d.notes
+      }));
+      
+      exportDonationsToCSV(csvData, `donations-${new Date().toISOString().split('T')[0]}.csv`);
+      
+      toast({
+        title: "CSV Exported",
+        description: `Exported ${csvData.length} donation records to CSV.`,
+      });
+    } catch (error) {
+      toast({
+        title: "Export Failed",
+        description: "Failed to export donations to CSV.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleEdit = (donation: any) => {
+    setEditDonation(donation);
+    setEditDialogOpen(true);
+  };
+
+  const handleDeleteClick = (donation: any) => {
+    setDonationToDelete(donation);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!donationToDelete?.id) return;
+
+    setDeleting(true);
+    try {
+      await axios.delete(`/api/donations?id=${donationToDelete.id}`);
+
+      toast({
+        title: "Donation Deleted",
+        description: "The donation has been successfully deleted.",
+      });
+
+      // Refresh the donations list
+      fetchDonations();
+      setDeleteDialogOpen(false);
+      setDonationToDelete(null);
+    } catch (error) {
+      console.error("Error deleting donation:", error);
+      toast({
+        title: "Error",
+        description: axios.isAxiosError(error)
+          ? error.response?.data?.message || "Failed to delete donation"
+          : "An unexpected error occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   const totalDonations = filteredDonations.reduce((sum, donation) => sum + donation.amount, 0);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
@@ -79,14 +197,25 @@ const Donations = () => {
           </p>
         </div>
         <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-          <Button variant="outline" className="flex items-center gap-2 w-full sm:w-auto">
+          <Button 
+            variant="outline" 
+            className="flex items-center gap-2 w-full sm:w-auto"
+            onClick={handleExportCSV}
+            disabled={filteredDonations.length === 0}
+          >
             <Download className="h-4 w-4" />
             <span className="hidden sm:inline">Export CSV</span>
             <span className="sm:hidden">Export</span>
           </Button>
-          <AddDonationDialog />
+          <AddDonationDialog onSubmit={fetchDonations} />
         </div>
       </div>
+
+      {error && (
+        <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <p className="text-sm text-yellow-800">{error}</p>
+        </div>
+      )}
 
       {/* Summary Card */}
       <Card className="mb-4 sm:mb-6">
@@ -162,7 +291,6 @@ const Donations = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Methods</SelectItem>
-                <SelectItem value="bank">Bank</SelectItem>
                 <SelectItem value="cash">Cash</SelectItem>
                 <SelectItem value="online">Online</SelectItem>
               </SelectContent>
@@ -234,7 +362,12 @@ const Donations = () => {
                         <div className="flex gap-1">
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="h-8 w-8 p-0"
+                                onClick={() => handleEdit(donation)}
+                              >
                                 <Edit className="h-3 w-3" />
                               </Button>
                             </TooltipTrigger>
@@ -265,6 +398,21 @@ const Donations = () => {
                               <p>Generate receipt</p>
                             </TooltipContent>
                           </Tooltip>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                                onClick={() => handleDeleteClick(donation)}
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Delete donation</p>
+                            </TooltipContent>
+                          </Tooltip>
                         </div>
                       </TooltipProvider>
                     </TableCell>
@@ -285,6 +433,55 @@ const Donations = () => {
           onOpenChange={setReceiptDialogOpen}
         />
       )}
+
+      {/* Edit Donation Dialog */}
+      <AddDonationDialog
+        donation={editDonation}
+        open={editDialogOpen}
+        onOpenChange={(open) => {
+          setEditDialogOpen(open);
+          if (!open) {
+            setEditDonation(null);
+          }
+        }}
+        onSubmit={() => {
+          fetchDonations();
+          setEditDialogOpen(false);
+          setEditDonation(null);
+        }}
+        triggerButton={null}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the donation
+              record for <strong>{donationToDelete?.donorName}</strong> of amount{" "}
+              <strong>PKR {donationToDelete?.amount?.toLocaleString()}</strong>.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteConfirm}
+              disabled={deleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {deleting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                "Delete Donation"
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/app/components/ui/card";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
@@ -8,26 +8,100 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/app/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/app/components/ui/table";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
-import { Search, Download, Filter, Calendar, TrendingUp, TrendingDown } from "lucide-react";
-import { generateLedgerData, monthlyData, donationBreakdown } from "@/app/data/sampleData";
+import { Search, Download, Filter, Calendar, TrendingUp, TrendingDown, Loader2 } from "lucide-react";
+import { generateAnalyticsReportPDF } from "@/app/lib/pdfGenerator";
+import { useToast } from "@/app/hooks/use-toast";
+import axios from "axios";
 
 const Analytics = () => {
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [paymentFilter, setPaymentFilter] = useState("all");
   const [dateRange, setDateRange] = useState("all");
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
-  const ledgerData = generateLedgerData();
+  // API integration
+  const [analyticsData, setAnalyticsData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-  const filteredLedger = ledgerData.filter(entry => {
+  useEffect(() => {
+    fetchAnalytics();
+  }, []);
+
+  const fetchAnalytics = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get('/api/analytics');
+      setAnalyticsData(response.data);
+    } catch (error) {
+      console.error('Failed to fetch analytics:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!analyticsData) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-center">
+          <p className="text-muted-foreground">Failed to load analytics data</p>
+          <Button onClick={fetchAnalytics} className="mt-4">Retry</Button>
+        </div>
+      </div>
+    );
+  }
+
+  const ledgerData = analyticsData.ledgerData;
+  const monthlyData = analyticsData.monthlyData;
+  const donationBreakdown = analyticsData.donationBreakdown;
+
+  const filteredLedger = ledgerData.filter((entry: any) => {
     const matchesSearch = entry.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          entry.reference.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = typeFilter === "all" || entry.type.toLowerCase() === typeFilter;
     const matchesStatus = statusFilter === "all" || entry.status.toLowerCase() === statusFilter;
     const matchesPayment = paymentFilter === "all" || entry.paymentMethod.toLowerCase() === paymentFilter;
     
-    return matchesSearch && matchesType && matchesStatus && matchesPayment;
+    // Date range filter logic
+    let matchesDateRange = true;
+    if (dateRange !== "all") {
+      const itemDate = new Date(entry.date);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      switch (dateRange) {
+        case "today":
+          matchesDateRange = itemDate.toDateString() === today.toDateString();
+          break;
+        case "week":
+          const weekAgo = new Date(today);
+          weekAgo.setDate(weekAgo.getDate() - 7);
+          matchesDateRange = itemDate >= weekAgo && itemDate <= today;
+          break;
+        case "month":
+          const monthAgo = new Date(today);
+          monthAgo.setMonth(monthAgo.getMonth() - 1);
+          matchesDateRange = itemDate >= monthAgo && itemDate <= today;
+          break;
+        case "quarter":
+          const quarterAgo = new Date(today);
+          quarterAgo.setMonth(quarterAgo.getMonth() - 3);
+          matchesDateRange = itemDate >= quarterAgo && itemDate <= today;
+          break;
+      }
+    }
+    
+    return matchesSearch && matchesType && matchesStatus && matchesPayment && matchesDateRange;
   });
 
   const getStatusBadge = (status: string) => {
@@ -52,15 +126,47 @@ const Analytics = () => {
     }).format(amount);
   };
 
-  const totalDonations = filteredLedger
-    .filter(entry => entry.isIncome)
-    .reduce((sum, entry) => sum + entry.amount, 0);
+  const getDateRangeLabel = () => {
+    switch (dateRange) {
+      case "today": return "Today";
+      case "week": return "Last 7 Days";
+      case "month": return "Last Month";
+      case "quarter": return "Last Quarter";
+      default: return "All Time";
+    }
+  };
 
-  const totalExpenses = filteredLedger
-    .filter(entry => !entry.isIncome)
-    .reduce((sum, entry) => sum + entry.amount, 0);
+  const handleExportReport = async () => {
+    setIsGeneratingPDF(true);
+    try {
+      await generateAnalyticsReportPDF({
+        totalDonations,
+        totalExpenses,
+        netFlow,
+        ledgerData: filteredLedger,
+        monthlyData,
+        donationBreakdown,
+      }, getDateRangeLabel());
+      
+      toast({
+        title: "Success",
+        description: "Analytics report exported successfully",
+      });
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      toast({
+        title: "Error",
+        description: "Failed to generate analytics report",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGeneratingPDF(false);
+    }
+  };
 
-  const netFlow = totalDonations - totalExpenses;
+  const totalDonations = analyticsData.totalDonations;
+  const totalExpenses = analyticsData.totalExpenses;
+  const netFlow = analyticsData.netFlow;
 
   const COLORS = ["hsl(var(--primary))", "hsl(var(--success))"];
 
@@ -73,10 +179,23 @@ const Analytics = () => {
             Comprehensive financial analytics and detailed transaction records
           </p>
         </div>
-        <Button variant="outline" className="flex items-center gap-2 w-full sm:w-auto">
-          <Download className="h-4 w-4" />
-          <span className="hidden sm:inline">Export Report</span>
-          <span className="sm:hidden">Export</span>
+        <Button 
+          variant="outline" 
+          className="flex items-center gap-2 w-full sm:w-auto"
+          onClick={handleExportReport}
+          disabled={isGeneratingPDF}
+        >
+          {isGeneratingPDF ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Download className="h-4 w-4" />
+          )}
+          <span className="hidden sm:inline">
+            {isGeneratingPDF ? "Generating..." : "Export Report"}
+          </span>
+          <span className="sm:hidden">
+            {isGeneratingPDF ? "..." : "Export"}
+          </span>
         </Button>
       </div>
 
@@ -195,7 +314,7 @@ const Analytics = () => {
                   fill="#8884d8"
                   dataKey="value"
                 >
-                  {donationBreakdown.map((entry, index) => (
+                  {donationBreakdown.map((entry: any, index: number) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
@@ -258,7 +377,6 @@ const Analytics = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Methods</SelectItem>
-                <SelectItem value="bank">Bank</SelectItem>
                 <SelectItem value="cash">Cash</SelectItem>
                 <SelectItem value="online">Online</SelectItem>
               </SelectContent>
@@ -316,7 +434,7 @@ const Analytics = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredLedger.map((entry) => (
+                {filteredLedger.map((entry: any) => (
                   <TableRow key={entry.id}>
                     <TableCell className="font-medium text-sm">
                       {new Date(entry.date).toLocaleDateString()}

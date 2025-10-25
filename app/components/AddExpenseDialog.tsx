@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/app/components/ui/dialog";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
@@ -37,12 +37,19 @@ interface Expense {
 interface AddExpenseDialogProps {
   expense?: Expense;
   onSubmit?: (data: Expense) => void;
-  triggerButton?: React.ReactNode;
+  triggerButton?: React.ReactNode | null;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
-const AddExpenseDialog = ({ expense, onSubmit, triggerButton }: AddExpenseDialogProps) => {
-  const [open, setOpen] = useState(false);
+const AddExpenseDialog = ({ expense, onSubmit, triggerButton, open: controlledOpen, onOpenChange }: AddExpenseDialogProps) => {
+  const [internalOpen, setInternalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  
+  // Use controlled or internal state
+  const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
+  const setOpen = onOpenChange || setInternalOpen;
+  
   const [formData, setFormData] = useState({
     vendorName: expense?.vendorName || "",
     amount: expense?.amount?.toString() || "",
@@ -53,6 +60,26 @@ const AddExpenseDialog = ({ expense, onSubmit, triggerButton }: AddExpenseDialog
     invoiceNumber: expense?.invoiceNumber || "",
     collectors: expense?.collectors?.map(c => ({ ...c, amount: c.amount.toString() })) || [{ name: "", type: "", amount: "" }] as FormCollectorEntry[]
   });
+  
+  // Update form data when expense prop changes
+  useEffect(() => {
+    if (expense) {
+      setFormData({
+        vendorName: expense.vendorName || "",
+        amount: expense.amount?.toString() || "",
+        category: expense.category || "",
+        paymentMethod: expense.paymentMethod || "",
+        date: expense.date || "",
+        description: expense.description || "",
+        invoiceNumber: expense.invoiceNumber || "",
+        collectors: expense.collectors?.map(c => ({ ...c, amount: c.amount.toString() })) || [{ name: "", type: "", amount: "" }]
+      });
+      if (controlledOpen !== undefined) {
+        setOpen(true);
+      }
+    }
+  }, [expense]);
+  
   const { toast } = useToast();
 
   const vendors = [
@@ -85,8 +112,60 @@ const AddExpenseDialog = ({ expense, onSubmit, triggerButton }: AddExpenseDialog
     setFormData({ ...formData, collectors: newCollectors });
   };
 
+  const validateForm = () => {
+    const missingFields: string[] = [];
+    
+    // Check basic required fields
+    if (!formData.vendorName) {
+      missingFields.push("Vendor/Project Name");
+    }
+    if (!formData.amount.trim() || parseFloat(formData.amount) <= 0) {
+      missingFields.push("Amount (must be greater than 0)");
+    }
+    if (!formData.category) {
+      missingFields.push("Category");
+    }
+    if (!formData.paymentMethod) {
+      missingFields.push("Payment Method");
+    }
+    if (!formData.date) {
+      missingFields.push("Date");
+    }
+    if (!formData.description.trim()) {
+      missingFields.push("Description");
+    }
+
+    // Check collectors
+    formData.collectors.forEach((collector, index) => {
+      const collectorLabel = `Collector ${index + 1}`;
+      if (!collector.name) {
+        missingFields.push(`${collectorLabel} - Name`);
+      }
+      if (!collector.type) {
+        missingFields.push(`${collectorLabel} - Payment Type`);
+      }
+      if (!collector.amount.trim() || parseFloat(collector.amount) <= 0) {
+        missingFields.push(`${collectorLabel} - Amount (must be greater than 0)`);
+      }
+    });
+
+    return missingFields;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate form before submitting
+    const missingFields = validateForm();
+    if (missingFields.length > 0) {
+      toast({
+        title: "Missing Required Fields",
+        description: `Please fill in: ${missingFields.join(", ")}`,
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setLoading(true);
     
     try {
@@ -110,8 +189,18 @@ const AddExpenseDialog = ({ expense, onSubmit, triggerButton }: AddExpenseDialog
         }))
       };
 
-      // Call the API
-      const response = await axios.post('/api/expenses', apiData);
+      // POST or PUT depending on whether expense exists
+      let response;
+      if (expense?.id) {
+        // Update existing expense
+        response = await axios.put('/api/expenses', {
+          id: expense.id,
+          ...apiData
+        });
+      } else {
+        // Create new expense
+        response = await axios.post('/api/expenses', apiData);
+      }
       
       const action = expense ? "updated" : "added";
       
@@ -202,7 +291,6 @@ const AddExpenseDialog = ({ expense, onSubmit, triggerButton }: AddExpenseDialog
                 type="number"
                 value={formData.amount}
                 onChange={(e) => setFormData({...formData, amount: e.target.value})}
-                required
               />
             </div>
           </div>
@@ -244,7 +332,6 @@ const AddExpenseDialog = ({ expense, onSubmit, triggerButton }: AddExpenseDialog
               type="date"
               value={formData.date}
               onChange={(e) => setFormData({...formData, date: e.target.value})}
-              required
             />
           </div>
 
@@ -255,7 +342,6 @@ const AddExpenseDialog = ({ expense, onSubmit, triggerButton }: AddExpenseDialog
               value={formData.description}
               onChange={(e) => setFormData({...formData, description: e.target.value})}
               placeholder="Expense description..."
-              required
             />
           </div>
 

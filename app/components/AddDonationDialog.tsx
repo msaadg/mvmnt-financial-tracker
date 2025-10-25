@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/app/components/ui/dialog";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { Label } from "@/app/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/app/components/ui/select";
 import { Textarea } from "@/app/components/ui/textarea";
-import { Plus } from "lucide-react";
+import { Plus, Loader2 } from "lucide-react";
 import { useToast } from "@/app/hooks/use-toast";
 import { referrals, collectors } from "@/app/data/sampleData";
 import axios from "axios";
@@ -13,12 +13,19 @@ import axios from "axios";
 interface AddDonationDialogProps {
   donation?: any;
   onSubmit?: (data: any) => void;
-  triggerButton?: React.ReactNode;
+  triggerButton?: React.ReactNode | null;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
-const AddDonationDialog = ({ donation, onSubmit, triggerButton }: AddDonationDialogProps) => {
-  const [open, setOpen] = useState(false);
+const AddDonationDialog = ({ donation, onSubmit, triggerButton, open: controlledOpen, onOpenChange }: AddDonationDialogProps) => {
+  const [internalOpen, setInternalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  
+  // Use controlled or internal state
+  const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
+  const setOpen = onOpenChange || setInternalOpen;
+  
   const [formData, setFormData] = useState({
     donorName: donation?.donorName || "",
     amount: donation?.amount?.toString() || "",
@@ -29,6 +36,25 @@ const AddDonationDialog = ({ donation, onSubmit, triggerButton }: AddDonationDia
     date: donation?.date || "",
     notes: donation?.notes || ""
   });
+  
+  // Update form data when donation prop changes
+  useEffect(() => {
+    if (donation) {
+      setFormData({
+        donorName: donation.donorName || "",
+        amount: donation.amount?.toString() || "",
+        type: donation.type || "",
+        paymentMethod: donation.paymentMethod || "",
+        collector: donation.collector || "",
+        referral: donation.referral || "",
+        date: donation.date || "",
+        notes: donation.notes || ""
+      });
+      if (controlledOpen !== undefined) {
+        setOpen(true);
+      }
+    }
+  }, [donation]);
   const { toast } = useToast();
 
   const donors = [
@@ -39,8 +65,48 @@ const AddDonationDialog = ({ donation, onSubmit, triggerButton }: AddDonationDia
     "Ali Khan"
   ];
 
+  const validateForm = () => {
+    const missingFields: string[] = [];
+    
+    if (!formData.donorName.trim()) {
+      missingFields.push("Donor Name");
+    }
+    if (!formData.amount.trim() || parseFloat(formData.amount) <= 0) {
+      missingFields.push("Amount (must be greater than 0)");
+    }
+    if (!formData.type) {
+      missingFields.push("Donation Type");
+    }
+    if (!formData.paymentMethod) {
+      missingFields.push("Payment Method");
+    }
+    if (!formData.collector) {
+      missingFields.push("Collector");
+    }
+    if (!formData.referral) {
+      missingFields.push("Referral");
+    }
+    if (!formData.date) {
+      missingFields.push("Date");
+    }
+    
+    return missingFields;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate form before submitting
+    const missingFields = validateForm();
+    if (missingFields.length > 0) {
+      toast({
+        title: "Missing Required Fields",
+        description: `Please fill in: ${missingFields.join(", ")}`,
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setLoading(true);
 
     try {
@@ -57,7 +123,17 @@ const AddDonationDialog = ({ donation, onSubmit, triggerButton }: AddDonationDia
       };
 
       // POST or PUT depending on whether donation exists
-      const response = await axios.post("/api/donations", apiData);
+      let response;
+      if (donation?.id) {
+        // Update existing donation
+        response = await axios.put("/api/donations", {
+          id: donation.id,
+          ...apiData
+        });
+      } else {
+        // Create new donation
+        response = await axios.post("/api/donations", apiData);
+      }
 
       const action = donation ? "updated" : "added";
 
@@ -88,11 +164,11 @@ const AddDonationDialog = ({ donation, onSubmit, triggerButton }: AddDonationDia
         });
       }
     } catch (error) {
-      console.error("Error creating donation:", error);
+      console.error("Error saving donation:", error);
       toast({
         title: "Error",
         description: axios.isAxiosError(error)
-          ? error.response?.data?.message || "Failed to create donation"
+          ? error.response?.data?.message || `Failed to ${donation ? "update" : "create"} donation`
           : "An unexpected error occurred",
         variant: "destructive",
       });
@@ -128,7 +204,6 @@ const AddDonationDialog = ({ donation, onSubmit, triggerButton }: AddDonationDia
                 value={formData.donorName}
                 onChange={(e) => setFormData({...formData, donorName: e.target.value})}
                 placeholder="Enter donor name"
-                required
               />
             </div>
             <div className="space-y-2">
@@ -138,7 +213,6 @@ const AddDonationDialog = ({ donation, onSubmit, triggerButton }: AddDonationDia
                 type="number"
                 value={formData.amount}
                 onChange={(e) => setFormData({...formData, amount: e.target.value})}
-                required
               />
             </div>
           </div>
@@ -206,7 +280,6 @@ const AddDonationDialog = ({ donation, onSubmit, triggerButton }: AddDonationDia
               type="date"
               value={formData.date}
               onChange={(e) => setFormData({...formData, date: e.target.value})}
-              required
             />
           </div>
 
@@ -221,11 +294,18 @@ const AddDonationDialog = ({ donation, onSubmit, triggerButton }: AddDonationDia
           </div>
 
           <div className="flex justify-end gap-3 pt-4">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+            <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={loading}>
               Cancel
             </Button>
-            <Button type="submit">
-              {donation ? "Update Donation" : "Add Donation"}
+            <Button type="submit" disabled={loading}>
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {donation ? "Updating..." : "Adding..."}
+                </>
+              ) : (
+                <>{donation ? "Update Donation" : "Add Donation"}</>
+              )}
             </Button>
           </div>
         </form>

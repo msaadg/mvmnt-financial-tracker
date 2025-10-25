@@ -4,10 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/app/components/ui/ca
 import { Badge } from "@/app/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/app/components/ui/table";
 import { Input } from "@/app/components/ui/input";
-import { sampleDonations, sampleExpenses, collectors } from "@/app/data/sampleData";
-import { Wallet, PiggyBank, Smartphone, Banknote, Users, Search, BarChart3 } from "lucide-react";
+import { Button } from "@/app/components/ui/button";
+import { Wallet, PiggyBank, Smartphone, Banknote, Users, Search, BarChart3, Loader2 } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 // TypeScript interfaces
 interface Donation {
@@ -68,6 +69,60 @@ interface CollectorChartData {
 
 const FundsManagement = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
+  
+  // API integration
+  const [fundsData, setFundsData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchFundsData();
+  }, []);
+
+  const fetchFundsData = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get('/api/funds');
+      setFundsData(response.data);
+    } catch (error) {
+      console.error('Failed to fetch funds data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!fundsData) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-center">
+          <p className="text-muted-foreground">Failed to load funds data</p>
+          <Button onClick={fetchFundsData} className="mt-4">Retry</Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Use API data
+  const currentBalance = fundsData.currentBalance;
+  const totalDonations = fundsData.totalDonations;
+  const totalExpenses = fundsData.totalExpenses;
+  const zakatBalance = fundsData.zakatBalance;
+  const sadqaBalance = fundsData.sadqaBalance;
+  const onlineBalance = fundsData.onlineBalance;
+  const cashBalance = fundsData.cashBalance;
+  const collectorData = fundsData.collectorData;
+
+  // Filter collectors based on search term
+  const filteredCollectorData = collectorData.filter((collector: any) =>
+    collector.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   // Chart colors
   const COLORS = [
@@ -78,125 +133,6 @@ const FundsManagement = () => {
     "hsl(var(--secondary))",
     "hsl(var(--accent))"
   ];
-
-  // Calculate total funds
-  const totalDonations = (sampleDonations as Donation[])
-    .filter((d: Donation) => d.status === "Completed" || d.status === "Complete")
-    .reduce((sum: number, d: Donation) => sum + d.amount, 0);
-  
-  const totalExpenses = (sampleExpenses as Expense[])
-    .filter((e: Expense) => e.status === "Paid")
-    .reduce((sum: number, e: Expense) => sum + e.amount, 0);
-  
-  const currentBalance = totalDonations - totalExpenses;
-
-  // Calculate fund distribution by type - these should equal current balance
-  const zakatBalance = (sampleDonations as Donation[])
-    .filter((d: Donation) => d.type === "Zakat" && (d.status === "Completed" || d.status === "Complete"))
-    .reduce((sum: number, d: Donation) => sum + d.amount, 0) - 
-    (sampleExpenses as Expense[])
-    .filter((e: Expense) => e.status === "Paid")
-    .reduce((sum: number, e: Expense) => {
-      return sum + (e.collectors?.reduce((collSum: number, coll: CollectorEntry) => 
-        collSum + (coll.type === "Zakat" ? coll.amount : 0), 0) || 0);
-    }, 0);
-  
-  const sadqaBalance = (sampleDonations as Donation[])
-    .filter((d: Donation) => d.type === "Sadqa" && (d.status === "Completed" || d.status === "Complete"))
-    .reduce((sum: number, d: Donation) => sum + d.amount, 0) - 
-    (sampleExpenses as Expense[])
-    .filter((e: Expense) => e.status === "Paid")
-    .reduce((sum: number, e: Expense) => {
-      return sum + (e.collectors?.reduce((collSum: number, coll: CollectorEntry) => 
-        collSum + (coll.type === "Sadqa" ? coll.amount : 0), 0) || 0);
-    }, 0);
-
-  // Calculate fund distribution by payment method - these should equal current balance
-  const onlineBalance = (sampleDonations as Donation[])
-    .filter((d: Donation) => d.paymentMethod === "Online" && (d.status === "Completed" || d.status === "Complete"))
-    .reduce((sum: number, d: Donation) => sum + d.amount, 0) - 
-    (sampleExpenses as Expense[])
-    .filter((e: Expense) => e.status === "Paid" && e.paymentMethod === "Online")
-    .reduce((sum: number, e: Expense) => sum + e.amount, 0);
-  
-  const cashBalance = (sampleDonations as Donation[])
-    .filter((d: Donation) => d.paymentMethod === "Cash" && (d.status === "Completed" || d.status === "Complete"))
-    .reduce((sum: number, d: Donation) => sum + d.amount, 0) - 
-    (sampleExpenses as Expense[])
-    .filter((e: Expense) => e.status === "Paid" && e.paymentMethod === "Cash")
-    .reduce((sum: number, e: Expense) => sum + e.amount, 0);
-
-  // Calculate collector distributions
-  const collectorData: CollectorData[] = (collectors as string[]).map((collector: string) => {
-    const collectorDonations = (sampleDonations as Donation[]).filter((d: Donation) => 
-      d.collector === collector && (d.status === "Completed" || d.status === "Complete")
-    );
-    
-    const collectorExpenses = (sampleExpenses as Expense[]).filter((e: Expense) => 
-      e.status === "Paid" && e.collectors?.some((c: CollectorEntry) => c.name === collector)
-    );
-
-    const totalReceived = collectorDonations.reduce((sum: number, d: Donation) => sum + d.amount, 0);
-    
-    const totalPaid = collectorExpenses.reduce((sum: number, e: Expense) => {
-      const collectorEntry = e.collectors?.find((c: CollectorEntry) => c.name === collector);
-      return sum + (collectorEntry?.amount || 0);
-    }, 0);
-
-    const totalBalance = totalReceived - totalPaid;
-
-    // Calculate current balance by type (Zakat vs Sadqa)
-    const zakatBalance = collectorDonations
-      .filter((d: Donation) => d.type === "Zakat")
-      .reduce((sum: number, d: Donation) => sum + d.amount, 0) - 
-      collectorExpenses.reduce((sum: number, e: Expense) => {
-        const collectorEntry = e.collectors?.find((c: CollectorEntry) => c.name === collector && c.type === "Zakat");
-        return sum + (collectorEntry?.amount || 0);
-      }, 0);
-
-    const sadqaBalance = collectorDonations
-      .filter((d: Donation) => d.type === "Sadqa")
-      .reduce((sum: number, d: Donation) => sum + d.amount, 0) - 
-      collectorExpenses.reduce((sum: number, e: Expense) => {
-        const collectorEntry = e.collectors?.find((c: CollectorEntry) => c.name === collector && c.type === "Sadqa");
-        return sum + (collectorEntry?.amount || 0);
-      }, 0);
-
-    // Calculate current balance by method (Online vs Cash)
-    const onlineBalance = collectorDonations
-      .filter((d: Donation) => d.paymentMethod === "Online")
-      .reduce((sum: number, d: Donation) => sum + d.amount, 0) - 
-      collectorExpenses
-      .filter((e: Expense) => e.paymentMethod === "Online")
-      .reduce((sum: number, e: Expense) => {
-        const collectorEntry = e.collectors?.find((c: CollectorEntry) => c.name === collector);
-        return sum + (collectorEntry?.amount || 0);
-      }, 0);
-
-    const cashBalance = collectorDonations
-      .filter((d: Donation) => d.paymentMethod === "Cash")
-      .reduce((sum: number, d: Donation) => sum + d.amount, 0) - 
-      collectorExpenses
-      .filter((e: Expense) => e.paymentMethod === "Cash")
-      .reduce((sum: number, e: Expense) => {
-        const collectorEntry = e.collectors?.find((c: CollectorEntry) => c.name === collector);
-        return sum + (collectorEntry?.amount || 0);
-      }, 0);
-
-    return {
-      name: collector,
-      totalBalance,
-      zakat: Math.max(0, zakatBalance),
-      sadqa: Math.max(0, sadqaBalance),
-      online: Math.max(0, onlineBalance),
-      cash: Math.max(0, cashBalance)
-    };
-  });
-
-  // Filter collectors based on search term
-  const filteredCollectorData = collectorData.filter((collector: CollectorData) =>
-    collector.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   // Chart data
   const fundTypeData: ChartData[] = [
@@ -209,7 +145,7 @@ const FundsManagement = () => {
     { name: "Cash", value: Math.max(0, cashBalance), fill: COLORS[3] }
   ];
 
-  const collectorChartData: CollectorChartData[] = filteredCollectorData.map((collector: CollectorData) => ({
+  const collectorChartData: CollectorChartData[] = filteredCollectorData.map((collector: any) => ({
     name: collector.name,
     Zakat: collector.zakat,
     Sadqa: collector.sadqa,

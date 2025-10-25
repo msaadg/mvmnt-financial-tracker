@@ -1,8 +1,12 @@
+"use client";
+
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/app/components/ui/dialog";
 import { Button } from "@/app/components/ui/button";
 import { Download, Mail } from "lucide-react";
 import { useToast } from "@/app/hooks/use-toast";
 import { numberToWords } from "@/app/lib/utils";
+import { generateDonationReceiptPDF } from "@/app/lib/pdfGenerator";
+import { useState } from "react";
 
 interface ReceiptDialogProps {
   donation: {
@@ -16,6 +20,8 @@ interface ReceiptDialogProps {
     bankName?: string;
     accountName?: string;
     collector?: string;
+    referral?: string;
+    notes?: string;
   };
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -23,6 +29,7 @@ interface ReceiptDialogProps {
 
 const ReceiptDialog = ({ donation, open, onOpenChange }: ReceiptDialogProps) => {
   const { toast } = useToast();
+  const [downloading, setDownloading] = useState(false);
 
   const formatAmount = (amount: number) => {
     return new Intl.NumberFormat("en-PK", {
@@ -32,11 +39,34 @@ const ReceiptDialog = ({ donation, open, onOpenChange }: ReceiptDialogProps) => 
     }).format(amount);
   };
 
-  const handleDownload = () => {
-    toast({
-      title: "Receipt Downloaded",
-      description: "The receipt has been downloaded as PDF.",
-    });
+  const handleDownload = async () => {
+    setDownloading(true);
+    try {
+      await generateDonationReceiptPDF({
+        id: donation.id,
+        donorName: donation.donorName,
+        amount: donation.amount,
+        type: donation.type,
+        paymentMethod: donation.paymentMethod,
+        collector: donation.collector,
+        referral: donation.referral,
+        date: donation.date,
+        notes: donation.notes,
+      });
+      
+      toast({
+        title: "Receipt Downloaded",
+        description: "The receipt has been downloaded as PDF.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to generate PDF. Please ensure LaTeX is installed on the server.",
+        variant: "destructive",
+      });
+    } finally {
+      setDownloading(false);
+    }
   };
 
   const handleEmail = () => {
@@ -53,15 +83,15 @@ const ReceiptDialog = ({ donation, open, onOpenChange }: ReceiptDialogProps) => 
           <DialogTitle>Donation Receipt</DialogTitle>
         </DialogHeader>
         
-        <div className="bg-background border rounded-lg p-8 space-y-6">
+        <div className="bg-background border rounded-lg p-6">
           {/* Header */}
-          <div className="text-center border-b pb-4">
-            <h2 className="text-2xl font-bold text-foreground">MVMNT</h2>
+          <div className="text-center border-b pb-2">
+            <h2 className="text-xl font-bold text-foreground">MVMNT</h2>
             <p className="text-muted-foreground">Donation Receipt</p>
           </div>
 
           {/* Receipt Details */}
-          <div className="space-y-4">
+          <div className="space-y-2 pt-2">
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="text-sm text-muted-foreground">Receipt No.</p>
@@ -73,9 +103,9 @@ const ReceiptDialog = ({ donation, open, onOpenChange }: ReceiptDialogProps) => 
               </div>
             </div>
 
-            <div className="border-t pt-4">
+            <div className="border-t pt-2">
               <h3 className="font-semibold mb-3">Donor Information</h3>
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <div>
                   <p className="text-sm text-muted-foreground">Name</p>
                   <p className="font-medium">{donation.donorName}</p>
@@ -87,9 +117,9 @@ const ReceiptDialog = ({ donation, open, onOpenChange }: ReceiptDialogProps) => 
               </div>
             </div>
 
-            <div className="border-t pt-4">
+            <div className="border-t pt-2">
               <h3 className="font-semibold mb-3">Donation Details</h3>
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <div className="flex justify-between">
                   <p className="text-muted-foreground">Type:</p>
                   <p className="font-medium">{donation.type}</p>
@@ -128,7 +158,13 @@ const ReceiptDialog = ({ donation, open, onOpenChange }: ReceiptDialogProps) => 
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">MVMNT Signature</p>
-                  <div className="mt-2 h-12 border-b border-muted-foreground/30"></div>
+                  <div className="mt-2">
+                    <img 
+                      src="/sign.png" 
+                      alt="MVMNT Signature" 
+                      className="h-16 w-auto object-contain"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -141,10 +177,15 @@ const ReceiptDialog = ({ donation, open, onOpenChange }: ReceiptDialogProps) => 
         </div>
 
         {/* Action Buttons */}
-        <div className="flex justify-end gap-3 pt-4">
-          <Button variant="outline" onClick={handleDownload} className="flex items-center gap-2">
+        <div className="flex justify-end gap-3">
+          <Button 
+            variant="outline" 
+            onClick={handleDownload} 
+            disabled={downloading}
+            className="flex items-center gap-2"
+          >
             <Download className="h-4 w-4" />
-            Download PDF
+            {downloading ? "Generating..." : "Download PDF"}
           </Button>
           <Button onClick={handleEmail} className="flex items-center gap-2">
             <Mail className="h-4 w-4" />

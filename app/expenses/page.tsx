@@ -14,7 +14,17 @@ import AddExpenseDialog from "@/app/components/AddExpenseDialog";
 import ExpenseReceiptDialog from "@/app/components/ExpenseReceiptDialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/app/components/ui/tooltip";
 import { useToast } from "@/app/hooks/use-toast";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/app/components/ui/alert-dialog";
+import { 
+  AlertDialog, 
+  AlertDialogAction, 
+  AlertDialogCancel, 
+  AlertDialogContent, 
+  AlertDialogDescription, 
+  AlertDialogFooter, 
+  AlertDialogHeader, 
+  AlertDialogTitle
+} from "@/app/components/ui/alert-dialog";
+import { exportExpensesToCSV } from "@/app/lib/pdfGenerator";
 import axios from "axios";
 
 const Expenses = () => {
@@ -24,6 +34,10 @@ const Expenses = () => {
   const [selectedExpense, setSelectedExpense] = useState<any>(null);
   const [receiptOpen, setReceiptOpen] = useState(false);
   const [editingExpense, setEditingExpense] = useState<any>(null);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [expenseToDelete, setExpenseToDelete] = useState<any>(null);
+  const [deleting, setDeleting] = useState(false);
   const { toast } = useToast();
   const [paymentFilter, setPaymentFilter] = useState("all");
   const [collectorFilter, setCollectorFilter] = useState("all");
@@ -122,14 +136,70 @@ const Expenses = () => {
 
   const handleEditClick = (expense: any) => {
     setEditingExpense(expense);
+    setEditDialogOpen(true);
   };
 
-  const handleDeleteClick = (expenseId: string | number) => {
-    toast({
-      title: "Expense Deleted",
-      description: "The expense record has been removed from the system.",
-      variant: "destructive",
-    });
+  const handleDeleteClick = (expense: any) => {
+    setExpenseToDelete(expense);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!expenseToDelete?.id) return;
+
+    setDeleting(true);
+    try {
+      await axios.delete(`/api/expenses?id=${expenseToDelete.id}`);
+
+      toast({
+        title: "Expense Deleted",
+        description: "The expense record has been successfully deleted.",
+      });
+
+      // Refresh the expenses list
+      fetchExpenses();
+      setDeleteDialogOpen(false);
+      setExpenseToDelete(null);
+    } catch (error) {
+      console.error("Error deleting expense:", error);
+      toast({
+        title: "Error",
+        description: axios.isAxiosError(error)
+          ? error.response?.data?.message || "Failed to delete expense"
+          : "An unexpected error occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  const handleExportCSV = () => {
+    try {
+      const csvData = filteredExpenses.map(e => ({
+        id: e.id.toString(),
+        vendorName: e.vendorName || e.vendorProject?.name || "N/A",
+        amount: e.amount,
+        category: e.category,
+        paymentMethod: e.paymentMethod,
+        date: e.date,
+        description: e.description || '',
+        collectors: e.collectors
+      }));
+      
+      exportExpensesToCSV(csvData, `expenses-${new Date().toISOString().split('T')[0]}.csv`);
+      
+      toast({
+        title: "CSV Exported",
+        description: `Exported ${csvData.length} expense records to CSV.`,
+      });
+    } catch (error) {
+      toast({
+        title: "Export Failed",
+        description: "Failed to export expenses to CSV.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -142,7 +212,12 @@ const Expenses = () => {
           </p>
         </div>
         <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-          <Button variant="outline" className="flex items-center gap-2 w-full sm:w-auto">
+          <Button 
+            variant="outline" 
+            className="flex items-center gap-2 w-full sm:w-auto"
+            onClick={handleExportCSV}
+            disabled={filteredExpenses.length === 0}
+          >
             <Download className="h-4 w-4" />
             <span className="hidden sm:inline">Export CSV</span>
             <span className="sm:hidden">Export</span>
@@ -200,8 +275,8 @@ const Expenses = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
-            <div className="relative">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 sm:gap-4">
+            <div className="relative lg:col-span-2">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search vendors or description..."
@@ -210,44 +285,7 @@ const Expenses = () => {
                 className="pl-10"
               />
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <div>
-                <Label className="text-xs text-muted-foreground">From Date</Label>
-                <Input
-                  type="date"
-                  value={dateFrom}
-                  onChange={(e) => setDateFrom(e.target.value)}
-                  className="text-sm"
-                />
-              </div>
-              <div>
-                <Label className="text-xs text-muted-foreground">To Date</Label>
-                <Input
-                  type="date"
-                  value={dateTo}
-                  onChange={(e) => setDateTo(e.target.value)}
-                  className="text-sm"
-                />
-              </div>
-            </div>
-            <Button 
-              variant="outline" 
-              onClick={() => {
-                setSearchTerm("");
-                setStatusFilter("all");
-                setCategoryFilter("all");
-                setPaymentFilter("all");
-                setCollectorFilter("all");
-                setDateFrom("");
-                setDateTo("");
-              }}
-              className="self-end w-full lg:w-auto"
-            >
-              Clear Filters
-            </Button>
-          </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
+            
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger>
                 <SelectValue placeholder="Status" />
@@ -259,6 +297,7 @@ const Expenses = () => {
                 <SelectItem value="overdue">Overdue</SelectItem>
               </SelectContent>
             </Select>
+            
             <Select value={categoryFilter} onValueChange={setCategoryFilter}>
               <SelectTrigger>
                 <SelectValue placeholder="Category" />
@@ -272,6 +311,7 @@ const Expenses = () => {
                 <SelectItem value="marketing">Marketing</SelectItem>
               </SelectContent>
             </Select>
+            
             <Select value={paymentFilter} onValueChange={setPaymentFilter}>
               <SelectTrigger>
                 <SelectValue placeholder="Payment Method" />
@@ -282,6 +322,7 @@ const Expenses = () => {
                 <SelectItem value="online">Online</SelectItem>
               </SelectContent>
             </Select>
+            
             <Select value={collectorFilter} onValueChange={setCollectorFilter}>
               <SelectTrigger>
                 <SelectValue placeholder="Collector" />
@@ -293,8 +334,44 @@ const Expenses = () => {
                 ))}
               </SelectContent>
             </Select>
-            <div></div>
           </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+            <div>
+              <Label className="text-xs text-muted-foreground mb-1 block">From Date</Label>
+              <Input
+                type="date"
+                value={dateFrom}
+                onChange={(e) => setDateFrom(e.target.value)}
+                className="text-sm"
+              />
+            </div>
+            <div>
+              <Label className="text-xs text-muted-foreground mb-1 block">To Date</Label>
+              <Input
+                type="date"
+                value={dateTo}
+                onChange={(e) => setDateTo(e.target.value)}
+                className="text-sm"
+              />
+            </div>
+          </div>
+          
+          <Button 
+            variant="outline" 
+            onClick={() => {
+              setSearchTerm("");
+              setStatusFilter("all");
+              setCategoryFilter("all");
+              setPaymentFilter("all");
+              setCollectorFilter("all");
+              setDateFrom("");
+              setDateTo("");
+            }}
+            className="mt-4 w-full sm:w-auto"
+          >
+            Clear Filters
+          </Button>
         </CardContent>
       </Card>
 
@@ -356,7 +433,7 @@ const Expenses = () => {
                             <TooltipTrigger asChild>
                               <Button 
                                 size="sm" 
-                                variant="outline" 
+                                variant="ghost" 
                                 className="h-8 w-8 p-0"
                                 onClick={() => handleEditClick(expense)}
                               >
@@ -374,7 +451,7 @@ const Expenses = () => {
                             <TooltipTrigger asChild>
                               <Button 
                                 size="sm" 
-                                variant="outline" 
+                                variant="ghost" 
                                 className="h-8 w-8 p-0"
                                 onClick={() => handleReceiptClick(expense)}
                               >
@@ -387,36 +464,23 @@ const Expenses = () => {
                           </Tooltip>
                         </TooltipProvider>
 
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Button size="sm" variant="outline" className="h-8 w-8 p-0 text-destructive hover:text-destructive">
-                                    <Trash2 className="h-3 w-3" />
-                                  </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>Delete expense</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Delete Expense</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                Are you sure you want to delete this expense record? This action cannot be undone.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction onClick={() => handleDeleteClick(expense.id)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                                Delete
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button 
+                                size="sm" 
+                                variant="ghost" 
+                                className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                                onClick={() => handleDeleteClick(expense)}
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Delete expense</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -438,13 +502,54 @@ const Expenses = () => {
           />
         )}
 
-        {editingExpense && (
-          <AddExpenseDialog
-            expense={editingExpense}
-            triggerButton={<div />}
-            onSubmit={() => setEditingExpense(null)}
-          />
-        )}
+        {/* Edit Expense Dialog */}
+        <AddExpenseDialog
+          expense={editingExpense}
+          open={editDialogOpen}
+          onOpenChange={(open) => {
+            setEditDialogOpen(open);
+            if (!open) {
+              setEditingExpense(null);
+            }
+          }}
+          onSubmit={() => {
+            fetchExpenses();
+            setEditDialogOpen(false);
+            setEditingExpense(null);
+          }}
+          triggerButton={null}
+        />
+
+        {/* Delete Confirmation Dialog */}
+        <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete the expense
+                record for <strong>{expenseToDelete?.vendorName || expenseToDelete?.vendorProject?.name}</strong> of amount{" "}
+                <strong>PKR {expenseToDelete?.amount?.toLocaleString()}</strong>.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={deleting}>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleDeleteConfirm}
+                disabled={deleting}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                {deleting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Deleting...
+                  </>
+                ) : (
+                  "Delete Expense"
+                )}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     );
   };
