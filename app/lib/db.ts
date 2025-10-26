@@ -1,8 +1,15 @@
 // app/lib/db.ts
 import { PrismaClient } from '@/app/generated/prisma/edge'
 import { withAccelerate } from '@prisma/extension-accelerate'
+import { Resend } from "resend";
 
 const prisma = new PrismaClient().$extends(withAccelerate());
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || process.env.SITE_URL || "http://localhost:3000";
+
+// Resend client (uses RESEND_API_KEY). If missing, we fallback to logging emails (dev-friendly).
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
+const resendClient = RESEND_API_KEY ? new Resend(RESEND_API_KEY) : null;
 
 export async function createDonation(data: {
   date: Date;
@@ -768,4 +775,101 @@ export async function getFundsData() {
     cashBalance,
     collectorData,
   };
+}
+
+export async function getUsers() {
+  return prisma.powerUsers.findMany({
+    select: { id: true, email: true, username: true, role: true },
+    orderBy: { username: "asc" },
+    cacheStrategy: { ttl: 60 },
+  });
+}
+
+export async function createUserByEmail(email: string, role: string = "user") {
+  if (!email) throw new Error("Email is required");
+  const normalized = email.toLowerCase().trim();
+
+  // if user already exists, return it
+  const existing = await prisma.powerUsers.findUnique({
+    where: { email: normalized },
+  });
+  if (existing) return existing;
+
+  const username = normalized.split("@")[0];
+  return prisma.powerUsers.create({
+    data: {
+      email: normalized,
+      username,
+      role,
+    },
+  });
+}
+
+export async function sendInviteEmail(email: string) {
+  const normalized = email.toLowerCase().trim();
+  const loginUrl = `${SITE_URL}`; // can be updated to specific login path if available
+
+  const from = `mvmnt@resend.dev`;
+  const subject = "You're invited — Sign in";
+  const text = `You've been added to the site. Please sign in at ${loginUrl}`;
+  const html = `<p>You've been added to the site. Click the link below to sign in:</p>
+           <p><a href="${loginUrl}">${loginUrl}</a></p>
+           <p>If you did not expect this email, you can ignore it.</p>`;
+
+  // If RESEND_API_KEY is not configured, log the email (dev fallback) and return a mock result.
+  if (!resendClient) {
+    console.warn("RESEND_API_KEY not configured — falling back to console log for emails.");
+    console.info("Invite email payload:", { to: normalized, from, subject, text, html });
+    return { ok: true, preview: loginUrl };
+  }
+
+  // Send via Resend
+  return resendClient.emails.send({
+    from,
+    to: normalized,
+    subject,
+    text,
+    html,
+  });
+}
+
+/**
+ * inviteUser: create the DB user if missing and send an invite email.
+ * Returns the created/existing user object.
+ */
+export async function inviteUser(email: string) {
+  if (!email) throw new Error("Email is required for invite");
+  const user = await createUserByEmail(email, "user");
+  try {
+    // const response = await sendInviteEmail(email);
+  } catch (err) {
+    // Log email failures but keep user creation (caller can surface the error)
+    console.error("Failed to send invite email to", email, err);
+    throw err;
+  }
+  return user;
+}
+
+export async function deleteUser(id?: number, email?: string) {
+  if (!id && !email) {
+    throw new Error("Provide either id or email to delete");
+  }
+
+  const user = id
+    ? await prisma.powerUsers.findUnique({ where: { id } })
+    : await prisma.powerUsers.findUnique({ where: { email: email!.toLowerCase() } });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  if (user.role !== "user") {
+    throw new Error("Cannot delete non-user roles");
+  }
+
+  await prisma.powerUsers.delete({
+    where: { id: user.id },
+  });
+
+  return user;
 }
