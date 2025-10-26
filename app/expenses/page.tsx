@@ -88,6 +88,15 @@ const Expenses = () => {
            matchesCollector && matchesDateFrom && matchesDateTo;
   });
 
+  const totalExpenses = filteredExpenses.reduce((sum, expense) => sum + Number(expense.amount || 0), 0);
+  const totalRecords = filteredExpenses.length;
+  const now = new Date();
+  const thisMonthTotal = filteredExpenses.reduce((sum, e) => {
+    const d = new Date(e.date);
+    return (d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth()) ? sum + Number(e.amount || 0) : sum;
+  }, 0);
+  const pendingCount = filteredExpenses.filter(e => (e.status || "").toLowerCase() === "pending").length;
+
   const getStatusBadge = (status: string) => {
     switch (status.toLowerCase()) {
       case "paid":
@@ -126,8 +135,6 @@ const Expenses = () => {
       minimumFractionDigits: 0,
     }).format(amount);
   };
-
-  const totalExpenses = filteredExpenses.reduce((sum, expense) => sum + expense.amount, 0);
 
   const handleReceiptClick = (expense: any) => {
     setSelectedExpense(expense);
@@ -248,18 +255,18 @@ const Expenses = () => {
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Total Records</p>
-              <p className="text-2xl font-bold text-foreground">{filteredExpenses.length}</p>
+              <p className="text-2xl font-bold text-foreground">{totalRecords}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">This Month</p>
               <p className="text-2xl font-bold text-destructive">
-                {formatAmount(filteredExpenses.filter(e => e.date.startsWith("2024-01")).reduce((sum, e) => sum + e.amount, 0))}
+                {formatAmount(thisMonthTotal)}
               </p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Pending</p>
               <p className="text-2xl font-bold text-warning">
-                {filteredExpenses.filter(e => e.status === "Pending").length}
+                {pendingCount}
               </p>
             </div>
           </div>

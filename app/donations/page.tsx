@@ -24,6 +24,7 @@ import ReceiptDialog from "@/app/components/ReceiptDialog";
 import { exportDonationsToCSV } from "@/app/lib/pdfGenerator";
 import axios from "axios";
 import { useToast } from "@/app/hooks/use-toast";
+import { collectors } from "@/app/data/sampleData";
 
 interface Donation {
   id: string;
@@ -46,6 +47,9 @@ const Donations = () => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
   const [paymentFilter, setPaymentFilter] = useState("all");
+  const [collectorFilter, setCollectorFilter] = useState("all");
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
   const [selectedDonation, setSelectedDonation] = useState<Donation | null>(null);
   const [receiptDialogOpen, setReceiptDialogOpen] = useState(false);
   const [editDonation, setEditDonation] = useState<Donation | null>(null);
@@ -80,12 +84,27 @@ const Donations = () => {
 
   const filteredDonations = donations.filter(donation => {
     const matchesSearch = donation.donorName.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === "all" || donation.status.toLowerCase() === statusFilter;
-    const matchesType = typeFilter === "all" || donation.type.toLowerCase() === typeFilter;
-    const matchesPayment = paymentFilter === "all" || donation.paymentMethod.toLowerCase() === paymentFilter;
-    
-    return matchesSearch && matchesStatus && matchesType && matchesPayment;
+    const matchesStatus = statusFilter === "all" || (donation.status || "").toLowerCase() === statusFilter;
+    const matchesType = typeFilter === "all" || (donation.type || "").toLowerCase() === typeFilter;
+    const matchesPayment = paymentFilter === "all" || (donation.paymentMethod || "").toLowerCase() === paymentFilter;
+    const matchesCollector = collectorFilter === "all" || (donation.collector || "") === collectorFilter;
+
+    const donationDate = new Date(donation.date);
+    const matchesDateFrom = !dateFrom || donationDate >= new Date(dateFrom);
+    const matchesDateTo = !dateTo || donationDate <= new Date(dateTo);
+
+    return matchesSearch && matchesStatus && matchesType && matchesPayment && matchesCollector && matchesDateFrom && matchesDateTo;
   });
+
+  // derive summary values from filtered results so UI reflects current filters
+  const totalDonations = filteredDonations.reduce((sum, d) => sum + Number(d.amount || 0), 0);
+  const totalRecords = filteredDonations.length;
+  const now = new Date();
+  const thisMonthTotal = filteredDonations.reduce((sum, d) => {
+    const dt = new Date(d.date);
+    return (dt.getFullYear() === now.getFullYear() && dt.getMonth() === now.getMonth()) ? sum + Number(d.amount || 0) : sum;
+  }, 0);
+  const pendingCount = filteredDonations.filter(d => (d.status || "").toLowerCase() === "pending").length;
 
   const getStatusBadge = (status: string) => {
     switch (status.toLowerCase()) {
@@ -177,8 +196,6 @@ const Donations = () => {
     }
   };
 
-  const totalDonations = filteredDonations.reduce((sum, donation) => sum + donation.amount, 0);
-
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -227,18 +244,18 @@ const Donations = () => {
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Total Records</p>
-              <p className="text-2xl font-bold text-foreground">{filteredDonations.length}</p>
+              <p className="text-2xl font-bold text-foreground">{totalRecords}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">This Month</p>
               <p className="text-2xl font-bold text-success">
-                {formatAmount(filteredDonations.filter(d => d.date.startsWith("2024-01")).reduce((sum, d) => sum + d.amount, 0))}
+                {formatAmount(thisMonthTotal)}
               </p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Pending</p>
               <p className="text-2xl font-bold text-warning">
-                {filteredDonations.filter(d => d.status === "Pending").length}
+                {pendingCount}
               </p>
             </div>
           </div>
@@ -295,6 +312,27 @@ const Donations = () => {
                 <SelectItem value="online">Online</SelectItem>
               </SelectContent>
             </Select>
+            <Select value={collectorFilter} onValueChange={setCollectorFilter}>
+              <SelectTrigger>
+                <SelectValue placeholder="Collector" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Collectors</SelectItem>
+                {collectors.map((c) => (
+                  <SelectItem key={c} value={c}>{c}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <div className="col-span-1 lg:col-span-5 mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div>
+                <label className="text-xs text-muted-foreground block mb-1">From Date</label>
+                <Input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="text-sm" />
+              </div>
+              <div>
+                <label className="text-xs text-muted-foreground block mb-1">To Date</label>
+                <Input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="text-sm" />
+              </div>
+            </div>
             <Button 
               variant="outline" 
               onClick={() => {
@@ -302,6 +340,9 @@ const Donations = () => {
                 setStatusFilter("all");
                 setTypeFilter("all");
                 setPaymentFilter("all");
+                setCollectorFilter("all");
+                setDateFrom("");
+                setDateTo("");
               }}
               className="w-full sm:w-auto"
             >
