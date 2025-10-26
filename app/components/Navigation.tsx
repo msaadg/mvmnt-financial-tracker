@@ -13,6 +13,8 @@ import { Sheet, SheetContent, SheetTrigger } from "@/app/components/ui/sheet";
 import { Avatar, AvatarFallback } from "@/app/components/ui/avatar";
 import { LayoutDashboard, DollarSign, CreditCard, BarChart3, LogOut, Wallet, Menu } from "lucide-react";
 import { useState } from "react";
+import { signOut } from "next-auth/react";
+import { useToast } from "@/app/hooks/use-toast";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -26,10 +28,29 @@ export const Navigation = () => {
   const router = useRouter();
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const { toast } = useToast();
 
-  const handleLogout = () => {
-    // Handle logout logic here
-    router.push("/login");
+  const handleLogout = async () => {
+    if (isLoggingOut) return;
+    setIsLoggingOut(true);
+    try {
+      // Sign out via next-auth and then redirect to sign-in (root)
+      await signOut({ redirect: false, callbackUrl: "/" });
+      toast({
+        title: "Signed out",
+        description: "You have been signed out.",
+      });
+      router.push("/");
+    } catch (error) {
+      toast({
+        title: "Sign out failed",
+        description: "Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoggingOut(false);
+    }
   };
 
   return (
@@ -110,9 +131,10 @@ export const Navigation = () => {
                         setIsMobileMenuOpen(false);
                       }}
                       className="w-full justify-start px-4 py-3 text-sm font-medium"
+                      disabled={isLoggingOut}
                     >
                       <LogOut className="mr-3 h-5 w-5" />
-                      Log Out
+                      {isLoggingOut ? "Signing out..." : "Log Out"}
                     </Button>
                   </div>
                 </div>
@@ -137,9 +159,9 @@ export const Navigation = () => {
                     <p className="text-xs text-muted-foreground">admin@mvmnt.org</p>
                   </div>
                 </div>
-                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
+                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer" disabled={isLoggingOut}>
                   <LogOut className="mr-2 h-4 w-4" />
-                  Log Out
+                  {isLoggingOut ? "Signing out..." : "Log Out"}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

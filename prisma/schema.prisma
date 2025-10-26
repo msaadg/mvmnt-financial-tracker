@@ -17,8 +17,8 @@ datasource db {
 // PowerUsers table
 model PowerUsers {
   id            Int         @id @default(autoincrement())
+  email         String      @unique
   username      String      @unique
-  password      String
   role          String
 }
 
