@@ -582,7 +582,7 @@ export async function getAnalyticsData() {
     });
 
     monthlyData.push({
-      month: date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+      month: date.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' }),
       donations: monthDonations.reduce((sum, d) => sum + d.amount, 0),
       expenses: monthExpenses.reduce((sum, e) => sum + e.amount, 0),
     });

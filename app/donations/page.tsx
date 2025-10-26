@@ -396,7 +396,7 @@ const Donations = () => {
                     <TableCell className="text-sm">{donation.paymentMethod}</TableCell>
                     <TableCell className="text-sm">{donation.referral}</TableCell>
                     <TableCell className="text-sm">{donation.collector}</TableCell>
-                    <TableCell className="text-sm">{new Date(donation.date).toLocaleDateString()}</TableCell>
+                    <TableCell className="text-sm">{new Date(donation.date).toLocaleDateString('en-GB')}</TableCell>
                     <TableCell>{getStatusBadge(donation.status)}</TableCell>
                     <TableCell>
                       <TooltipProvider>

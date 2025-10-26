@@ -362,7 +362,7 @@ const Dashboard = () => {
                         {transaction.type === "donation" ? transaction.donor : transaction.vendor}
                       </p>
                       <p className="text-xs sm:text-sm text-muted-foreground">
-                        {transaction.category} • {new Date(transaction.date).toLocaleDateString()}
+                        {transaction.category} • {new Date(transaction.date).toLocaleDateString('en-GB')}
                       </p>
                     </div>
                   </div>

@@ -56,6 +56,7 @@ export async function GET() {
   try {
     const { getAllExpenses } = await import('@/app/lib/db');
     const expenses = await getAllExpenses();
+    expenses.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     return NextResponse.json({ expenses });
   } catch (error) {
     console.error('Failed to fetch expenses:', error);

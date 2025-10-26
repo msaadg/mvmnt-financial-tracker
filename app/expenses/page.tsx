@@ -431,7 +431,7 @@ const Expenses = () => {
                         ))}
                       </div>
                     </TableCell>
-                    <TableCell className="text-sm">{new Date(expense.date).toLocaleDateString()}</TableCell>
+                    <TableCell className="text-sm">{new Date(expense.date).toLocaleDateString('en-GB')}</TableCell>
                     <TableCell>{getStatusBadge(expense.status)}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-1">

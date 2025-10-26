@@ -96,7 +96,7 @@ const ExpenseReceiptDialog = ({ expense, open, onOpenChange }: ExpenseReceiptDia
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Date</p>
-                <p className="font-medium">{new Date(expense.date).toLocaleDateString()}</p>
+                <p className="font-medium">{new Date(expense.date).toLocaleDateString('en-GB')}</p>
               </div>
             </div>
 

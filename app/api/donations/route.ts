@@ -44,6 +44,7 @@ export async function POST(request: NextRequest) {
 export async function GET() {
   try {
     const donations = await getAllDonations();
+    donations.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     return NextResponse.json({ donations });
   } catch (error) {
     console.error('Failed to fetch donations:', error);

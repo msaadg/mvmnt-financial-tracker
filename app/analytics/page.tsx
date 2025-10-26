@@ -486,7 +486,7 @@ const Analytics = () => {
                 {filteredLedger.map((entry: any) => (
                   <TableRow key={entry.id}>
                     <TableCell className="font-medium text-sm">
-                      {new Date(entry.date).toLocaleDateString()}
+                      {new Date(entry.date).toLocaleDateString('en-GB')}
                     </TableCell>
                     <TableCell>
                       <div>

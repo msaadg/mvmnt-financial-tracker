@@ -99,7 +99,7 @@ const ReceiptDialog = ({ donation, open, onOpenChange }: ReceiptDialogProps) => 
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Date</p>
-                <p className="font-medium">{new Date(donation.date).toLocaleDateString()}</p>
+                <p className="font-medium">{new Date(donation.date).toLocaleDateString('en-GB')}</p>
               </div>
             </div>
 

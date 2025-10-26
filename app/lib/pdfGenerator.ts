@@ -14,7 +14,7 @@ interface DonationData {
 
 export const generateDonationReceiptPDF = async (donation: DonationData) => {
   const amountInWords = numberToWords(donation.amount);
-  const formattedDate = new Date(donation.date).toLocaleDateString('en-US', {
+  const formattedDate = new Date(donation.date).toLocaleDateString('en-GB', {
     year: 'numeric',
     month: 'long',
     day: 'numeric'
@@ -140,7 +140,7 @@ interface ExpenseData {
 
 export const generateExpenseReceiptPDF = async (expense: ExpenseData) => {
   const amountInWords = numberToWords(expense.amount);
-  const formattedDate = new Date(expense.date).toLocaleDateString('en-US', {
+  const formattedDate = new Date(expense.date).toLocaleDateString('en-GB', {
     year: 'numeric',
     month: 'long',
     day: 'numeric'
@@ -276,7 +276,7 @@ export const exportExpensesToCSV = (expenses: ExpenseData[], filename: string = 
     expense.amount,
     expense.category,
     expense.paymentMethod,
-    new Date(expense.date).toLocaleDateString(),
+    new Date(expense.date).toLocaleDateString('en-GB'),
     expense.description || '',
     expense.collectors?.map(c => `${c.name} (${c.type}: ${c.amount})`).join('; ') || ''
   ]);
@@ -332,7 +332,7 @@ export const exportDonationsToCSV = (donations: DonationData[], filename: string
     donation.paymentMethod,
     donation.collector || '',
     donation.referral || '',
-    new Date(donation.date).toLocaleDateString(),
+    new Date(donation.date).toLocaleDateString('en-GB'),
     donation.notes || ''
   ]);
 
@@ -394,7 +394,7 @@ interface AnalyticsData {
 }
 
 export const generateAnalyticsReportPDF = async (data: AnalyticsData, dateRangeLabel: string = 'All Time') => {
-  const reportDate = new Date().toLocaleDateString('en-US', {
+  const reportDate = new Date().toLocaleDateString('en-GB', {
     year: 'numeric',
     month: 'long',
     day: 'numeric'
@@ -416,7 +416,7 @@ export const generateAnalyticsReportPDF = async (data: AnalyticsData, dateRangeL
 
   // Generate ledger entries (limit to first 30 entries to keep PDF manageable)
   const ledgerRows = data.ledgerData.slice(0, 30).map(entry => {
-    const formattedDate = new Date(entry.date).toLocaleDateString('en-US', { 
+    const formattedDate = new Date(entry.date).toLocaleDateString('en-GB', { 
       month: 'short', 
       day: 'numeric',
       year: 'numeric'
