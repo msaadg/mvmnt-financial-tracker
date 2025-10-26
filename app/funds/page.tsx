@@ -69,7 +69,7 @@ interface CollectorChartData {
 
 const FundsManagement = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
-  
+
   // API integration
   const [fundsData, setFundsData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -126,9 +126,9 @@ const FundsManagement = () => {
 
   // Chart colors
   const COLORS = [
-    "hsl(var(--primary))", 
-    "hsl(var(--success))", 
-    "hsl(var(--warning))", 
+    "hsl(var(--primary))",
+    "hsl(var(--success))",
+    "hsl(var(--warning))",
     "hsl(var(--destructive))",
     "hsl(var(--secondary))",
     "hsl(var(--accent))"
@@ -146,11 +146,11 @@ const FundsManagement = () => {
   ];
 
   const collectorChartData: CollectorChartData[] = filteredCollectorData.map((collector: any) => ({
-    name: collector.name,
-    Zakat: collector.zakat,
-    Sadqa: collector.sadqa,
-    Online: collector.online,
-    Cash: collector.cash
+      name: collector.name,
+      Zakat: collector.zakat,
+      Sadqa: collector.sadqa,
+      Online: collector.online,
+      Cash: collector.cash
   }));
 
   const formatAmount = (amount: number) => {
@@ -227,20 +227,26 @@ const FundsManagement = () => {
               <span className="text-sm font-medium">Zakat</span>
               <div className="flex items-center gap-2">
                 <Badge variant="secondary">Zakat</Badge>
-                <span className="font-semibold">{formatAmount(Math.max(0, zakatBalance))}</span>
+                <span className="font-semibold">
+                  {formatAmount(zakatBalance)}
+                </span>
               </div>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-sm font-medium">Sadqa</span>
               <div className="flex items-center gap-2">
                 <Badge variant="outline">Sadqa</Badge>
-                <span className="font-semibold">{formatAmount(Math.max(0, sadqaBalance))}</span>
+                <span className="font-semibold">
+                  {formatAmount(sadqaBalance)}
+                </span>
               </div>
             </div>
             <div className="pt-2 border-t">
               <div className="flex justify-between items-center text-sm">
                 <span className="font-medium">Total:</span>
-                <span className="font-bold">{formatAmount(Math.max(0, zakatBalance) + Math.max(0, sadqaBalance))}</span>
+                <span className="font-bold">
+                  {formatAmount(zakatBalance + sadqaBalance)}
+                </span>
               </div>
             </div>
           </CardContent>
@@ -258,20 +264,26 @@ const FundsManagement = () => {
               <span className="text-sm font-medium">Online</span>
               <div className="flex items-center gap-2">
                 <Smartphone className="h-4 w-4 text-primary" />
-                <span className="font-semibold">{formatAmount(Math.max(0, onlineBalance))}</span>
+                <span className="font-semibold">
+                  {formatAmount(onlineBalance)}
+                </span>
               </div>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-sm font-medium">Cash</span>
               <div className="flex items-center gap-2">
                 <Banknote className="h-4 w-4 text-success" />
-                <span className="font-semibold">{formatAmount(Math.max(0, cashBalance))}</span>
+                <span className="font-semibold">
+                  {formatAmount(cashBalance)}
+                </span>
               </div>
             </div>
             <div className="pt-2 border-t">
               <div className="flex justify-between items-center text-sm">
                 <span className="font-medium">Total:</span>
-                <span className="font-bold">{formatAmount(Math.max(0, onlineBalance) + Math.max(0, cashBalance))}</span>
+                <span className="font-bold">
+                  {formatAmount(onlineBalance + cashBalance)}
+                </span>
               </div>
             </div>
           </CardContent>
@@ -354,8 +366,8 @@ const FundsManagement = () => {
             <ResponsiveContainer width="100%" height={300} minWidth={400}>
               <BarChart data={collectorChartData}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis 
-                  dataKey="name" 
+                <XAxis
+                  dataKey="name"
                   fontSize={12}
                   tick={{ fontSize: 12 }}
                   interval={0}
@@ -363,7 +375,7 @@ const FundsManagement = () => {
                   textAnchor="end"
                   height={80}
                 />
-                <YAxis 
+                <YAxis
                   tickFormatter={(value) => `₨${(value / 1000).toFixed(0)}K`}
                   fontSize={12}
                 />
@@ -397,13 +409,19 @@ const FundsManagement = () => {
           </div>
         </CardHeader>
         <CardContent>
-          <Table>
+          <Table className="border-collapse [&_th:not(:first-child)]:text-center [&_td:not(:first-child)]:text-center">
             <TableHeader>
               <TableRow>
-                <TableHead>Collector</TableHead>
-                <TableHead>Total Balance</TableHead>
+                <TableHead className="border-r border-gray-300">
+                  Collector
+                </TableHead>
+                <TableHead className="border-r border-gray-300">
+                  Total Balance
+                </TableHead>
                 <TableHead>Zakat</TableHead>
-                <TableHead>Sadqa</TableHead>
+                <TableHead className="border-r border-gray-300">
+                  Sadqa
+                </TableHead>
                 <TableHead>Online</TableHead>
                 <TableHead>Cash</TableHead>
               </TableRow>
@@ -411,14 +429,24 @@ const FundsManagement = () => {
             <TableBody>
               {filteredCollectorData.map((collector: CollectorData) => (
                 <TableRow key={collector.name}>
-                  <TableCell className="font-medium">{collector.name}</TableCell>
-                  <TableCell>
-                    <span className={`font-semibold ${collector.totalBalance >= 0 ? 'text-success' : 'text-destructive'}`}>
+                  <TableCell className="font-medium border-r border-gray-300">
+                    {collector.name}
+                  </TableCell>
+                  <TableCell className="border-r border-gray-300">
+                    <span
+                      className={`font-semibold ${
+                        collector.totalBalance >= 0
+                          ? "text-success"
+                          : "text-destructive"
+                      }`}
+                    >
                       {formatAmount(collector.totalBalance)}
                     </span>
                   </TableCell>
                   <TableCell>{formatAmount(collector.zakat)}</TableCell>
-                  <TableCell>{formatAmount(collector.sadqa)}</TableCell>
+                  <TableCell className="border-r border-gray-300">
+                    {formatAmount(collector.sadqa)}
+                  </TableCell>
                   <TableCell>{formatAmount(collector.online)}</TableCell>
                   <TableCell>{formatAmount(collector.cash)}</TableCell>
                 </TableRow>

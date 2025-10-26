@@ -254,8 +254,8 @@ const AddDonationDialog = ({ donation, onSubmit, triggerButton, open: controlled
                   <SelectValue placeholder="Select type" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="zakat">Zakat</SelectItem>
-                  <SelectItem value="sadqa">Sadqa</SelectItem>
+                  <SelectItem value="Zakat">Zakat</SelectItem>
+                  <SelectItem value="Sadqa">Sadqa</SelectItem>
                 </SelectContent>
               </Select>
             </div>
