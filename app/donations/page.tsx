@@ -389,7 +389,7 @@ const Donations = () => {
                       {formatAmount(donation.amount)}
                     </TableCell>
                     <TableCell>
-                      <Badge variant="outline" className={`text-xs ${donation.type === "Zakat" ? "border-primary text-primary" : "border-secondary text-secondary-foreground"}`}>
+                      <Badge variant="outline" className={`text-xs ${donation.type === "Zakat" ? "border-primary text-primary" : "border-yellow-400 text-yellow-800"}`}>
                         {donation.type}
                       </Badge>
                     </TableCell>

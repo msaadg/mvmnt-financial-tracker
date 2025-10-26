@@ -17,6 +17,7 @@ const Analytics = () => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
+  const [subtypeFilter, setSubtypeFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [paymentFilter, setPaymentFilter] = useState("all");
   const [dateRange, setDateRange] = useState("all");
@@ -68,6 +69,7 @@ const Analytics = () => {
     const matchesSearch = entry.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          entry.reference.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = typeFilter === "all" || entry.type.toLowerCase() === typeFilter;
+    const matchesSubtype = subtypeFilter === "all" || entry.subType.toLowerCase() === subtypeFilter;
     const matchesStatus = statusFilter === "all" || entry.status.toLowerCase() === statusFilter;
     const matchesPayment = paymentFilter === "all" || entry.paymentMethod.toLowerCase() === paymentFilter;
     
@@ -100,7 +102,7 @@ const Analytics = () => {
       }
     }
     
-    return matchesSearch && matchesType && matchesStatus && matchesPayment && matchesDateRange;
+    return matchesSearch && matchesType && matchesSubtype && matchesStatus && matchesPayment && matchesDateRange;
   });
 
   // compute totals from filtered ledger
@@ -389,6 +391,21 @@ const Analytics = () => {
                 <SelectItem value="all">All Types</SelectItem>
                 <SelectItem value="donation">Donations</SelectItem>
                 <SelectItem value="expense">Expenses</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={subtypeFilter} onValueChange={setSubtypeFilter}>
+              <SelectTrigger>
+                <SelectValue placeholder="Sub-Type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Sub-Types</SelectItem>
+                <SelectItem value="sadqa">Sadqa</SelectItem>
+                <SelectItem value="zakat">Zakat</SelectItem>
+                <SelectItem value="operations">Operations</SelectItem>
+                <SelectItem value="utilities">Utilities</SelectItem>
+                <SelectItem value="programs">Programs</SelectItem>
+                <SelectItem value="technology">Technology</SelectItem>
+                <SelectItem value="marketing">Marketing</SelectItem>
               </SelectContent>
             </Select>
             <Select value={statusFilter} onValueChange={setStatusFilter}>

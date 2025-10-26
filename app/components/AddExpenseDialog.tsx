@@ -303,11 +303,11 @@ const AddExpenseDialog = ({ expense, onSubmit, triggerButton, open: controlledOp
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="operations">Operations</SelectItem>
-                  <SelectItem value="utilities">Utilities</SelectItem>
-                  <SelectItem value="programs">Programs</SelectItem>
-                  <SelectItem value="technology">Technology</SelectItem>
-                  <SelectItem value="marketing">Marketing</SelectItem>
+                  <SelectItem value="Operations">Operations</SelectItem>
+                  <SelectItem value="Utilities">Utilities</SelectItem>
+                  <SelectItem value="Programs">Programs</SelectItem>
+                  <SelectItem value="Technology">Technology</SelectItem>
+                  <SelectItem value="Marketing">Marketing</SelectItem>
                 </SelectContent>
               </Select>
             </div>
