@@ -110,16 +110,61 @@ export async function updateExpense(id: number, data: {
   category?: string;
   description?: string;
   status?: string;
+  collectors?: {
+    name: string;
+    type: string;
+    amount: number;
+  }[];
 }) {
+  // Fetch existing expense with payments
+  const existing = await prisma.expenses.findUnique({
+    where: { transacId: id },
+    include: { payments: true },
+  });
+  if (!existing) {
+    throw new Error(`Expense with id ${id} not found.`);
+  }
+
   const updateData: any = {};
-  
+
+  // determine amount to use for validation/status
+  const amountToUse = data.amount !== undefined ? data.amount : existing.amount;
+
   if (data.date) updateData.date = data.date;
-  if (data.amount) updateData.amount = data.amount;
+  if (data.amount !== undefined) updateData.amount = data.amount;
   if (data.paymentMethod) updateData.paymentMethod = data.paymentMethod;
   if (data.vendorProjId) updateData.vendorProjId = data.vendorProjId;
   if (data.category) updateData.category = data.category;
   if (data.description !== undefined) updateData.description = data.description;
-  if (data.status) updateData.status = data.status;
+
+  // If collectors provided, replace payments
+  if (Array.isArray(data.collectors)) {
+    const collectorsTotal = data.collectors.reduce((sum, c) => sum + (c.amount || 0), 0);
+    if (collectorsTotal > amountToUse) {
+      throw new Error('Sum of collector amounts exceeds the expense amount.');
+    }
+
+    // Delete existing payments for this expense
+    await prisma.payment.deleteMany({
+      where: { expenseId: id },
+    });
+
+    // Create new payments
+    for (const collector of data.collectors) {
+      await createPayment(id, collector);
+    }
+
+    // Compute status based on collectors total vs amount
+    updateData.status = collectorsTotal < amountToUse ? "Pending" : "Paid";
+  } else {
+    // If collectors not provided but amount changed, re-evaluate status based on existing payments
+    if (data.amount !== undefined) {
+      const paymentsTotal = existing.payments.reduce((sum, p) => sum + p.amount, 0);
+      updateData.status = paymentsTotal < amountToUse ? "Pending" : "Paid";
+    } else if (data.status) {
+      updateData.status = data.status;
+    }
+  }
 
   return prisma.expenses.update({
     where: { transacId: id },
@@ -153,6 +198,15 @@ export async function createExpense(data: {
     amount: number;
   }[];
 }) {
+  // Validate collectors total doesn't exceed expense amount
+  const collectorsTotal = data.collectors.reduce((sum, c) => sum + (c.amount || 0), 0);
+  if (collectorsTotal > data.amount) {
+    throw new Error('Sum of collector amounts exceeds the expense amount.');
+  }
+
+  // Compute status based on collectors total vs amount (override incoming)
+  const computedStatus = collectorsTotal < data.amount ? "Pending" : "Paid";
+
   // create expense (initially no payments)
   const expense = await prisma.expenses.create({
     data: {
@@ -162,13 +216,13 @@ export async function createExpense(data: {
       vendorProjId: data.vendorProjId,
       category: data.category,
       description: data.description,
-      status: data.status,
+      status: computedStatus,
     },
   });
   
-  // add payments
+  // add payments (await each to ensure they are created)
   for (const collector of data.collectors) {
-    createPayment(expense.transacId, collector);
+    await createPayment(expense.transacId, collector);
   }
 
   return expense;

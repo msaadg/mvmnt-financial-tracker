@@ -112,6 +112,15 @@ const AddExpenseDialog = ({ expense, onSubmit, triggerButton, open: controlledOp
     setFormData({ ...formData, collectors: newCollectors });
   };
 
+  // compute totals and remaining
+  const getCollectorsTotal = () => {
+    return formData.collectors.reduce((sum, c) => sum + (parseFloat(c.amount || "0") || 0), 0);
+  };
+
+  const collectorsTotal = getCollectorsTotal();
+  const expenseAmount = parseFloat(formData.amount || "0") || 0;
+  const remainingBalance = expenseAmount - collectorsTotal;
+
   const validateForm = () => {
     const missingFields: string[] = [];
     
@@ -149,6 +158,11 @@ const AddExpenseDialog = ({ expense, onSubmit, triggerButton, open: controlledOp
       }
     });
 
+    // New validation: collectors total must not exceed expense amount
+    if (collectorsTotal > expenseAmount) {
+      missingFields.push("Sum of collector amounts exceeds total expense amount");
+    }
+
     return missingFields;
   };
 
@@ -160,7 +174,7 @@ const AddExpenseDialog = ({ expense, onSubmit, triggerButton, open: controlledOp
     if (missingFields.length > 0) {
       toast({
         title: "Missing Required Fields",
-        description: `Please fill in: ${missingFields.join(", ")}`,
+        description: `Please fix: ${missingFields.join(", ")}`,
         variant: "destructive",
       });
       return;
@@ -173,6 +187,9 @@ const AddExpenseDialog = ({ expense, onSubmit, triggerButton, open: controlledOp
       const vendorIndex = vendors.indexOf(formData.vendorName);
       const vendorProjId = vendorIndex >= 0 ? vendorIndex + 1 : 1;
 
+      // Determine status based on collectors total vs expense amount
+      const status = collectorsTotal < expenseAmount ? "Pending" : "Paid";
+
       // Prepare data for API
       const apiData = {
         date: formData.date,
@@ -181,7 +198,7 @@ const AddExpenseDialog = ({ expense, onSubmit, triggerButton, open: controlledOp
         vendorProjId: vendorProjId,
         category: formData.category,
         description: formData.description,
-        status: "Paid", // Default status
+        status, // computed status
         collectors: formData.collectors.map(c => ({
           name: c.name,
           type: c.type,
@@ -419,6 +436,14 @@ const AddExpenseDialog = ({ expense, onSubmit, triggerButton, open: controlledOp
                 </div>
               </div>
             ))}
+
+            {/* Remaining Balance display */}
+            <div className={`flex items-center justify-between mt-2 px-3 py-2 rounded ${remainingBalance < 0 ? 'bg-red-100 text-red-800' : remainingBalance > 0 ? 'bg-yellow-50 text-yellow-800' : 'bg-green-50 text-green-800'}`}>
+              <div className="text-sm">Remaining Balance</div>
+              <div className="font-medium">
+                {new Intl.NumberFormat("en-PK", { style: "currency", currency: "PKR", minimumFractionDigits: 0 }).format(remainingBalance)}
+              </div>
+            </div>
           </div>
 
           <div className="flex justify-end gap-3 pt-4">
