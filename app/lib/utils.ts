@@ -6,18 +6,18 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function numberToWords(num: number): string {
-  const ones = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
-  const teens = ["ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"];
-  const tens = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
-  const thousands = ["", "thousand", "million", "billion"];
+  const ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"];
+  const teens = ["Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
+  const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+  const thousands = ["", "Thousand", "Million", "Billion"];
 
-  if (num === 0) return "zero";
+  if (num === 0) return "Zero";
 
   function convertChunk(n: number): string {
     let result = "";
     
     if (n >= 100) {
-      result += ones[Math.floor(n / 100)] + " hundred ";
+      result += ones[Math.floor(n / 100)] + " Hundred ";
       n %= 100;
     }
     

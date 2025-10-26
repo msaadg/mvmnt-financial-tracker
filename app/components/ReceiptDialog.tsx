@@ -133,7 +133,7 @@ const ReceiptDialog = ({ donation, open, onOpenChange }: ReceiptDialogProps) => 
                   <p className="text-xl font-bold text-success">{formatAmount(donation.amount)}</p>
                 </div>
                 <div className="text-sm text-muted-foreground border-t pt-2">
-                  <p><strong>Amount in words:</strong> {numberToWords(donation.amount)} rupees only</p>
+                  <p><strong>Amount in words:</strong> {numberToWords(donation.amount)} Rupees Only</p>
                 </div>
                 {donation.paymentMethod === "Bank Transfer" && donation.bankName && (
                   <div className="border-t pt-2 space-y-1">
