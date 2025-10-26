@@ -62,8 +62,7 @@ const Analytics = () => {
   }
 
   const ledgerData = analyticsData.ledgerData;
-  const monthlyData = analyticsData.monthlyData;
-  const donationBreakdown = analyticsData.donationBreakdown;
+  // derive everything from filtered ledger (so charts and summary reflect filters)
 
   const filteredLedger = ledgerData.filter((entry: any) => {
     const matchesSearch = entry.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -103,6 +102,43 @@ const Analytics = () => {
     
     return matchesSearch && matchesType && matchesStatus && matchesPayment && matchesDateRange;
   });
+
+  // compute totals from filtered ledger
+  const totalDonations = filteredLedger.reduce((sum: number, e: any) => e.isIncome ? sum + Number(e.amount || 0) : sum, 0);
+  const totalExpenses = filteredLedger.reduce((sum: number, e: any) => !e.isIncome ? sum + Number(e.amount || 0) : sum, 0);
+  const netFlow = totalDonations - totalExpenses;
+
+  // build monthly data for the last 6 months (including current month)
+  const now = new Date();
+  const months: { key: string; label: string; year: number; month: number }[] = [];
+  for (let i = 5; i >= 0; i--) {
+    const dt = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    months.push({ key: `${dt.getFullYear()}-${dt.getMonth()}`, label: dt.toLocaleString(undefined, { month: "short" }), year: dt.getFullYear(), month: dt.getMonth() });
+  }
+  const monthlyMap = new Map<string, { month: string; donations: number; expenses: number }>();
+  months.forEach(m => monthlyMap.set(m.key, { month: m.label, donations: 0, expenses: 0 }));
+  filteredLedger.forEach((e: any) => {
+    const d = new Date(e.date);
+    const key = `${d.getFullYear()}-${d.getMonth()}`;
+    if (!monthlyMap.has(key)) return;
+    const item = monthlyMap.get(key)!;
+    if (e.isIncome) item.donations += Number(e.amount || 0);
+    else item.expenses += Number(e.amount || 0);
+  });
+  const monthlyData = Array.from(monthlyMap.values());
+
+  // donation breakdown (by subType or type) for income entries — value is percentage, amount preserved for tooltip
+  const donationGroups = new Map<string, number>();
+  filteredLedger.forEach((e: any) => {
+    if (!e.isIncome) return;
+    const name = e.subType || e.type || "Donation";
+    donationGroups.set(name, (donationGroups.get(name) || 0) + Number(e.amount || 0));
+  });
+  const donationBreakdown = Array.from(donationGroups.entries()).map(([name, amount]) => ({
+    name,
+    value: totalDonations > 0 ? Math.round((amount / totalDonations) * 100) : 0,
+    amount,
+  }));
 
   const getStatusBadge = (status: string) => {
     switch (status.toLowerCase()) {
@@ -163,10 +199,6 @@ const Analytics = () => {
       setIsGeneratingPDF(false);
     }
   };
-
-  const totalDonations = analyticsData.totalDonations;
-  const totalExpenses = analyticsData.totalExpenses;
-  const netFlow = analyticsData.netFlow;
 
   const COLORS = ["hsl(var(--primary))", "hsl(var(--success))"];
 

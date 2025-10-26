@@ -410,7 +410,7 @@ export const generateAnalyticsReportPDF = async (data: AnalyticsData, dateRangeL
   // Generate donation breakdown table
   const donationBreakdownRows = data.donationBreakdown && data.donationBreakdown.length > 0
     ? data.donationBreakdown.map(d => 
-        `${d.name} & PKR ${d.value.toLocaleString()} \\\\`
+        `${d.name} & ${d.value.toLocaleString() + "\\%"} \\\\`
       ).join('\n')
     : 'No data available & - \\\\';
 
@@ -509,7 +509,7 @@ ${monthlyTrendsRows}
 \\begin{center}
 \\begin{tabular}{|l|r|}
 \\hline
-\\textbf{Type} & \\textbf{Amount (PKR)} \\\\
+\\textbf{Type} & \\textbf{Percentage} \\\\
 \\hline
 ${donationBreakdownRows}
 \\hline
