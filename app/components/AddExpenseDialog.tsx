@@ -290,16 +290,13 @@ const AddExpenseDialog = ({ expense, onSubmit, triggerButton, open: controlledOp
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="vendorName">Vendor/Project Name</Label>
-              <Select value={formData.vendorName} onValueChange={(value) => setFormData({...formData, vendorName: value})}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select or type vendor/project name" />
-                </SelectTrigger>
-                <SelectContent>
-                  {vendors.map((vendor) => (
-                    <SelectItem key={vendor} value={vendor}>{vendor}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Input
+                id="vendorName"
+                type="text"
+                value={formData.vendorName}
+                onChange={(e) => setFormData({...formData, vendorName: e.target.value})}
+                placeholder="Enter vendor or project name"
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="amount">Amount (PKR)</Label>
@@ -371,71 +368,73 @@ const AddExpenseDialog = ({ expense, onSubmit, triggerButton, open: controlledOp
               </Button>
             </div>
             
-            {formData.collectors.map((collector, index) => (
-              <div key={index} className="border rounded-lg p-4 space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Collector {index + 1}</span>
-                  {formData.collectors.length > 1 && (
-                    <Button 
-                      type="button" 
-                      onClick={() => removeCollector(index)} 
-                      size="sm" 
-                      variant="outline"
-                      className="text-destructive"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  )}
-                </div>
-                
-                <div className="grid grid-cols-3 gap-2">
-                  <div className="space-y-1">
-                    <Label className="text-xs">Collector Name</Label>
-                    <Select 
-                      value={collector.name} 
-                      onValueChange={(value) => updateCollector(index, "name", value)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select collector" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {collectors.map((collectorName) => (
-                          <SelectItem key={collectorName} value={collectorName}>
-                            {collectorName}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+            <div className="max-h-[135px] overflow-y-auto space-y-3 pr-2">
+              {formData.collectors.map((collector, index) => (
+                <div key={index} className="border rounded-lg p-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">Collector {index + 1}</span>
+                    {formData.collectors.length > 1 && (
+                      <Button 
+                        type="button" 
+                        onClick={() => removeCollector(index)} 
+                        size="sm" 
+                        variant="outline"
+                        className="text-destructive"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    )}
                   </div>
                   
-                  <div className="space-y-1">
-                    <Label className="text-xs">Payment Type</Label>
-                    <Select 
-                      value={collector.type} 
-                      onValueChange={(value) => updateCollector(index, "type", value)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Zakat">Zakat</SelectItem>
-                        <SelectItem value="Sadqa">Sadqa</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div className="space-y-1">
-                    <Label className="text-xs">Amount (PKR)</Label>
-                    <Input
-                      type="number"
-                      value={collector.amount}
-                      onChange={(e) => updateCollector(index, "amount", e.target.value)}
-                      placeholder="Amount"
-                    />
+                  <div className="grid grid-cols-3 gap-2">
+                    <div className="space-y-1">
+                      <Label className="text-xs">Collector Name</Label>
+                      <Select 
+                        value={collector.name} 
+                        onValueChange={(value) => updateCollector(index, "name", value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select collector" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {collectors.map((collectorName) => (
+                            <SelectItem key={collectorName} value={collectorName}>
+                              {collectorName}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div className="space-y-1">
+                      <Label className="text-xs">Payment Type</Label>
+                      <Select 
+                        value={collector.type} 
+                        onValueChange={(value) => updateCollector(index, "type", value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Zakat">Zakat</SelectItem>
+                          <SelectItem value="Sadqa">Sadqa</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div className="space-y-1">
+                      <Label className="text-xs">Amount (PKR)</Label>
+                      <Input
+                        type="number"
+                        value={collector.amount}
+                        onChange={(e) => updateCollector(index, "amount", e.target.value)}
+                        placeholder="Amount"
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
 
             {/* Remaining Balance display */}
             <div className={`flex items-center justify-between mt-2 px-3 py-2 rounded ${remainingBalance < 0 ? 'bg-red-100 text-red-800' : remainingBalance > 0 ? 'bg-yellow-50 text-yellow-800' : 'bg-green-50 text-green-800'}`}>
@@ -446,7 +445,7 @@ const AddExpenseDialog = ({ expense, onSubmit, triggerButton, open: controlledOp
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-4">
+          <div className="flex justify-end gap-3">
             <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={loading}>
               Cancel
             </Button>
