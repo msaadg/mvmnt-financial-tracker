@@ -1,0 +1,301 @@
+date,amount,paymentMethod,donorName,collectorId,referralId,status,type
+2025-03-01 00:00:00,29656,Cash,Opening Balance,1,1,Completed,Sadqa
+2025-03-01 00:00:00,8158,Cash,Opening Balance,2,2,Completed,Sadqa
+2025-03-01 00:00:00,252930,Cash,Opening Balance,3,3,Completed,Sadqa
+2025-02-26 00:00:00,150000,Online,Swaleha Uzair,3,3,Completed,Sadqa
+2025-03-01 00:00:00,5000,Online,Sufyan Kaleem,1,1,Completed,Sadqa
+2025-03-01 00:00:00,45000,Cash,One Muslim,6,6,Completed,Sadqa
+2025-03-01 00:00:00,27000,Cash,One Muslim,6,6,Completed,Sadqa
+2025-03-01 00:00:00,69492,Online,Daniyal Iqbal,3,3,Completed,Sadqa
+2025-03-01 00:00:00,1000000,Online,Asif Muchyara,1,7,Completed,Sadqa
+2025-03-01 00:00:00,10000,Online,Syeda Aafiya,7,8,Completed,Sadqa
+2025-03-02 00:00:00,25000,Online,Hamza,3,3,Completed,Sadqa
+2025-03-02 00:00:00,1500,Online,Maira,6,6,Completed,Sadqa
+2025-03-02 00:00:00,3100,Online,Faizan,6,6,Completed,Sadqa
+2025-03-03 00:00:00,2000,Online,Anoushay Manzoor,1,9,Completed,Sadqa
+2025-03-03 00:00:00,22000,Online,Haris Khan,3,3,Completed,Sadqa
+2025-03-03 00:00:00,5000,Online,Mariam,6,6,Completed,Sadqa
+2025-03-03 00:00:00,500,Online,Simona,3,3,Completed,Sadqa
+2025-03-03 00:00:00,10000,Cash,MM Godown,3,3,Completed,Sadqa
+2025-03-03 00:00:00,5000,Online,Sadaf Ahmed,3,3,Completed,Sadqa
+2025-03-03 00:00:00,25000,Online,Arwa Wadud,3,3,Completed,Sadqa
+2025-03-04 00:00:00,12500,Online,Hina Fatima,3,9,Completed,Sadqa
+2025-03-04 00:00:00,15000,Online,Rabiya Naseem,1,9,Completed,Sadqa
+2025-03-04 00:00:00,5500,Online,Miral Faisal,3,3,Completed,Sadqa
+2025-03-04 00:00:00,5000,Online,Umaymah,3,3,Completed,Sadqa
+2025-03-04 00:00:00,10000,Online,Amna Adnan,1,1,Completed,Sadqa
+2025-03-04 00:00:00,1000,Online,Talal Farukh,3,9,Completed,Sadqa
+2025-03-04 00:00:00,8000,Online,Ghasharib,6,6,Completed,Sadqa
+2025-03-04 00:00:00,35000,Cash,One Muslim,6,6,Completed,Sadqa
+2025-03-05 00:00:00,5500,Online,Ayra Haider,3,3,Completed,Sadqa
+2025-03-06 00:00:00,5500,Online,Abdullah Arif,3,3,Completed,Sadqa
+2025-03-06 00:00:00,500,Online,Huma,7,8,Completed,Sadqa
+2025-03-06 00:00:00,3000,Online,Nida Sharif,7,8,Completed,Sadqa
+2025-03-06 00:00:00,2000,Online,M.Wahib,7,8,Completed,Sadqa
+2025-03-06 00:00:00,100000,Cash,Naseer Uncle,6,6,Completed,Sadqa
+2025-03-06 00:00:00,70000,Online,Shehryar,6,6,Completed,Sadqa
+2025-03-06 00:00:00,5000,Online,Mudassir Taufiq,7,8,Completed,Sadqa
+2025-03-07 00:00:00,5500,Online,Ilma Eva,3,3,Completed,Sadqa
+2025-03-07 00:00:00,5000,Online,Alizeh M.Ali,3,3,Completed,Sadqa
+2025-03-07 00:00:00,10000,Online,Abdul Rafay Subhan,3,3,Completed,Sadqa
+2025-03-07 00:00:00,10000,Online,Khaliq,7,8,Completed,Sadqa
+2025-03-07 00:00:00,500,Online,Huma,7,8,Completed,Sadqa
+2025-03-08 00:00:00,4000,Cash,Hammad Fayyaz,4,8,Completed,Sadqa
+2025-03-08 00:00:00,2000,Online,Warda Zainab,7,8,Completed,Sadqa
+2025-03-08 00:00:00,1000,Online,Talal Farukh,3,9,Completed,Sadqa
+2025-03-08 00:00:00,3000,Online,Amir Ahmed,2,2,Completed,Sadqa
+2025-03-08 00:00:00,1500,Online,Nimra Humayun,7,8,Completed,Sadqa
+2025-03-08 00:00:00,11000,Online,Mahnoor Awais,3,9,Completed,Sadqa
+2025-03-09 00:00:00,10000,Online,One Muslim,8,7,Completed,Sadqa
+2025-03-09 00:00:00,4000,Online,Laiba Adnan,1,1,Completed,Sadqa
+2025-03-10 00:00:00,25000,Online,Saad Sikander,8,7,Completed,Sadqa
+2025-03-10 00:00:00,10000,Online,Umer Faisal,1,11,Completed,Sadqa
+2025-03-10 00:00:00,1000,Online,Abdul Ahad,1,9,Completed,Sadqa
+2025-03-11 00:00:00,5000,Online,Sarah Mehmood,7,8,Completed,Sadqa
+2025-03-11 00:00:00,15000,Online,Sufyan Imran,3,3,Completed,Sadqa
+2025-03-11 00:00:00,12000,Cash,Owais Khalil,7,8,Completed,Sadqa
+2025-03-11 00:00:00,6000,Online,Ashir Iqbal,3,3,Completed,Sadqa
+2025-03-11 00:00:00,2500,Online,Laiba Mianoor,2,2,Completed,Sadqa
+2025-03-11 00:00:00,1000,Online,Ali Muhammad,2,2,Completed,Sadqa
+2025-03-11 00:00:00,1000,Online,Asma Sohail,2,2,Completed,Sadqa
+2025-03-11 00:00:00,15000,Online,Muskan Hanif,3,3,Completed,Sadqa
+2025-03-12 00:00:00,2000,Online,Muhammad Mustafa,2,2,Completed,Sadqa
+2025-03-12 00:00:00,1000,Online,Talal Farukh,3,9,Completed,Sadqa
+2025-03-12 00:00:00,10000,Online,Abdul Rehman,3,3,Completed,Sadqa
+2025-03-12 00:00:00,10000,Online,Ovais Younus,2,3,Completed,Sadqa
+2025-03-12 00:00:00,48000,Cash,One Muslim,5,5,Completed,Sadqa
+2025-03-12 00:00:00,15000,Cash,MM Godown,3,3,Completed,Sadqa
+2025-03-14 00:00:00,10000,Online,Miss Sarah,6,6,Completed,Sadqa
+2025-03-14 00:00:00,10000,Online,Nusaibah Taha,3,3,Completed,Sadqa
+2025-03-14 00:00:00,3000,Online,Asba Imran,1,9,Completed,Sadqa
+2025-03-14 00:00:00,200000,Online,One Muslim,8,7,Completed,Sadqa
+2025-03-15 00:00:00,5000,Online,Muznah Fawad,6,6,Completed,Sadqa
+2025-03-15 00:00:00,5500,Online,Anoushay Awais,3,3,Completed,Sadqa
+2025-03-15 00:00:00,50000,Online,Bilal Saleem,1,1,Completed,Sadqa
+2025-03-15 00:00:00,28000,Online,Abdul Samad Roomie,7,8,Completed,Sadqa
+2025-03-15 00:00:00,30000,Online,Hassan Naviwala,1,1,Completed,Sadqa
+2025-03-15 00:00:00,32000,Online,Aamir Naviwala,1,1,Completed,Sadqa
+2025-03-16 00:00:00,1500,Online,Fiza Asif,3,9,Completed,Sadqa
+2025-03-16 00:00:00,50000,Cash,Maaiz Khala,3,3,Completed,Sadqa
+2025-03-16 00:00:00,20000,Cash,Rija Ashraf,7,8,Completed,Sadqa
+2025-03-16 00:00:00,50000,Cash,Muhammad Harmain,8,7,Completed,Sadqa
+2025-03-16 00:00:00,30000,Cash,One Muslim,4,4,Completed,Sadqa
+2025-03-17 00:00:00,25000,Cash,One Muslim,4,4,Completed,Sadqa
+2025-03-17 00:00:00,27500,Cash,One Muslim,4,4,Completed,Sadqa
+2025-03-18 00:00:00,5000,Online,Bassam,6,6,Completed,Sadqa
+2025-03-18 00:00:00,6000,Online,Bassim,6,6,Completed,Sadqa
+2025-03-18 00:00:00,5000,Online,One Muslim,3,3,Completed,Sadqa
+2025-03-19 00:00:00,5000,Online,Farhan Farooq,7,8,Completed,Sadqa
+2025-03-19 00:00:00,70002,Online,Nihal Godil,3,3,Completed,Sadqa
+2025-03-19 00:00:00,10000,Online,Omer Hassan Wasif,3,3,Completed,Sadqa
+2025-03-20 00:00:00,50000,Online,Muhammad Patel,3,3,Completed,Sadqa
+2025-03-20 00:00:00,12000,Cash,Amna,6,6,Completed,Sadqa
+2025-03-20 00:00:00,10000,Online,Sania Shabbir,1,1,Completed,Sadqa
+2025-03-20 00:00:00,3000,Cash,Danish Bhai,1,1,Completed,Sadqa
+2025-03-20 00:00:00,500000,Online,Asif Muchyara,1,7,Completed,Sadqa
+2025-03-21 00:00:00,270000,Online,Sheza,6,6,Completed,Sadqa
+2025-03-22 00:00:00,10000,Cash,Abdul Rehman,3,3,Completed,Sadqa
+2025-03-22 00:00:00,50000,Cash,Ibad,4,11,Completed,Sadqa
+2025-03-22 00:00:00,30000,Cash,Sufyan Charlie,1,1,Completed,Sadqa
+2025-03-22 00:00:00,2000,Online,Daniyal Khalid,3,3,Completed,Sadqa
+2025-03-22 00:00:00,500,Online,Fiza Asif,3,9,Completed,Sadqa
+2025-03-22 00:00:00,500,Online,Haneen Khan,3,9,Completed,Sadqa
+2025-03-22 00:00:00,500,Online,Huma,7,8,Completed,Sadqa
+2025-03-22 00:00:00,17000,Online,Zaid,6,6,Completed,Sadqa
+2025-03-22 00:00:00,5000,Cash,MM Godown,3,3,Completed,Sadqa
+2025-03-23 00:00:00,55000,Cash,Transfer,2,9,Completed,Sadqa
+2025-03-14 00:00:00,111000,Cash,Proceeds from Padel,4,9,Completed,Sadqa
+2025-03-14 00:00:00,35000,Cash,Proceeds from Padel,3,9,Completed,Sadqa
+2025-03-24 00:00:00,15000,Cash,One Muslim,2,2,Completed,Sadqa
+2025-03-24 00:00:00,26000,Cash,Abdul Rehman,3,3,Completed,Sadqa
+2025-03-24 00:00:00,5000,Online,Filza Naa,3,9,Completed,Sadqa
+2025-03-24 00:00:00,1000,Online,Fatima Imran,3,9,Completed,Sadqa
+2025-03-24 00:00:00,1000,Online,Javeria Ameen,3,9,Completed,Sadqa
+2025-03-24 00:00:00,5000,Online,Hamza,3,3,Completed,Sadqa
+2025-03-24 00:00:00,15000,Cash,Uraib Home,2,2,Completed,Sadqa
+2025-03-25 00:00:00,10000,Online,Usman Madni,3,3,Completed,Sadqa
+2025-03-25 00:00:00,500,Online,Umer Arfeen,7,8,Completed,Sadqa
+2025-03-25 00:00:00,15000,Cash,Zaid Ayaz,1,1,Completed,Sadqa
+2025-03-25 00:00:00,5000,Cash,MM Godown,3,3,Completed,Sadqa
+2025-03-25 00:00:00,500000,Cash,Haji Ahmed Chamdia,3,3,Completed,Sadqa
+2025-03-25 00:00:00,4000,Online,Hassan Akhtar,3,3,Completed,Sadqa
+2025-03-26 00:00:00,1000,Online,Rabiya Naseem,3,9,Completed,Sadqa
+2025-03-26 00:00:00,2500,Cash,Hamza Ghaziani,2,2,Completed,Sadqa
+2025-03-26 00:00:00,10000,Online,Aiman Naveed,2,2,Completed,Sadqa
+2025-03-26 00:00:00,800000,Cash,Transfer,3,9,Completed,Sadqa
+2025-03-26 00:00:00,500000,Cash,Jawwad,8,7,Completed,Sadqa
+2025-03-26 00:00:00,50115,Online,Hasheer Zulfiqar,7,8,Completed,Sadqa
+2025-03-27 00:00:00,13617,Online,Mohammad,8,7,Completed,Sadqa
+2025-03-27 00:00:00,2000,Online,Hassan Akhtar,3,3,Completed,Sadqa
+2025-03-27 00:00:00,20000,Online,Ali Daniyal,6,6,Completed,Sadqa
+2025-03-28 00:00:00,45000,Online,Aneeq Nadeem,1,5,Completed,Sadqa
+2025-03-28 00:00:00,500,Online,Fatima Imran,3,9,Completed,Sadqa
+2025-03-28 00:00:00,15000,Online,Sufyan Imran,3,3,Completed,Sadqa
+2025-03-28 00:00:00,2000,Online,One Muslim,7,8,Completed,Sadqa
+2025-03-28 00:00:00,500,Online,Sufyan Imran,3,3,Completed,Sadqa
+2025-03-28 00:00:00,2500,Online,Maira,6,6,Completed,Sadqa
+2025-03-28 00:00:00,10000,Online,One Muslim,6,6,Completed,Sadqa
+2025-03-28 00:00:00,3000,Online,Hassan Akhtar,3,3,Completed,Sadqa
+2025-03-28 00:00:00,1000,Online,Asba Imran,1,9,Completed,Sadqa
+2025-03-28 00:00:00,50000,Online,Muneeb,3,3,Completed,Sadqa
+2025-03-28 00:00:00,56000,Cash,Hammad Naviwala,3,9,Completed,Sadqa
+2025-03-28 00:00:00,4000,Cash,Hammad Naviwala,4,9,Completed,Sadqa
+2025-03-28 00:00:00,10000,Cash,MM Godown,3,3,Completed,Sadqa
+2025-03-28 00:00:00,11500,Online,Shariq Abdul Qadir,2,2,Completed,Sadqa
+2025-03-30 00:00:00,12500,Online,Hammad,3,3,Completed,Sadqa
+2025-03-30 00:00:00,1900,Online,Huma,7,8,Completed,Sadqa
+2025-03-30 00:00:00,2000,Online,Sarah,7,8,Completed,Sadqa
+2025-03-30 00:00:00,80000,Cash,Hamza,9,12,Completed,Sadqa
+2025-03-30 00:00:00,278420,Online,One Muslim,1,6,Completed,Sadqa
+2025-03-30 00:00:00,1100000,Cash,Hamza,9,12,Completed,Sadqa
+2025-03-30 00:00:00,55000,Cash,Transfer,4,9,Completed,Sadqa
+2025-03-30 00:00:00,434902,Cash,Transfer,4,9,Completed,Sadqa
+2025-03-30 00:00:00,52802,Cash,One Muslim,6,6,Completed,Sadqa
+2025-03-30 00:00:00,270000,Cash,Transfer,3,9,Completed,Sadqa
+2025-03-30 00:00:00,62000,Cash,Transfer,4,9,Completed,Sadqa
+2025-03-30 00:00:00,20000,Cash,Hamza,1,12,Completed,Sadqa
+2025-03-30 00:00:00,80000,Cash,Transfer,4,9,Completed,Sadqa
+2025-04-06 00:00:00,30000,Cash,Transfer,3,9,Completed,Sadqa
+2025-04-04 00:00:00,40000,Cash,One Muslim / Hamdard Hath,5,9,Completed,Sadqa
+2025-04-05 00:00:00,100000,Cash,One Muslim,5,9,Completed,Sadqa
+2025-04-05 00:00:00,7000,Cash,Ayra Haider,3,9,Completed,Sadqa
+2025-04-05 00:00:00,2500,Cash,Satish Anil,5,9,Completed,Sadqa
+2025-04-06 00:00:00,110882,Cash,Transfer,2,9,Completed,Sadqa
+2025-04-06 00:00:00,99515,Cash,Transfer,4,9,Completed,Sadqa
+2025-04-06 00:00:00,54365,Cash,Transfer,4,9,Completed,Sadqa
+2025-04-06 00:00:00,500,Cash,Transfer,5,9,Completed,Sadqa
+2025-04-08 00:00:00,20000,Cash,Iqbal Chamdia,3,3,Completed,Sadqa
+2025-04-06 00:00:00,25000,Cash,Transfer,3,9,Completed,Sadqa
+2025-04-06 00:00:00,137124,Cash,Transfer,1,9,Completed,Sadqa
+2025-04-06 00:00:00,272601,Cash,Transfer,4,9,Completed,Sadqa
+2025-03-01 00:00:00,46660,Cash,Opening Balance,1,1,Completed,Zakat
+2025-03-01 00:00:00,26200,Cash,Opening Balance,2,2,Completed,Zakat
+2025-03-01 00:00:00,2001,Cash,Opening Balance,4,4,Completed,Zakat
+2025-03-01 00:00:00,2000,Cash,Opening Balance,5,5,Completed,Zakat
+2025-02-27 00:00:00,55000,Online,Haji Zubair,1,1,Completed,Zakat
+2025-03-01 00:00:00,1100000,Online,Bilal Saleem,1,1,Completed,Zakat
+2025-03-01 00:00:00,18000,Online,Kinza Saleem,2,2,Completed,Zakat
+2025-03-01 00:00:00,128000,Cash,One Muslim,6,6,Completed,Zakat
+2025-03-01 00:00:00,11000,Online,Fayzan,6,6,Completed,Zakat
+2025-03-02 00:00:00,5500,Online,Maira,6,6,Completed,Zakat
+2025-03-03 00:00:00,5000,Online,Mariam,6,6,Completed,Zakat
+2025-03-03 00:00:00,25000,Cash,Maaiz Ammi,3,3,Completed,Zakat
+2025-03-03 00:00:00,10000,Online,Sadaf Ahmed,3,3,Completed,Zakat
+2025-03-03 00:00:00,50000,Cash,Aftab Chamdia,2,2,Completed,Zakat
+2025-03-03 00:00:00,35000,Online,Arwa Wadud,3,3,Completed,Zakat
+2025-03-04 00:00:00,35000,Online,Amna Adnan,1,1,Completed,Zakat
+2025-03-05 00:00:00,15000,Cash,One Muslim,4,10,Completed,Zakat
+2025-03-05 00:00:00,20000,Online,Raahim Ali,3,3,Completed,Zakat
+2025-03-06 00:00:00,50000,Online,Muzammil Kasbati,8,7,Completed,Zakat
+2025-03-06 00:00:00,10000,Online,Rabia Farhan,3,3,Completed,Zakat
+2025-03-06 00:00:00,80000,Online,Abdul Ahad Naeem,1,1,Completed,Zakat
+2025-03-06 00:00:00,200000,Cash,Naseer Uncle,6,6,Completed,Zakat
+2025-03-06 00:00:00,12280,Online,Sherry Bhai,3,3,Completed,Zakat
+2025-03-05 00:00:00,10000,Cash,Transfer,3,9,Completed,Zakat
+2025-03-07 00:00:00,25000,Online,Hoor Ovais,2,2,Completed,Zakat
+2025-03-07 00:00:00,25000,Online,Samad Nara,1,9,Completed,Zakat
+2025-03-07 00:00:00,6000,Online,Amna Abdul Qadir,1,1,Completed,Zakat
+2025-03-08 00:00:00,15000,Cash,Maaiz Ammi,3,3,Completed,Zakat
+2025-03-09 00:00:00,5500,Online,One Muslim,8,7,Completed,Zakat
+2025-03-09 00:00:00,51000,Cash,Mazhar,1,1,Completed,Zakat
+2025-03-09 00:00:00,10000,Online,Laiba Adnan,1,1,Completed,Zakat
+2025-03-09 00:00:00,56000,Cash,One Muslim,6,6,Completed,Zakat
+2025-03-09 00:00:00,5000,Online,Vania Imran,3,3,Completed,Zakat
+2025-03-10 00:00:00,55000,Online,Saad Sikander,8,7,Completed,Zakat
+2025-03-10 00:00:00,20000,Online,Muntaha,6,6,Completed,Zakat
+2025-03-10 00:00:00,30000,Cash,Shahvaiz Khan,4,4,Completed,Zakat
+2025-03-10 00:00:00,150000,Online,Khalid Usman,2,2,Completed,Zakat
+2025-03-10 00:00:00,10000,Online,One Muslim,6,6,Completed,Zakat
+2025-03-10 00:00:00,100000,Online,Sikander,6,6,Completed,Zakat
+2025-03-11 00:00:00,20000,Cash,Sheherbano,7,8,Completed,Zakat
+2025-03-11 00:00:00,20000,Online,Sufyan Imran,3,3,Completed,Zakat
+2025-03-11 00:00:00,10000,Cash,Owais Khalil,7,8,Completed,Zakat
+2025-03-11 00:00:00,3500,Online,Laiba Mianoor,2,2,Completed,Zakat
+2025-03-11 00:00:00,2500,Online,Abdul Khaliq Dadabhoy,2,2,Completed,Zakat
+2025-03-11 00:00:00,2000,Online,Asma Sohail,2,2,Completed,Zakat
+2025-03-11 00:00:00,10000,Cash,Abdullah Godil,1,1,Completed,Zakat
+2025-03-12 00:00:00,10000,Cash,Maaiz Ammi,3,3,Completed,Zakat
+2025-03-12 00:00:00,27550,Online,One Muslim,6,6,Completed,Zakat
+2025-03-13 00:00:00,5000,Online,One Muslim,6,6,Completed,Zakat
+2025-03-14 00:00:00,10000,Online,Miss Sarah,6,6,Completed,Zakat
+2025-03-14 00:00:00,50000,Online,Asad Kodvavi,8,7,Completed,Zakat
+2025-03-15 00:00:00,5000,Online,One Muslim,6,6,Completed,Zakat
+2025-03-15 00:00:00,15000,Cash,One Muslim,4,6,Completed,Zakat
+2025-03-15 00:00:00,50000,Online,Nusaibah Taha,3,3,Completed,Zakat
+2025-03-15 00:00:00,5500,Cash,One Muslim,8,7,Completed,Zakat
+2025-03-15 00:00:00,25000,Online,Hadi,5,5,Completed,Zakat
+2025-03-15 00:00:00,15000,Cash,Maaiz Ammi,3,3,Completed,Zakat
+2025-03-15 00:00:00,279590,Online,Daniyal Iqbal,3,3,Completed,Zakat
+2025-03-16 00:00:00,11000,Cash,Abdul Hadi,2,2,Completed,Zakat
+2025-03-16 00:00:00,11000,Online,Daniyal Aslam,2,2,Completed,Zakat
+2025-03-16 00:00:00,50000,Cash,Fatima Amir,1,1,Completed,Zakat
+2025-03-16 00:00:00,5500,Cash,Amir Naviwala,1,1,Completed,Zakat
+2025-03-16 00:00:00,50000,Cash,Muhammad Harmain,8,7,Completed,Zakat
+2025-03-16 00:00:00,11000,Online,Salma Ahmed,2,2,Completed,Zakat
+2025-03-16 00:00:00,5000,Online,Seema Bawany,2,2,Completed,Zakat
+2025-03-16 00:00:00,5000,Online,One Muslim,6,6,Completed,Zakat
+2025-03-16 00:00:00,20000,Cash,One Muslim,4,4,Completed,Zakat
+2025-03-17 00:00:00,50000,Cash,One Muslim,4,4,Completed,Zakat
+2025-03-17 00:00:00,55000,Cash,One Muslim,4,4,Completed,Zakat
+2025-03-17 00:00:00,20000,Cash,Zainab Aunty,6,6,Completed,Zakat
+2025-03-18 00:00:00,45000,Cash,Ahmed Riaz,8,7,Completed,Zakat
+2025-03-18 00:00:00,6000,Online,Abdul Ghani,1,1,Completed,Zakat
+2025-03-18 00:00:00,50000,Online,Muneeb Paracha,3,3,Completed,Zakat
+2025-03-19 00:00:00,10000,Online,Farhan Farooq,7,8,Completed,Zakat
+2025-03-19 00:00:00,25000,Cash,One Muslim,6,6,Completed,Zakat
+2025-03-19 00:00:00,50000,Online,Dua Khizar,3,3,Completed,Zakat
+2025-03-20 00:00:00,30000,Cash,Amna,6,6,Completed,Zakat
+2025-03-20 00:00:00,25000,Online,Sania Shabbir,1,1,Completed,Zakat
+2025-03-20 00:00:00,550000,Cash,Saad Iqbal,8,7,Completed,Zakat
+2025-03-22 00:00:00,100000,Cash,Ibad,4,11,Completed,Zakat
+2025-03-22 00:00:00,1000,Online,Fiza Asif,3,9,Completed,Zakat
+2025-03-22 00:00:00,100000,Online,Sikander,6,6,Completed,Zakat
+2025-03-22 00:00:00,15000,Cash,Maaiz Ammi,3,3,Completed,Zakat
+2025-03-22 00:00:00,10000,Online,Muneeb Paracha,3,3,Completed,Zakat
+2025-03-22 00:00:00,10000,Cash,Ahmed Altaf,4,4,Completed,Zakat
+2025-03-23 00:00:00,590000,Cash,Transfer,3,9,Completed,Zakat
+2025-03-24 00:00:00,10000,Cash,One Muslim,8,7,Completed,Zakat
+2025-03-24 00:00:00,110000,Online,Wasil Ashfaq,8,7,Completed,Zakat
+2025-03-24 00:00:00,50000,Cash,Muhammad Hammad,3,3,Completed,Zakat
+2025-03-25 00:00:00,500000,Cash,Haji Ahmed Chamdia,3,3,Completed,Zakat
+2025-03-25 00:00:00,400000,Cash,Shabbir Uncle,6,6,Completed,Zakat
+2025-03-26 00:00:00,11000,Online,Sheza,1,9,Completed,Zakat
+2025-03-26 00:00:00,55650,Online,One Muslim,6,6,Completed,Zakat
+2025-03-25 00:00:00,475100,Cash,Transfer,3,9,Completed,Zakat
+2025-03-26 00:00:00,700000,Online,Khurram Jumani,8,7,Completed,Zakat
+2025-03-27 00:00:00,10000,Online,One Muslim,6,6,Completed,Zakat
+2025-03-27 00:00:00,56498,Online,One Muslim,6,6,Completed,Zakat
+2025-03-27 00:00:00,10000,Online,Mohammad Ali,3,3,Completed,Zakat
+2025-03-27 00:00:00,1000,Online,Fiza,3,3,Completed,Zakat
+2025-03-28 00:00:00,25000,Online,Amna,6,6,Completed,Zakat
+2025-03-28 00:00:00,100000,Online,Muneeb,3,3,Completed,Zakat
+2025-03-29 00:00:00,42000,Online,Owais Noorani,1,10,Completed,Zakat
+2025-03-30 00:00:00,10000,Cash,Transfer,3,9,Completed,Zakat
+2025-03-30 00:00:00,25000,Cash,Kausar Mazhar,1,1,Completed,Zakat
+2025-03-30 00:00:00,366500,Cash,Hamza,9,12,Completed,Zakat
+2025-03-30 00:00:00,1100000,Cash,Hamza,9,12,Completed,Zakat
+2025-03-30 00:00:00,106000,Cash,Transfer,4,9,Completed,Zakat
+2025-03-30 00:00:00,245098,Cash,Transfer,4,9,Completed,Zakat
+2025-03-30 00:00:00,100000,Cash,One Muslim,6,6,Completed,Zakat
+2025-03-30 00:00:00,100000,Cash,Transfer,3,9,Completed,Zakat
+2025-03-30 00:00:00,100000,Cash,Transfer,4,9,Completed,Zakat
+2025-03-30 00:00:00,467000,Cash,Transfer,3,9,Completed,Zakat
+2025-03-31 00:00:00,10000,Online,One Muslim,8,7,Completed,Zakat
+2025-03-31 00:00:00,100,Cash,Hammad,7,8,Completed,Zakat
+2025-04-06 00:00:00,60000,Cash,Transfer,4,9,Completed,Zakat
+2025-04-04 00:00:00,350,Cash,Inshal Khurram,5,9,Completed,Zakat
+2025-04-04 00:00:00,20000,Cash,Maqsood Bhadelia,5,9,Completed,Zakat
+2025-04-06 00:00:00,110882,Cash,Transfer,4,9,Completed,Zakat
+2025-04-06 00:00:00,99515,Cash,Transfer,7,9,Completed,Zakat
+2025-04-06 00:00:00,54365,Cash,Transfer,3,9,Completed,Zakat
+2025-04-06 00:00:00,500,Cash,Transfer,3,9,Completed,Zakat
+2025-04-06 00:00:00,800000,Cash,Transfer,5,9,Completed,Zakat
+2025-04-06 00:00:00,137124,Cash,Transfer,3,9,Completed,Zakat
+2025-04-06 00:00:00,272601,Cash,Transfer,3,9,Completed,Zakat
+2025-04-06 00:00:00,365000,Cash,Transfer,3,9,Completed,Zakat
+2025-04-15 00:00:00,8000,Cash,Transfer,1,9,Completed,Zakat
+2025-04-27 00:00:00,20000,Cash,Transfer,4,9,Completed,Zakat
+2025-04-30 00:00:00,2000,Cash,Asba Imran,1,9,Completed,Zakat
+2025-04-30 00:00:00,5000,Cash,Huzaifa Mahenti,1,9,Completed,Zakat
+2025-04-30 00:00:00,287506,Cash,Abdul Samad Nara,1,9,Completed,Zakat
+2025-04-30 00:00:00,10000,Cash,Saim Saudagar,4,9,Completed,Zakat
