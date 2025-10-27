@@ -1,15 +1,26 @@
 // app/lib/db.ts
 import { PrismaClient } from '@/app/generated/prisma/edge'
 import { withAccelerate } from '@prisma/extension-accelerate'
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 
 const prisma = new PrismaClient().$extends(withAccelerate());
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || process.env.SITE_URL || "http://localhost:3000";
 
-// Resend client (uses RESEND_API_KEY). If missing, we fallback to logging emails (dev-friendly).
-const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const resendClient = RESEND_API_KEY ? new Resend(RESEND_API_KEY) : null;
+// Gmail configuration for sending emails
+const GMAIL_USER = process.env.GMAIL_USER;
+const GMAIL_APP_PASSWORD = process.env.GMAIL_APP_PASSWORD;
+
+// Create nodemailer transporter
+const emailTransporter = GMAIL_USER && GMAIL_APP_PASSWORD
+  ? nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: GMAIL_USER,
+        pass: GMAIL_APP_PASSWORD,
+      },
+    })
+  : null;
 
 export async function createDonation(data: {
   date: Date;
@@ -799,9 +810,8 @@ export async function createUserByEmail(email: string, role: string = "user") {
 
 export async function sendInviteEmail(email: string) {
   const normalized = email.toLowerCase().trim();
-  const loginUrl = `${SITE_URL}`; // can be updated to specific login path if available
+  const loginUrl = `${SITE_URL}`;
 
-  const from = `MVMNT <noreply@resend.dev>`; // Will update after Vercel deployment
   const subject = "You're invited to MVMNT Financial Tracker";
   const text = `You've been invited to join MVMNT Financial Tracker!
 
@@ -828,21 +838,23 @@ If you did not expect this invitation, you can safely ignore this email.
     </div>
   `;
 
-  // If RESEND_API_KEY is not configured, log the email (dev fallback) and return a mock result.
-  if (!resendClient) {
-    console.warn("RESEND_API_KEY not configured — falling back to console log for emails.");
-    console.info("Invite email payload:", { to: normalized, from, subject, text, html });
-    return { ok: true, preview: loginUrl };
+  // If Gmail is not configured, log the email (dev fallback) and return a mock result.
+  if (!emailTransporter) {
+    console.warn("Gmail credentials not configured — falling back to console log for emails.");
+    console.info("Invite email payload:", { to: normalized, subject, text });
+    return { messageId: 'dev-mode-no-email-sent', accepted: [normalized] };
   }
 
-  // Send via Resend
-  return resendClient.emails.send({
-    from,
+  // Send via Gmail/Nodemailer
+  const info = await emailTransporter.sendMail({
+    from: `"MVMNT Team" <${GMAIL_USER}>`,
     to: normalized,
     subject,
     text,
     html,
   });
+
+  return info;
 }
 
 /**
