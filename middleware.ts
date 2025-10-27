@@ -28,7 +28,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Admin-only area protection
-  if (pathname.startsWith('/admin') || pathname.startsWith('/api/admin') && (token as any).role !== 'admin') {
+  if ((pathname.startsWith('/admin') || pathname.startsWith('/api/admin')) && (token as any).role !== 'admin') {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 

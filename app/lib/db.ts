@@ -67,6 +67,7 @@ export async function updateDonation(id: number, data: {
   referral?: string;
   collector?: string;
 }) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const updateData: any = {};
   
   if (data.date) updateData.date = data.date;
@@ -132,6 +133,7 @@ export async function updateExpense(id: number, data: {
     throw new Error(`Expense with id ${id} not found.`);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const updateData: any = {};
 
   // determine amount to use for validation/status
@@ -467,11 +469,6 @@ export async function getDashboardStats() {
   const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
   const firstDayOfNextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
 
-  // Get all completed donations
-  const allDonations = await prisma.donation.findMany({
-    where: { status: "Completed" },
-  });
-
   // Get current month donations
   const monthDonations = await prisma.donation.findMany({
     where: {
@@ -481,11 +478,6 @@ export async function getDashboardStats() {
         lt: firstDayOfNextMonth,
       },
     },
-  });
-
-  // Get all paid expenses
-  const allExpenses = await prisma.expenses.findMany({
-    where: { status: "Paid" },
   });
 
   // Get current month expenses
@@ -809,12 +801,32 @@ export async function sendInviteEmail(email: string) {
   const normalized = email.toLowerCase().trim();
   const loginUrl = `${SITE_URL}`; // can be updated to specific login path if available
 
-  const from = `mvmnt@resend.dev`;
-  const subject = "You're invited — Sign in";
-  const text = `You've been added to the site. Please sign in at ${loginUrl}`;
-  const html = `<p>You've been added to the site. Click the link below to sign in:</p>
-           <p><a href="${loginUrl}">${loginUrl}</a></p>
-           <p>If you did not expect this email, you can ignore it.</p>`;
+  const from = `MVMNT <noreply@resend.dev>`; // Will update after Vercel deployment
+  const subject = "You're invited to MVMNT Financial Tracker";
+  const text = `You've been invited to join MVMNT Financial Tracker!
+
+Please sign in with your Google account at: ${loginUrl}
+
+If you did not expect this invitation, you can safely ignore this email.
+
+— MVMNT Team`;
+
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <h2 style="color: #333;">Welcome to MVMNT Financial Tracker!</h2>
+      <p>You've been invited to join our platform.</p>
+      <p>Click the button below to sign in with your Google account:</p>
+      <div style="margin: 30px 0;">
+        <a href="${loginUrl}" style="background-color: #4F46E5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">
+          Sign In Now
+        </a>
+      </div>
+      <p style="color: #666; font-size: 14px;">Or copy and paste this URL into your browser:</p>
+      <p style="color: #666; font-size: 14px;">${loginUrl}</p>
+      <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+      <p style="color: #999; font-size: 12px;">If you did not expect this invitation, you can safely ignore this email.</p>
+    </div>
+  `;
 
   // If RESEND_API_KEY is not configured, log the email (dev fallback) and return a mock result.
   if (!resendClient) {
@@ -841,11 +853,12 @@ export async function inviteUser(email: string) {
   if (!email) throw new Error("Email is required for invite");
   const user = await createUserByEmail(email, "user");
   try {
-    // const response = await sendInviteEmail(email);
+    const response = await sendInviteEmail(email);
+    console.log("Invite email sent to", email, response);
   } catch (err) {
     // Log email failures but keep user creation (caller can surface the error)
     console.error("Failed to send invite email to", email, err);
-    throw err;
+    // Don't throw - user creation succeeded, email failure shouldn't block that
   }
   return user;
 }

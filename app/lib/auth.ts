@@ -26,7 +26,7 @@ export const NEXT_AUTH: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async signIn({ user, account, profile }) {
+    async signIn({ user, profile }) {
       if (!profile?.email) {
         throw new Error("No profile email available");
       }
@@ -51,7 +51,7 @@ export const NEXT_AUTH: NextAuthOptions = {
             where: { email },
             data: { username: newUsername },
           });
-        } catch (err) {
+        } catch {
           // ignore update errors, still allow sign in
         }
       }
@@ -70,10 +70,11 @@ export const NEXT_AUTH: NextAuthOptions = {
             select: { role: true },
           });
           if (dbUser) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (token as any).role = dbUser.role;
           }
         }
-      } catch (err) {
+      } catch {
         // ignore db errors here
       }
       return token;
@@ -82,6 +83,7 @@ export const NEXT_AUTH: NextAuthOptions = {
     // Expose role on the session.user object
     async session({ session, token }) {
       if (session.user) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (session.user as any).role = (token as any).role;
       }
       return session;

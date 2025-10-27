@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/app/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/app/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/app/components/ui/card";
 import { useToast } from "@/app/hooks/use-toast";
 import { signIn } from "next-auth/react";
 
@@ -29,7 +29,7 @@ const Login = () => {
         const dest = res?.url || "/dashboard";
         router.push(dest);
       }
-    } catch (err) {
+    } catch {
       toast({
         title: "Sign in failed",
         description: "An unexpected error occurred.",
