@@ -1,13 +1,13 @@
-,Referrals
-0,Mughees
-1,Uraib
-2,Maaiz
-3,Bilal
-4,Usama
-5,Usman
-6,Aleem
-7,Hammad
-8,MVMNT
-9,Ahmed Polani
-10,Ali
-11,Hamza
+name,referralId
+Mughees,1
+Uraib,2
+Maaiz,3
+Bilal,4
+Usama,5
+Usman,6
+Aleem,7
+Hammad,8
+MVMNT,9
+Ahmed Polani,10
+Ali,11
+Hamza,12
