@@ -5,10 +5,12 @@ import { Input } from "@/app/components/ui/input";
 import { Label } from "@/app/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/app/components/ui/select";
 import { Textarea } from "@/app/components/ui/textarea";
-import { Plus, Loader2 } from "lucide-react";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/app/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/app/components/ui/popover";
+import { Plus, Loader2, Check, ChevronsUpDown } from "lucide-react";
 import { useToast } from "@/app/hooks/use-toast";
-import { referrals, collectors } from "@/app/data/sampleData";
 import axios from "axios";
+import { cn } from "@/app/lib/utils";
 
 interface AddDonationDialogProps {
   donation?: any;
@@ -26,6 +28,15 @@ const AddDonationDialog = ({ donation, onSubmit, triggerButton, open: controlled
   const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
   const setOpen = onOpenChange || setInternalOpen;
   
+  // Fetch collectors and referrals from database
+  const [collectors, setCollectors] = useState<string[]>([]);
+  const [referrals, setReferrals] = useState<string[]>([]);
+  const [collectorsLoading, setCollectorsLoading] = useState(false);
+  
+  // Popover states for searchable dropdowns
+  const [collectorOpen, setCollectorOpen] = useState(false);
+  const [referralOpen, setReferralOpen] = useState(false);
+  
   const [formData, setFormData] = useState({
     donorName: donation?.donorName || "",
     amount: donation?.amount?.toString() || "",
@@ -36,6 +47,26 @@ const AddDonationDialog = ({ donation, onSubmit, triggerButton, open: controlled
     date: donation?.date || "",
     notes: donation?.notes || ""
   });
+  
+  // Fetch collectors and referrals when dialog opens
+  useEffect(() => {
+    if (open) {
+      fetchCollectorsAndReferrals();
+    }
+  }, [open]);
+  
+  const fetchCollectorsAndReferrals = async () => {
+    try {
+      setCollectorsLoading(true);
+      const response = await axios.get('/api/collectors');
+      setCollectors(response.data.collectors || []);
+      setReferrals(response.data.referrals || []);
+    } catch (error) {
+      console.error('Failed to fetch collectors and referrals:', error);
+    } finally {
+      setCollectorsLoading(false);
+    }
+  };
   
   // Update form data when donation prop changes
   useEffect(() => {
@@ -220,29 +251,91 @@ const AddDonationDialog = ({ donation, onSubmit, triggerButton, open: controlled
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="referral">Referral</Label>
-              <Select value={formData.referral} onValueChange={(value) => setFormData({...formData, referral: value})}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select referral" />
-                </SelectTrigger>
-                <SelectContent>
-                  {referrals.map((referral) => (
-                    <SelectItem key={referral} value={referral}>{referral}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Popover open={referralOpen} onOpenChange={setReferralOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={referralOpen}
+                    className="w-full justify-between"
+                  >
+                    {formData.referral || "Select referral..."}
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[200px] p-0">
+                  <Command>
+                    <CommandInput placeholder="Search referral..." />
+                    <CommandList>
+                      <CommandEmpty>No referral found.</CommandEmpty>
+                      <CommandGroup>
+                        {referrals.map((referral) => (
+                          <CommandItem
+                            key={referral}
+                            value={referral}
+                            onSelect={(currentValue) => {
+                              setFormData({...formData, referral: currentValue === formData.referral ? "" : currentValue});
+                              setReferralOpen(false);
+                            }}
+                          >
+                            <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                formData.referral === referral ? "opacity-100" : "opacity-0"
+                              )}
+                            />
+                            {referral}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
             </div>
             <div className="space-y-2">
               <Label htmlFor="collector">Collector</Label>
-              <Select value={formData.collector} onValueChange={(value) => setFormData({...formData, collector: value})}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select collector" />
-                </SelectTrigger>
-                <SelectContent>
-                  {collectors.map((collector) => (
-                    <SelectItem key={collector} value={collector}>{collector}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Popover open={collectorOpen} onOpenChange={setCollectorOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={collectorOpen}
+                    className="w-full justify-between"
+                  >
+                    {formData.collector || "Select collector..."}
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[200px] p-0">
+                  <Command>
+                    <CommandInput placeholder="Search collector..." />
+                    <CommandList>
+                      <CommandEmpty>No collector found.</CommandEmpty>
+                      <CommandGroup>
+                        {collectors.map((collector) => (
+                          <CommandItem
+                            key={collector}
+                            value={collector}
+                            onSelect={(currentValue) => {
+                              setFormData({...formData, collector: currentValue === formData.collector ? "" : currentValue});
+                              setCollectorOpen(false);
+                            }}
+                          >
+                            <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                formData.collector === collector ? "opacity-100" : "opacity-0"
+                              )}
+                            />
+                            {collector}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
 

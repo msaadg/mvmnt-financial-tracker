@@ -5,10 +5,12 @@ import { Input } from "@/app/components/ui/input";
 import { Label } from "@/app/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/app/components/ui/select";
 import { Textarea } from "@/app/components/ui/textarea";
-import { Plus, Trash2, Loader2 } from "lucide-react";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/app/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/app/components/ui/popover";
+import { Plus, Trash2, Loader2, Check, ChevronsUpDown } from "lucide-react";
 import { useToast } from "@/app/hooks/use-toast";
-import { collectors } from "@/app/data/sampleData";
 import axios from "axios";
+import { cn } from "@/app/lib/utils";
 
 interface FormCollectorEntry {
   name: string;
@@ -42,6 +44,113 @@ interface AddExpenseDialogProps {
   onOpenChange?: (open: boolean) => void;
 }
 
+// Collector Row Component for searchable collector selection
+interface CollectorRowProps {
+  index: number;
+  collector: FormCollectorEntry;
+  collectors: string[];
+  canRemove: boolean;
+  onUpdate: (index: number, field: string, value: string) => void;
+  onRemove: (index: number) => void;
+}
+
+const CollectorRow = ({ index, collector, collectors, canRemove, onUpdate, onRemove }: CollectorRowProps) => {
+  const [collectorOpen, setCollectorOpen] = useState(false);
+  
+  return (
+    <div className="border rounded-lg p-4 space-y-3">
+      <div className="flex items-center justify-between">
+        <span className="text-sm font-medium">Collector {index + 1}</span>
+        {canRemove && (
+          <Button 
+            type="button" 
+            onClick={() => onRemove(index)} 
+            size="sm" 
+            variant="outline"
+            className="text-destructive"
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        )}
+      </div>
+      
+      <div className="grid grid-cols-3 gap-2">
+        <div className="space-y-1">
+          <Label className="text-xs">Collector Name</Label>
+          <Popover open={collectorOpen} onOpenChange={setCollectorOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={collectorOpen}
+                className="w-full justify-between h-9"
+              >
+                {collector.name || "Select"}
+                <ChevronsUpDown className="ml-2 h-3 w-3 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[180px] p-0">
+              <Command>
+                <CommandInput placeholder="Search..." className="h-8" />
+                <CommandList>
+                  <CommandEmpty>No collector found.</CommandEmpty>
+                  <CommandGroup>
+                    {collectors.map((collectorName) => (
+                      <CommandItem
+                        key={collectorName}
+                        value={collectorName}
+                        onSelect={(currentValue) => {
+                          onUpdate(index, "name", currentValue);
+                          setCollectorOpen(false);
+                        }}
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            collector.name === collectorName ? "opacity-100" : "opacity-0"
+                          )}
+                        />
+                        {collectorName}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
+        </div>
+        
+        <div className="space-y-1">
+          <Label className="text-xs">Payment Type</Label>
+          <Select 
+            value={collector.type} 
+            onValueChange={(value) => onUpdate(index, "type", value)}
+          >
+            <SelectTrigger className="h-9">
+              <SelectValue placeholder="Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Zakat">Zakat</SelectItem>
+              <SelectItem value="Sadqa">Sadqa</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        
+        <div className="space-y-1">
+          <Label className="text-xs">Amount (PKR)</Label>
+          <Input
+            type="number"
+            value={collector.amount}
+            onChange={(e) => onUpdate(index, "amount", e.target.value)}
+            placeholder="Amount"
+            className="h-9"
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const AddExpenseDialog = ({ expense, onSubmit, triggerButton, open: controlledOpen, onOpenChange }: AddExpenseDialogProps) => {
   const [internalOpen, setInternalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -49,6 +158,10 @@ const AddExpenseDialog = ({ expense, onSubmit, triggerButton, open: controlledOp
   // Use controlled or internal state
   const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
   const setOpen = onOpenChange || setInternalOpen;
+  
+  // Fetch collectors from database
+  const [collectors, setCollectors] = useState<string[]>([]);
+  const [collectorsLoading, setCollectorsLoading] = useState(false);
   
   const [formData, setFormData] = useState({
     vendorName: expense?.vendorName || "",
@@ -60,6 +173,25 @@ const AddExpenseDialog = ({ expense, onSubmit, triggerButton, open: controlledOp
     invoiceNumber: expense?.invoiceNumber || "",
     collectors: expense?.collectors?.map(c => ({ ...c, amount: c.amount.toString() })) || [{ name: "", type: "", amount: "" }] as FormCollectorEntry[]
   });
+  
+  // Fetch collectors when dialog opens
+  useEffect(() => {
+    if (open) {
+      fetchCollectors();
+    }
+  }, [open]);
+  
+  const fetchCollectors = async () => {
+    try {
+      setCollectorsLoading(true);
+      const response = await axios.get('/api/collectors');
+      setCollectors(response.data.collectors || []);
+    } catch (error) {
+      console.error('Failed to fetch collectors:', error);
+    } finally {
+      setCollectorsLoading(false);
+    }
+  };
   
   // Update form data when expense prop changes
   useEffect(() => {
@@ -282,7 +414,7 @@ const AddExpenseDialog = ({ expense, onSubmit, triggerButton, open: controlledOp
           </Button>
         </DialogTrigger>
       )}
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[650px]">
         <DialogHeader>
           <DialogTitle>{expense ? "Edit Expense" : "Add New Expense"}</DialogTitle>
         </DialogHeader>
@@ -370,69 +502,15 @@ const AddExpenseDialog = ({ expense, onSubmit, triggerButton, open: controlledOp
             
             <div className="max-h-[135px] overflow-y-auto space-y-3 pr-2">
               {formData.collectors.map((collector, index) => (
-                <div key={index} className="border rounded-lg p-4 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">Collector {index + 1}</span>
-                    {formData.collectors.length > 1 && (
-                      <Button 
-                        type="button" 
-                        onClick={() => removeCollector(index)} 
-                        size="sm" 
-                        variant="outline"
-                        className="text-destructive"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    )}
-                  </div>
-                  
-                  <div className="grid grid-cols-3 gap-2">
-                    <div className="space-y-1">
-                      <Label className="text-xs">Collector Name</Label>
-                      <Select 
-                        value={collector.name} 
-                        onValueChange={(value) => updateCollector(index, "name", value)}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select collector" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {collectors.map((collectorName) => (
-                            <SelectItem key={collectorName} value={collectorName}>
-                              {collectorName}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    
-                    <div className="space-y-1">
-                      <Label className="text-xs">Payment Type</Label>
-                      <Select 
-                        value={collector.type} 
-                        onValueChange={(value) => updateCollector(index, "type", value)}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="Zakat">Zakat</SelectItem>
-                          <SelectItem value="Sadqa">Sadqa</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    
-                    <div className="space-y-1">
-                      <Label className="text-xs">Amount (PKR)</Label>
-                      <Input
-                        type="number"
-                        value={collector.amount}
-                        onChange={(e) => updateCollector(index, "amount", e.target.value)}
-                        placeholder="Amount"
-                      />
-                    </div>
-                  </div>
-                </div>
+                <CollectorRow
+                  key={index}
+                  index={index}
+                  collector={collector}
+                  collectors={collectors}
+                  canRemove={formData.collectors.length > 1}
+                  onUpdate={updateCollector}
+                  onRemove={removeCollector}
+                />
               ))}
             </div>
 

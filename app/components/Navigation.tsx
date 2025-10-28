@@ -102,16 +102,16 @@ function NavContent() {
             })}
             {isAdmin && (
               <Link
-                href="/admin/users"
+                href="/admin"
                 className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  pathname === "/admin/users"
+                  pathname === "/admin"
                     ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:text-foreground hover:bg-accent"
                 }`}
               >
                 <Users className="mr-2 h-4 w-4" />
-                <span className="hidden xl:inline">User Management</span>
-                <span className="xl:hidden">Users</span>
+                <span className="hidden xl:inline">Admin</span>
+                <span className="xl:hidden">Admin</span>
               </Link>
             )}
           </div>
@@ -152,16 +152,16 @@ function NavContent() {
                   })}
                   {isAdmin && (
                     <Link
-                      href="/admin/users"
+                      href="/admin"
                       onClick={() => setIsMobileMenuOpen(false)}
                       className={`flex items-center px-4 py-3 rounded-md text-sm font-medium transition-colors ${
-                        pathname === "/admin/users"
+                        pathname === "/admin"
                           ? "bg-primary text-primary-foreground"
                           : "text-muted-foreground hover:text-foreground hover:bg-accent"
                       }`}
                     >
                       <Users className="mr-3 h-5 w-5" />
-                      User Management
+                      Admin
                     </Link>
                   )}
                   <div className="pt-4 border-t border-border">
