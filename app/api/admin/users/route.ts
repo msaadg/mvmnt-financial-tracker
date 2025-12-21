@@ -1,9 +1,5 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@/app/generated/prisma/edge";
-import { withAccelerate } from "@prisma/extension-accelerate";
 import { getUsers, inviteUser, deleteUser } from "@/app/lib/db";
-
-const prisma = new PrismaClient().$extends(withAccelerate());
 
 export async function GET() {
   try {

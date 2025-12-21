@@ -1,6 +1,6 @@
 // scripts/seed.ts
-import { PrismaClient } from '../app/generated/prisma'
-import { collectors, referrals } from '../app/data/sampleData'
+import { PrismaClient } from '@/prisma/generated/prisma'
+import { collectors, referrals } from '@/app/data/sampleData'
 
 const prisma = new PrismaClient()
 
@@ -32,30 +32,6 @@ async function main() {
     })
     console.log(`Created referral: ${referral.name}`)
   }
-
-  // Seed some sample Vendor/Projects
-  console.log('Seeding vendors/projects...')
-  const vendorProjects = [
-    'Office Supplies Co.',
-    'Utility Company',
-    'Food Distribution Project',
-    'IT Services Ltd.',
-    'Marketing Agency',
-    'Education Program',
-  ]
-
-  for (const vendorName of vendorProjects) {
-    const vendor = await prisma.vendorsProjects.upsert({
-      where: { vendProjId: vendorProjects.indexOf(vendorName) + 1 },
-      update: {},
-      create: {
-        name: vendorName,
-      },
-    })
-    console.log(`Created vendor/project: ${vendor.name}`)
-  }
-
-  console.log('Seeding finished.')
 }
 
 main()

@@ -5,10 +5,10 @@ import { createExpense, getCollectorByName, updateExpense, deleteExpense } from 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { date, amount, paymentMethod, vendorProjId, category, description, status: incomingStatus, collectors } = body;
+    const { date, amount, paymentMethod, vendorProjName, category, description, status: incomingStatus, collectors } = body;
 
     // Validate required fields
-    if (!date || amount === undefined || !paymentMethod || !vendorProjId || !category) {
+    if (!date || amount === undefined || !paymentMethod || !vendorProjName || !category) {
       return NextResponse.json(
         { message: 'Missing required fields' },
         { status: 400 }
@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
       date: new Date(date),
       amount: parsedAmount,
       paymentMethod: paymentMethod,
-      vendorProjId: parseInt(vendorProjId),
+      vendorProjName: vendorProjName,
       category,
       description,
       status: computedStatus, // pass computed status
@@ -98,7 +98,7 @@ export async function GET() {
   try {
     const { getAllExpenses } = await import('@/app/lib/db');
     const expenses = await getAllExpenses();
-    expenses.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    expenses.sort((a: { date: string }, b: { date: string }) => new Date(b.date).getTime() - new Date(a.date).getTime());
     return NextResponse.json({ expenses });
   } catch (error) {
     console.error('Failed to fetch expenses:', error);
@@ -112,7 +112,7 @@ export async function GET() {
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
-    const { id, date, amount, paymentMethod, vendorProjId, category, description, status, collectors } = body;
+    const { id, date, amount, paymentMethod, vendorProjName, category, description, status, collectors } = body;
 
     // Validate ID
     if (!id) {
@@ -161,7 +161,7 @@ export async function PUT(request: NextRequest) {
         date: date ? new Date(date) : undefined,
         amount: amount !== undefined ? Number(amount) : undefined,
         paymentMethod,
-        vendorProjId: vendorProjId ? parseInt(vendorProjId) : undefined,
+        vendorProjName: vendorProjName,
         category,
         description,
         status,

@@ -2,6 +2,9 @@
 import { NextResponse } from 'next/server';
 import { getAnalyticsData, getAllDonations, getAllExpenses } from '@/app/lib/db';
 
+type Donation = Awaited<ReturnType<typeof getAllDonations>>[number];
+type Expense = Awaited<ReturnType<typeof getAllExpenses>>[number];
+
 export async function GET() {
   try {
     const analyticsData = await getAnalyticsData();
@@ -10,7 +13,7 @@ export async function GET() {
 
     // Generate ledger data
     const ledgerData = [
-      ...donations.map(d => ({
+      ...donations.map((d: Donation) => ({
         id: `D-${d.id}`,
         date: d.date,
         description: `Donation from ${d.donorName}`,
@@ -22,7 +25,7 @@ export async function GET() {
         status: d.status,
         reference: d.donorName,
       })),
-      ...expenses.map(e => ({
+      ...expenses.map((e: Expense) => ({
         id: `E-${e.id}`,
         date: e.date,
         description: e.description,
@@ -37,12 +40,12 @@ export async function GET() {
     ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
     const totalDonations = donations
-      .filter(d => d.status.toLowerCase() === 'completed')
-      .reduce((sum, d) => sum + d.amount, 0);
+      .filter((d: Donation) => d.status.toLowerCase() === 'completed')
+      .reduce((sum: number, d: Donation) => sum + d.amount, 0);
 
     const totalExpenses = expenses
-      .filter(e => e.status.toLowerCase() === 'paid')
-      .reduce((sum, e) => sum + e.amount, 0);
+      .filter((e: Expense) => e.status.toLowerCase() === 'paid')
+      .reduce((sum: number, e: Expense) => sum + e.amount, 0);
 
     const netFlow = totalDonations - totalExpenses;
 

@@ -1,9 +1,11 @@
 // app/lib/db.ts
-import { PrismaClient } from '@/app/generated/prisma/edge'
+import { PrismaClient } from '@/prisma/generated/prisma'
 import { withAccelerate } from '@prisma/extension-accelerate'
 import nodemailer from "nodemailer";
 
-const prisma = new PrismaClient().$extends(withAccelerate());
+const prisma = new PrismaClient({
+  accelerateUrl: process.env.DATABASE_URL,
+}).$extends(withAccelerate());
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || process.env.SITE_URL || "http://localhost:3000";
 
@@ -125,7 +127,7 @@ export async function updateExpense(id: number, data: {
   date?: Date;
   amount?: number;
   paymentMethod?: string;
-  vendorProjId?: number;
+  vendorProjName?: string;
   category?: string;
   description?: string;
   status?: string;
@@ -153,7 +155,7 @@ export async function updateExpense(id: number, data: {
   if (data.date) updateData.date = data.date;
   if (data.amount !== undefined) updateData.amount = data.amount;
   if (data.paymentMethod) updateData.paymentMethod = data.paymentMethod;
-  if (data.vendorProjId) updateData.vendorProjId = data.vendorProjId;
+  if (data.vendorProjName) updateData.vendorProjName = data.vendorProjName;
   if (data.category) updateData.category = data.category;
   if (data.description !== undefined) updateData.description = data.description;
 
@@ -179,7 +181,7 @@ export async function updateExpense(id: number, data: {
   } else {
     // If collectors not provided but amount changed, re-evaluate status based on existing payments
     if (data.amount !== undefined) {
-      const paymentsTotal = existing.payments.reduce((sum, p) => sum + p.amount, 0);
+      const paymentsTotal = existing.payments.reduce((sum: number, p: { amount: number }) => sum + p.amount, 0);
       updateData.status = paymentsTotal < amountToUse ? "Pending" : "Paid";
     } else if (data.status) {
       updateData.status = data.status;
@@ -208,7 +210,7 @@ export async function createExpense(data: {
   date: Date;
   amount: number;
   paymentMethod: string;
-  vendorProjId: number;
+  vendorProjName: string;
   category: string;
   description?: string;
   status: string;
@@ -233,7 +235,7 @@ export async function createExpense(data: {
       date: data.date,
       amount: data.amount,
       paymentMethod: data.paymentMethod,
-      vendorProjId: data.vendorProjId,
+      vendorProjName: data.vendorProjName,
       category: data.category,
       description: data.description,
       status: computedStatus,
@@ -308,25 +310,9 @@ export async function getReferralByName(name: string) {
   });
 }
 
-export async function getAllVendorsProjects() {
-  return prisma.vendorsProjects.findMany({
-    cacheStrategy: { ttl: 60 },
-  });
-}
-
-export async function getVendorProjectByName(name: string) {
-  return prisma.vendorsProjects.findFirst({
-    where: {
-      name: name,
-    },
-    cacheStrategy: { ttl: 60 },
-  });
-}
-
 export async function getAllExpenses() {
   const expenses = await prisma.expenses.findMany({
     include: {
-      vendorProject: true,
       payments: {
         include: {
           collector: true
@@ -337,9 +323,9 @@ export async function getAllExpenses() {
   });
 
   // Transform into the desired format
-  const formatted = expenses.map(expense => ({
+  const formatted = expenses.map((expense: { transacId: number; vendorProjName: string | null; amount: number; category: string; paymentMethod: string; date: Date; status: string; description: string | null; payments: Array<{ collector: { name: string } | null; type: string; amount: number }> }) => ({
     id: expense.transacId,
-    vendorName: expense.vendorProject?.name || "Unknown Vendor",
+    vendorName: expense.vendorProjName || "Unknown Vendor",
     amount: expense.amount,
     category: expense.category,
     paymentMethod: expense.paymentMethod,
@@ -347,7 +333,7 @@ export async function getAllExpenses() {
     status: expense.status,
     description: expense.description || "",
     invoiceNumber: "INV-2025-000", // default value
-    collectors: expense.payments.map(p => ({
+    collectors: expense.payments.map((p: { collector: { name: string } | null; type: string; amount: number }) => ({
       name: p.collector?.name || "Unknown Collector",
       type: p.type,
       amount: p.amount,
@@ -366,7 +352,7 @@ export async function getAllDonations() {
     cacheStrategy: { ttl: 60 },
   });
 
-  return donations.map(donation => ({
+  return donations.map((donation: { transacId: number; donorName: string; amount: number; type: string; paymentMethod: string; collector: { name: string } | null; referral: { name: string } | null; date: Date; status: string; notes: string | null }) => ({
     id: donation.transacId,
     donorName: donation.donorName,
     amount: donation.amount,
@@ -398,7 +384,7 @@ export async function getMonthlyDonationStats() {
     cacheStrategy: { ttl: 60 },
   });
 
-  const totalDonations = monthDonations.reduce((sum, d) => sum + d.amount, 0);
+  const totalDonations = monthDonations.reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
 
   // Calculate previous month for trend
   const prevMonthFirst = new Date(now.getFullYear(), now.getMonth() - 1, 1);
@@ -415,7 +401,7 @@ export async function getMonthlyDonationStats() {
     cacheStrategy: { ttl: 60 },
   });
 
-  const prevTotalDonations = prevMonthDonations.reduce((sum, d) => sum + d.amount, 0);
+  const prevTotalDonations = prevMonthDonations.reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
 
   const donationTrend = prevTotalDonations > 0 
     ? ((totalDonations - prevTotalDonations) / prevTotalDonations * 100).toFixed(1)
@@ -445,7 +431,7 @@ export async function getMonthlyExpenseStats() {
     cacheStrategy: { ttl: 60 },
   });
 
-  const totalExpenses = monthExpenses.reduce((sum, e) => sum + e.amount, 0);
+  const totalExpenses = monthExpenses.reduce((sum: number, e: { amount: number }) => sum + e.amount, 0);
 
   // Calculate previous month for trend
   const prevMonthFirst = new Date(now.getFullYear(), now.getMonth() - 1, 1);
@@ -462,7 +448,7 @@ export async function getMonthlyExpenseStats() {
     cacheStrategy: { ttl: 60 },
   });
 
-  const prevTotalExpenses = prevMonthExpenses.reduce((sum, e) => sum + e.amount, 0);
+  const prevTotalExpenses = prevMonthExpenses.reduce((sum: number, e: { amount: number }) => sum + e.amount, 0);
 
   const expenseTrend = prevTotalExpenses > 0
     ? ((totalExpenses - prevTotalExpenses) / prevTotalExpenses * 100).toFixed(1)
@@ -502,8 +488,8 @@ export async function getDashboardStats() {
     },
   });
 
-  const totalDonations = monthDonations.reduce((sum, d) => sum + d.amount, 0);
-  const totalExpenses = monthExpenses.reduce((sum, e) => sum + e.amount, 0);
+  const totalDonations = monthDonations.reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
+  const totalExpenses = monthExpenses.reduce((sum: number, e: { amount: number }) => sum + e.amount, 0);
   const netFlow = totalDonations - totalExpenses;
 
   // Calculate previous month for trend
@@ -530,8 +516,8 @@ export async function getDashboardStats() {
     },
   });
 
-  const prevTotalDonations = prevMonthDonations.reduce((sum, d) => sum + d.amount, 0);
-  const prevTotalExpenses = prevMonthExpenses.reduce((sum, e) => sum + e.amount, 0);
+  const prevTotalDonations = prevMonthDonations.reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
+  const prevTotalExpenses = prevMonthExpenses.reduce((sum: number, e: { amount: number }) => sum + e.amount, 0);
 
   const donationTrend = prevTotalDonations > 0 
     ? ((totalDonations - prevTotalDonations) / prevTotalDonations * 100).toFixed(1)
@@ -567,15 +553,12 @@ export async function getRecentTransactions(limit: number = 5) {
   });
 
   const expenses = await prisma.expenses.findMany({
-    include: {
-      vendorProject: true,
-    },
     orderBy: { date: 'desc' },
     take: limit,
   });
 
   const transactions = [
-    ...donations.map(d => ({
+    ...donations.map((d: { transacId: number; donorName: string; amount: number; date: Date; type: string }) => ({
       id: `D-${d.transacId}`,
       type: 'donation' as const,
       donor: d.donorName,
@@ -584,11 +567,11 @@ export async function getRecentTransactions(limit: number = 5) {
       date: d.date.toISOString().split('T')[0],
       category: d.type,
     })),
-    ...expenses.map(e => ({
+    ...expenses.map((e: { transacId: number; vendorProjName: string | null; amount: number; date: Date; category: string }) => ({
       id: `E-${e.transacId}`,
       type: 'expense' as const,
       donor: undefined,
-      vendor: e.vendorProject?.name || 'Unknown',
+      vendor: e.vendorProjName || 'Unknown',
       amount: e.amount,
       date: e.date.toISOString().split('T')[0],
       category: e.category,
@@ -596,7 +579,7 @@ export async function getRecentTransactions(limit: number = 5) {
   ];
 
   return transactions
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .sort((a: { date: string }, b: { date: string }) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, limit);
 }
 
@@ -610,12 +593,12 @@ export async function getReferralLeaderboard() {
   });
 
   return referrals
-    .map(ref => ({
+    .map((ref: { name: string; donations: Array<{ amount: number }> }) => ({
       name: ref.name,
-      totalAmount: ref.donations.reduce((sum, d) => sum + d.amount, 0),
+      totalAmount: ref.donations.reduce((sum: number, d: { amount: number }) => sum + d.amount, 0),
       donationCount: ref.donations.length,
     }))
-    .sort((a, b) => b.totalAmount - a.totalAmount);
+    .sort((a: { totalAmount: number }, b: { totalAmount: number }) => b.totalAmount - a.totalAmount);
 }
 
 export async function getAnalyticsData() {
@@ -635,29 +618,29 @@ export async function getAnalyticsData() {
     const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
     const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
 
-    const monthDonations = donations.filter(d => {
+    const monthDonations = donations.filter((d: { date: Date }) => {
       const dDate = new Date(d.date);
       return dDate >= firstDay && dDate <= lastDay;
     });
 
-    const monthExpenses = expenses.filter(e => {
+    const monthExpenses = expenses.filter((e: { date: Date }) => {
       const eDate = new Date(e.date);
       return eDate >= firstDay && eDate <= lastDay;
     });
 
     monthlyData.push({
       month: date.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' }),
-      donations: monthDonations.reduce((sum, d) => sum + d.amount, 0),
-      expenses: monthExpenses.reduce((sum, e) => sum + e.amount, 0),
+      donations: monthDonations.reduce((sum: number, d: { amount: number }) => sum + d.amount, 0),
+      expenses: monthExpenses.reduce((sum: number, e: { amount: number }) => sum + e.amount, 0),
     });
   }
 
   // Donation breakdown by type
-  const zakatDonations = donations.filter(d => d.type.toLowerCase() === 'zakat');
-  const sadqaDonations = donations.filter(d => d.type.toLowerCase() === 'sadqa');
+  const zakatDonations = donations.filter((d: { type: string }) => d.type.toLowerCase() === 'zakat');
+  const sadqaDonations = donations.filter((d: { type: string }) => d.type.toLowerCase() === 'sadqa');
 
-  const zakatAmount = zakatDonations.reduce((sum, d) => sum + d.amount, 0);
-  const sadqaAmount = sadqaDonations.reduce((sum, d) => sum + d.amount, 0);
+  const zakatAmount = zakatDonations.reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
+  const sadqaAmount = sadqaDonations.reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
   const totalAmount = zakatAmount + sadqaAmount;
 
   const donationBreakdown = [
@@ -697,66 +680,66 @@ export async function getFundsData() {
   const collectors = await prisma.collectors.findMany();
 
   // Calculate totals
-  const totalDonations = donations.reduce((sum, d) => sum + d.amount, 0);
-  const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
+  const totalDonations = donations.reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
+  const totalExpenses = expenses.reduce((sum: number, e: { amount: number }) => sum + e.amount, 0);
   const currentBalance = totalDonations - totalExpenses;
 
   // Calculate by type
-  const zakatDonations = donations.filter(d => d.type.toLowerCase() === 'zakat').reduce((sum, d) => sum + d.amount, 0);
-  const sadqaDonations = donations.filter(d => d.type.toLowerCase() === 'sadqa').reduce((sum, d) => sum + d.amount, 0);
+  const zakatDonations = donations.filter((d: { type: string }) => d.type.toLowerCase() === 'zakat').reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
+  const sadqaDonations = donations.filter((d: { type: string }) => d.type.toLowerCase() === 'sadqa').reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
 
-  const zakatExpenses = expenses.reduce((sum, e) => {
-    const zakatPayments = e.payments.filter(p => p.type.toLowerCase() === 'zakat');
-    return sum + zakatPayments.reduce((pSum, p) => pSum + p.amount, 0);
+  const zakatExpenses = expenses.reduce((sum: number, e: { payments: Array<{ type: string; amount: number }> }) => {
+    const zakatPayments = e.payments.filter((p: { type: string }) => p.type.toLowerCase() === 'zakat');
+    return sum + zakatPayments.reduce((pSum: number, p: { amount: number }) => pSum + p.amount, 0);
   }, 0);
 
-  const sadqaExpenses = expenses.reduce((sum, e) => {
-    const sadqaPayments = e.payments.filter(p => p.type.toLowerCase() === 'sadqa');
-    return sum + sadqaPayments.reduce((pSum, p) => pSum + p.amount, 0);
+  const sadqaExpenses = expenses.reduce((sum: number, e: { payments: Array<{ type: string; amount: number }> }) => {
+    const sadqaPayments = e.payments.filter((p: { type: string }) => p.type.toLowerCase() === 'sadqa');
+    return sum + sadqaPayments.reduce((pSum: number, p: { amount: number }) => pSum + p.amount, 0);
   }, 0);
 
   const zakatBalance = zakatDonations - zakatExpenses;
   const sadqaBalance = sadqaDonations - sadqaExpenses;
 
   // Calculate by payment method
-  const onlineDonations = donations.filter(d => d.paymentMethod.toLowerCase() === 'online').reduce((sum, d) => sum + d.amount, 0);
-  const cashDonations = donations.filter(d => d.paymentMethod.toLowerCase() === 'cash').reduce((sum, d) => sum + d.amount, 0);
+  const onlineDonations = donations.filter((d: { paymentMethod: string }) => d.paymentMethod.toLowerCase() === 'online').reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
+  const cashDonations = donations.filter((d: { paymentMethod: string }) => d.paymentMethod.toLowerCase() === 'cash').reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
 
-  const onlineExpenses = expenses.filter(e => e.paymentMethod?.toLowerCase() === 'online').reduce((sum, e) => sum + e.amount, 0);
-  const cashExpenses = expenses.filter(e => e.paymentMethod?.toLowerCase() === 'cash').reduce((sum, e) => sum + e.amount, 0);
+  const onlineExpenses = expenses.filter((e: { paymentMethod?: string | null }) => e.paymentMethod?.toLowerCase() === 'online').reduce((sum: number, e: { amount: number }) => sum + e.amount, 0);
+  const cashExpenses = expenses.filter((e: { paymentMethod?: string | null }) => e.paymentMethod?.toLowerCase() === 'cash').reduce((sum: number, e: { amount: number }) => sum + e.amount, 0);
 
   const onlineBalance = onlineDonations - onlineExpenses;
   const cashBalance = cashDonations - cashExpenses;
 
   // Calculate per collector
-  const collectorData = collectors.map(collector => {
-    const collectorDonations = donations.filter(d => d.collectorId === collector.collectorId);
-    const collectorExpensePayments = expenses.flatMap(e => 
-      e.payments.filter(p => p.collectorId === collector.collectorId)
+  const collectorData = collectors.map((collector: { collectorId: number; name: string }) => {
+    const collectorDonations = donations.filter((d: { collectorId: number }) => d.collectorId === collector.collectorId);
+    const collectorExpensePayments = expenses.flatMap((e: { payments: Array<{ collectorId: number; paymentId: number; type: string; amount: number }> }) => 
+      e.payments.filter((p: { collectorId: number }) => p.collectorId === collector.collectorId)
     );
 
-    const totalReceived = collectorDonations.reduce((sum, d) => sum + d.amount, 0);
-    const totalPaid = collectorExpensePayments.reduce((sum, p) => sum + p.amount, 0);
+    const totalReceived = collectorDonations.reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
+    const totalPaid = collectorExpensePayments.reduce((sum: number, p: { amount: number }) => sum + p.amount, 0);
     const totalBalance = totalReceived - totalPaid;
 
-    const zakatReceived = collectorDonations.filter(d => d.type.toLowerCase() === 'zakat').reduce((sum, d) => sum + d.amount, 0);
-    const sadqaReceived = collectorDonations.filter(d => d.type.toLowerCase() === 'sadqa').reduce((sum, d) => sum + d.amount, 0);
+    const zakatReceived = collectorDonations.filter((d: { type: string }) => d.type.toLowerCase() === 'zakat').reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
+    const sadqaReceived = collectorDonations.filter((d: { type: string }) => d.type.toLowerCase() === 'sadqa').reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
 
-    const zakatPaid = collectorExpensePayments.filter(p => p.type.toLowerCase() === 'zakat').reduce((sum, p) => sum + p.amount, 0);
-    const sadqaPaid = collectorExpensePayments.filter(p => p.type.toLowerCase() === 'sadqa').reduce((sum, p) => sum + p.amount, 0);
+    const zakatPaid = collectorExpensePayments.filter((p: { type: string }) => p.type.toLowerCase() === 'zakat').reduce((sum: number, p: { amount: number }) => sum + p.amount, 0);
+    const sadqaPaid = collectorExpensePayments.filter((p: { type: string }) => p.type.toLowerCase() === 'sadqa').reduce((sum: number, p: { amount: number }) => sum + p.amount, 0);
 
-    const onlineReceived = collectorDonations.filter(d => d.paymentMethod.toLowerCase() === 'online').reduce((sum, d) => sum + d.amount, 0);
-    const cashReceived = collectorDonations.filter(d => d.paymentMethod.toLowerCase() === 'cash').reduce((sum, d) => sum + d.amount, 0);
+    const onlineReceived = collectorDonations.filter((d: { paymentMethod: string }) => d.paymentMethod.toLowerCase() === 'online').reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
+    const cashReceived = collectorDonations.filter((d: { paymentMethod: string }) => d.paymentMethod.toLowerCase() === 'cash').reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
 
-    const onlinePaid = collectorExpensePayments.filter(p => {
-      const expense = expenses.find(e => e.payments.some(ep => ep.paymentId === p.paymentId));
+    const onlinePaid = collectorExpensePayments.filter((p: { paymentId: number }) => {
+      const expense = expenses.find((e: { payments: Array<{ paymentId: number }>; paymentMethod?: string | null }) => e.payments.some((ep: { paymentId: number }) => ep.paymentId === p.paymentId));
       return expense?.paymentMethod?.toLowerCase() === 'online';
-    }).reduce((sum, p) => sum + p.amount, 0);
+    }).reduce((sum: number, p: { amount: number }) => sum + p.amount, 0);
 
-    const cashPaid = collectorExpensePayments.filter(p => {
-      const expense = expenses.find(e => e.payments.some(ep => ep.paymentId === p.paymentId));
+    const cashPaid = collectorExpensePayments.filter((p: { paymentId: number }) => {
+      const expense = expenses.find((e: { payments: Array<{ paymentId: number }>; paymentMethod?: string | null }) => e.payments.some((ep: { paymentId: number }) => ep.paymentId === p.paymentId));
       return expense?.paymentMethod?.toLowerCase() === 'cash';
-    }).reduce((sum, p) => sum + p.amount, 0);
+    }).reduce((sum: number, p: { amount: number }) => sum + p.amount, 0);
 
     return {
       name: collector.name,
@@ -897,4 +880,99 @@ export async function deleteUser(id?: number, email?: string) {
   });
 
   return user;
+}
+
+export async function createCollector(name: string) {
+  if (!name || !name.trim()) {
+    throw new Error("Collector name is required");
+  }
+
+  // Check if collector already exists
+  const existing = await prisma.collectors.findFirst({
+    where: { name: name.trim() },
+  });
+
+  if (existing) {
+    throw new Error("Collector with this name already exists");
+  }
+
+  return prisma.collectors.create({
+    data: { name: name.trim() },
+  });
+}
+
+export async function deleteCollector(id: number) {
+  if (!id) {
+    throw new Error("Collector ID is required");
+  }
+
+  // Check if collector has associated donations or payments
+  const collector = await prisma.collectors.findUnique({
+    where: { collectorId: id },
+    include: {
+      donations: true,
+      payments: true,
+    },
+  });
+
+  if (!collector) {
+    throw new Error("Collector not found");
+  }
+
+  if (collector.donations.length > 0 || collector.payments.length > 0) {
+    throw new Error("Cannot delete collector with associated donations or payments");
+  }
+
+  await prisma.collectors.delete({
+    where: { collectorId: id },
+  });
+
+  return collector;
+}
+
+export async function createReferral(name: string) {
+  if (!name || !name.trim()) {
+    throw new Error("Referral name is required");
+  }
+
+  // Check if referral already exists
+  const existing = await prisma.referrals.findFirst({
+    where: { name: name.trim() },
+  });
+
+  if (existing) {
+    throw new Error("Referral with this name already exists");
+  }
+
+  return prisma.referrals.create({
+    data: { name: name.trim() },
+  });
+}
+
+export async function deleteReferral(id: number) {
+  if (!id) {
+    throw new Error("Referral ID is required");
+  }
+
+  // Check if referral has associated donations
+  const referral = await prisma.referrals.findUnique({
+    where: { referralId: id },
+    include: {
+      donations: true,
+    },
+  });
+
+  if (!referral) {
+    throw new Error("Referral not found");
+  }
+
+  if (referral.donations.length > 0) {
+    throw new Error("Cannot delete referral with associated donations");
+  }
+
+  await prisma.referrals.delete({
+    where: { referralId: id },
+  });
+
+  return referral;
 }

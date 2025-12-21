@@ -1,17 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@/app/generated/prisma/edge';
-import { withAccelerate } from '@prisma/extension-accelerate';
-
-const prisma = new PrismaClient().$extends(withAccelerate());
+import { getAllCollectors, createCollector, deleteCollector } from '@/app/lib/db';
 
 // GET - Fetch all collectors
 export async function GET() {
   try {
-    const collectors = await prisma.collectors.findMany({
-      orderBy: { name: 'asc' },
-    });
-    
-    return NextResponse.json({ collectors });
+    const collectors = await getAllCollectors();
+    // Sort by name since getAllCollectors doesn't include orderBy
+    const sortedCollectors = collectors.sort((a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name));
+    return NextResponse.json({ collectors: sortedCollectors });
   } catch (error) {
     console.error('Failed to fetch collectors:', error);
     return NextResponse.json(
@@ -33,28 +29,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Check if collector already exists
-    const existing = await prisma.collectors.findFirst({
-      where: { name: name.trim() },
-    });
-
-    if (existing) {
-      return NextResponse.json(
-        { message: 'Collector with this name already exists' },
-        { status: 400 }
-      );
-    }
-
-    const collector = await prisma.collectors.create({
-      data: { name: name.trim() },
-    });
-
+    const collector = await createCollector(name);
     return NextResponse.json({ collector }, { status: 201 });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to create collector:', error);
+    const status = error.message.includes('already exists') ? 400 : 500;
     return NextResponse.json(
-      { message: 'Failed to create collector', error: String(error) },
-      { status: 500 }
+      { message: error.message || 'Failed to create collector', error: String(error) },
+      { status }
     );
   }
 }
@@ -71,39 +53,18 @@ export async function DELETE(req: NextRequest) {
       );
     }
 
-    // Check if collector has associated donations or payments
-    const collector = await prisma.collectors.findUnique({
-      where: { collectorId: id },
-      include: {
-        donations: true,
-        payments: true,
-      },
-    });
-
-    if (!collector) {
-      return NextResponse.json(
-        { message: 'Collector not found' },
-        { status: 404 }
-      );
-    }
-
-    if (collector.donations.length > 0 || collector.payments.length > 0) {
-      return NextResponse.json(
-        { message: 'Cannot delete collector with associated donations or payments' },
-        { status: 400 }
-      );
-    }
-
-    await prisma.collectors.delete({
-      where: { collectorId: id },
-    });
-
+    await deleteCollector(id);
     return NextResponse.json({ message: 'Collector deleted successfully' });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to delete collector:', error);
+    let status = 500;
+    if (error.message.includes('not found')) status = 404;
+    else if (error.message.includes('Cannot delete')) status = 400;
+    else if (error.message.includes('required')) status = 400;
+    
     return NextResponse.json(
-      { message: 'Failed to delete collector', error: String(error) },
-      { status: 500 }
+      { message: error.message || 'Failed to delete collector', error: String(error) },
+      { status }
     );
   }
 }

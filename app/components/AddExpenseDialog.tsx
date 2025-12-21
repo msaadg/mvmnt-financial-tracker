@@ -214,17 +214,6 @@ const AddExpenseDialog = ({ expense, onSubmit, triggerButton, open: controlledOp
   
   const { toast } = useToast();
 
-  const vendors = [
-    "Office Supplies Co.",
-    "Utility Company",
-    "Marketing Agency",
-    "Tech Solutions",
-    "Catering Services",
-    "Food Distribution Project",
-    "IT Services Ltd.",
-    "Education Program"
-  ];
-
   const addCollector = () => {
     setFormData({
       ...formData,
@@ -315,10 +304,6 @@ const AddExpenseDialog = ({ expense, onSubmit, triggerButton, open: controlledOp
     setLoading(true);
     
     try {
-      // Find the vendor/project ID from the list
-      const vendorIndex = vendors.indexOf(formData.vendorName);
-      const vendorProjId = vendorIndex >= 0 ? vendorIndex + 1 : 1;
-
       // Determine status based on collectors total vs expense amount
       const status = collectorsTotal < expenseAmount ? "Pending" : "Paid";
 
@@ -327,7 +312,7 @@ const AddExpenseDialog = ({ expense, onSubmit, triggerButton, open: controlledOp
         date: formData.date,
         amount: parseInt(formData.amount),
         paymentMethod: formData.paymentMethod,
-        vendorProjId: vendorProjId,
+        vendorProjName: formData.vendorName,
         category: formData.category,
         description: formData.description,
         status, // computed status

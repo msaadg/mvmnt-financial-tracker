@@ -6,12 +6,11 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../app/generated/prisma"
+  output   = "./generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 // PowerUsers table
@@ -37,13 +36,6 @@ model Collectors {
   payments      Payment[]
 }
 
-// VendorsProjects table
-model VendorsProjects {
-  vendProjId    Int       @id @default(autoincrement())
-  name          String
-  expenses      Expenses[]
-}
-
 // Donation table
 model Donation {
   transacId     Int       @id @default(autoincrement())
@@ -67,12 +59,11 @@ model Expenses {
   date          DateTime
   amount        Int
   paymentMethod String
-  vendorProjId  Int
+  vendorProjName  String
   category      String
   description   String?
   status        String
   
-  vendorProject VendorsProjects? @relation(fields: [vendorProjId], references: [vendProjId], onDelete: Cascade)
   payments      Payment[]
 }
 
