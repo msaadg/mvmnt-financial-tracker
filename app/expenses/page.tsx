@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/app/components/ui/badge";
 import { Download, Search, Edit, Trash2, FileText, Filter, Loader2 } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/app/components/ui/table";
-import { sampleExpenses, collectors } from "@/app/data/sampleData";
+// import { sampleExpenses, collectors } from "@/app/data/sampleData";
 import AddExpenseDialog from "@/app/components/AddExpenseDialog";
 import ExpenseReceiptDialog from "@/app/components/ExpenseReceiptDialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/app/components/ui/tooltip";
@@ -46,10 +46,12 @@ const Expenses = () => {
   const [expenses, setExpenses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [collectors, setCollectors] = useState<string[]>([]);
 
   // Fetch expenses from API
   useEffect(() => {
     fetchExpenses();
+    fetchCollectors();
   }, []);
 
   const fetchExpenses = async () => {
@@ -62,11 +64,20 @@ const Expenses = () => {
       console.error('Error fetching expenses:', err);
       setError('Failed to load expenses from database');
       // Fallback to sample data
-      setExpenses(sampleExpenses);
+      // setExpenses(sampleExpenses);
     } finally {
       setLoading(false);
     }
   };
+
+    const fetchCollectors = async () => {
+    try {
+      const response = await axios.get('/api/collectors');
+      setCollectors(response.data.collectors || []);
+    } catch (err) {
+      console.error('Failed to fetch collectors:', err);
+    }
+  }
 
   const filteredExpenses = expenses.filter(expense => {
     const vendorName = expense.vendorName || expense.vendorProject?.name || "";
@@ -301,7 +312,7 @@ const Expenses = () => {
                 <SelectItem value="all">All Status</SelectItem>
                 <SelectItem value="paid">Paid</SelectItem>
                 <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="overdue">Overdue</SelectItem>
+                {/* <SelectItem value="overdue">Overdue</SelectItem> */}
               </SelectContent>
             </Select>
             

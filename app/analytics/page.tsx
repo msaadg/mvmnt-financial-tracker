@@ -417,7 +417,7 @@ const Analytics = () => {
                 <SelectItem value="completed">Completed</SelectItem>
                 <SelectItem value="paid">Paid</SelectItem>
                 <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="overdue">Overdue</SelectItem>
+                {/* <SelectItem value="overdue">Overdue</SelectItem> */}
               </SelectContent>
             </Select>
             <Select value={paymentFilter} onValueChange={setPaymentFilter}>

@@ -24,7 +24,7 @@ import ReceiptDialog from "@/app/components/ReceiptDialog";
 import { exportDonationsToCSV } from "@/app/lib/pdfGenerator";
 import axios from "axios";
 import { useToast } from "@/app/hooks/use-toast";
-import { collectors } from "@/app/data/sampleData";
+// import { collectors } from "@/app/data/sampleData";
 
 interface Donation {
   id: string;
@@ -63,9 +63,11 @@ const Donations = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
-
+  const [collectors, setCollectors] = useState<string[]>([]);
+  
   useEffect(() => {
     fetchDonations();
+    fetchCollectors();
   }, []);
 
   const fetchDonations = async () => {
@@ -81,6 +83,15 @@ const Donations = () => {
       setLoading(false);
     }
   };
+
+  const fetchCollectors = async () => {
+    try {
+      const response = await axios.get('/api/collectors');
+      setCollectors(response.data.collectors || []);
+    } catch (err) {
+      console.error('Failed to fetch collectors:', err);
+    }
+  }
 
   const filteredDonations = donations.filter(donation => {
     const matchesSearch = donation.donorName.toLowerCase().includes(searchTerm.toLowerCase());
@@ -288,8 +299,8 @@ const Donations = () => {
               <SelectContent>
                 <SelectItem value="all">All Status</SelectItem>
                 <SelectItem value="completed">Completed</SelectItem>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="overdue">Overdue</SelectItem>
+                {/* <SelectItem value="pending">Pending</SelectItem> */}
+                {/* <SelectItem value="overdue">Overdue</SelectItem> */}
               </SelectContent>
             </Select>
             <Select value={typeFilter} onValueChange={setTypeFilter}>

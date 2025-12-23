@@ -88,13 +88,13 @@ const AddDonationDialog = ({ donation, onSubmit, triggerButton, open: controlled
   }, [donation]);
   const { toast } = useToast();
 
-  const donors = [
-    "Ahmed Ali",
-    "Fatima Khan", 
-    "Muhammad Hassan",
-    "Sarah Ahmed",
-    "Ali Khan"
-  ];
+  // const donors = [
+  //   "Ahmed Ali",
+  //   "Fatima Khan", 
+  //   "Muhammad Hassan",
+  //   "Sarah Ahmed",
+  //   "Ali Khan"
+  // ];
 
   const validateForm = () => {
     const missingFields: string[] = [];

@@ -669,7 +669,6 @@ export async function getFundsData() {
   });
 
   const expenses = await prisma.expenses.findMany({
-    where: { status: "Paid" },
     include: {
       payments: {
         include: { collector: true },
