@@ -172,10 +172,10 @@ const ExpenseReceiptDialog = ({ expense, open, onOpenChange }: ExpenseReceiptDia
             <Download className="h-4 w-4" />
             {downloading ? "Generating..." : "Download PDF"}
           </Button>
-          <Button onClick={handleEmail} className="flex items-center gap-2">
+          {/* <Button onClick={handleEmail} className="flex items-center gap-2">
             <Mail className="h-4 w-4" />
             Email Receipt
-          </Button>
+          </Button> */}
         </div>
       </DialogContent>
     </Dialog>

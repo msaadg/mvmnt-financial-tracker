@@ -187,10 +187,10 @@ const ReceiptDialog = ({ donation, open, onOpenChange }: ReceiptDialogProps) => 
             <Download className="h-4 w-4" />
             {downloading ? "Generating..." : "Download PDF"}
           </Button>
-          <Button onClick={handleEmail} className="flex items-center gap-2">
+          {/* <Button onClick={handleEmail} className="flex items-center gap-2">
             <Mail className="h-4 w-4" />
             Email to Donor
-          </Button>
+          </Button> */}
         </div>
       </DialogContent>
     </Dialog>
