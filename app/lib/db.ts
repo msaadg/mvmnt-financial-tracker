@@ -282,7 +282,7 @@ async function createPayment(
 
 export async function getAllCollectors() {
   return prisma.collectors.findMany({
-    cacheStrategy: { ttl: 60 },
+    cacheStrategy: { ttl: 1 },
   });
 }
 
@@ -291,13 +291,13 @@ export async function getCollectorByName(name: string) {
     where: {
       name: name,
     },
-    cacheStrategy: { ttl: 60 },
+    cacheStrategy: { ttl: 1 },
   });
 }
 
 export async function getAllReferrals() {
   return prisma.referrals.findMany({
-    cacheStrategy: { ttl: 60 },
+    cacheStrategy: { ttl: 1 },
   });
 }
 
@@ -306,7 +306,7 @@ export async function getReferralByName(name: string) {
     where: {
       name: name,
     },
-    cacheStrategy: { ttl: 60 },
+    cacheStrategy: { ttl: 1 },
   });
 }
 
@@ -319,7 +319,7 @@ export async function getAllExpenses() {
         }
       }
     },
-    cacheStrategy: { ttl: 60 },
+    cacheStrategy: { ttl: 1 },
   });
 
   // Transform into the desired format
@@ -349,7 +349,7 @@ export async function getAllDonations() {
       referral: true,
       collector: true,
     },
-    cacheStrategy: { ttl: 60 },
+    cacheStrategy: { ttl: 1 },
   });
 
   return donations.map((donation: { transacId: number; donorName: string; amount: number; type: string; paymentMethod: string; collector: { name: string } | null; referral: { name: string } | null; date: Date; status: string; notes: string | null }) => ({
@@ -381,7 +381,7 @@ export async function getMonthlyDonationStats() {
         lt: firstDayOfNextMonth,
       },
     },
-    cacheStrategy: { ttl: 60 },
+    cacheStrategy: { ttl: 1 },
   });
 
   const totalDonations = monthDonations.reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
@@ -398,7 +398,7 @@ export async function getMonthlyDonationStats() {
         lt: prevMonthEnd,
       },
     },
-    cacheStrategy: { ttl: 60 },
+    cacheStrategy: { ttl: 1 },
   });
 
   const prevTotalDonations = prevMonthDonations.reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
@@ -428,7 +428,7 @@ export async function getMonthlyExpenseStats() {
         lt: firstDayOfNextMonth,
       },
     },
-    cacheStrategy: { ttl: 60 },
+    cacheStrategy: { ttl: 1 },
   });
 
   const totalExpenses = monthExpenses.reduce((sum: number, e: { amount: number }) => sum + e.amount, 0);
@@ -445,7 +445,7 @@ export async function getMonthlyExpenseStats() {
         lt: prevMonthEnd,
       },
     },
-    cacheStrategy: { ttl: 60 },
+    cacheStrategy: { ttl: 1 },
   });
 
   const prevTotalExpenses = prevMonthExpenses.reduce((sum: number, e: { amount: number }) => sum + e.amount, 0);
@@ -766,7 +766,7 @@ export async function getUsers() {
   return prisma.powerUsers.findMany({
     select: { id: true, email: true, username: true, role: true },
     orderBy: { username: "asc" },
-    cacheStrategy: { ttl: 60 },
+    cacheStrategy: { ttl: 1 },
   });
 }
 
