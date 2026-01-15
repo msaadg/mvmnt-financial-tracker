@@ -213,36 +213,6 @@ export async function createExpense(data: {
   return expense;
 }
 
-async function createPayment(
-  transacId: number,
-  data: {
-    name: string;
-    type: string;
-    amount: number;
-  }
-) {
-  // Find the collector in the database
-  const collector = await prisma.collectors.findFirst({
-    where: { name: data.name },
-  });
-
-  if (!collector) {
-    throw new Error(
-      `Collector "${data.name}" not found in the database. Please seed the database first.`
-    );
-  }
-
-  // Create the payment
-  return prisma.payment.create({
-    data: {
-      expenseId: transacId,
-      collectorId: collector.collectorId,
-      type: data.type,
-      amount: data.amount,
-    },
-  });
-}
-
 export async function getAllCollectors() {
   return prisma.collectors.findMany({
     cacheStrategy: { ttl: 1 },
@@ -931,3 +901,164 @@ export async function deleteReferral(id: number) {
 
   return referral;
 }
+
+// ==================== Payment Management Functions ====================
+
+export async function createPaymentForVendor(data: {
+  vendorName: string;
+  collectorName: string;
+  type: string;
+  amount: number;
+  date: Date;
+  paymentMethod: string;
+}) {
+  // Find the collector in the database
+  const collector = await prisma.collectors.findFirst({
+    where: { name: data.collectorName },
+  });
+
+  if (!collector) {
+    throw new Error(
+      `Collector "${data.collectorName}" not found in the database. Please seed the database first.`
+    );
+  }
+
+  // Verify vendor exists
+  const vendor = await prisma.vendors.findUnique({
+    where: { vendorName: data.vendorName },
+  });
+
+  if (!vendor) {
+    throw new Error(
+      `Vendor "${data.vendorName}" not found in the database.`
+    );
+  }
+
+  // Create the payment
+  return prisma.payment.create({
+    data: {
+      vendorName: data.vendorName,
+      collectorId: collector.collectorId,
+      type: data.type,
+      amount: data.amount,
+      date: data.date,
+      paymentMethod: data.paymentMethod,
+    },
+  });
+}
+
+export async function updatePayment(id: number, data: {
+  vendorName?: string;
+  collectorName?: string;
+  type?: string;
+  amount?: number;
+  date?: Date;
+  paymentMethod?: string;
+}) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const updateData: any = {};
+
+  if (data.vendorName) updateData.vendorName = data.vendorName;
+  if (data.type) updateData.type = data.type;
+  if (data.amount !== undefined) updateData.amount = data.amount;
+  if (data.date) updateData.date = data.date;
+  if (data.paymentMethod) updateData.paymentMethod = data.paymentMethod;
+
+  // Find collector if provided
+  if (data.collectorName) {
+    const collector = await prisma.collectors.findFirst({
+      where: { name: data.collectorName },
+    });
+    if (!collector) {
+      throw new Error(`Collector "${data.collectorName}" not found in the database.`);
+    }
+    updateData.collectorId = collector.collectorId;
+  }
+
+  return prisma.payment.update({
+    where: { paymentId: id },
+    data: updateData,
+  });
+}
+
+export async function deletePayment(id: number) {
+  return prisma.payment.delete({
+    where: { paymentId: id },
+  });
+}
+
+export async function getAllPayments() {
+  const payments = await prisma.payment.findMany({
+    include: {
+      vendor: true,
+      collector: true,
+    },
+    cacheStrategy: { ttl: 1 },
+  });
+
+  return payments.map((payment: { paymentId: number; vendorName: string; collector: { name: string } | null; type: string; amount: number; date: Date; paymentMethod: string }) => ({
+    id: payment.paymentId,
+    vendorName: payment.vendorName,
+    collector: payment.collector?.name || "Unknown",
+    type: payment.type,
+    amount: payment.amount,
+    date: payment.date.toISOString().split("T")[0],
+    paymentMethod: payment.paymentMethod,
+  }));
+}
+
+export async function getVendorBalances(includeZeroBalance: boolean = false) {
+  const vendors = await prisma.vendors.findMany({
+    include: {
+      expenses: true,
+      payments: true,
+    },
+    cacheStrategy: { ttl: 1 },
+  });
+
+  const vendorBalances = vendors.map((vendor: { vendorName: string; expenses: Array<{ amount: number }>; payments: Array<{ amount: number }> }) => {
+    const totalExpenses = vendor.expenses.reduce((sum: number, e: { amount: number }) => sum + e.amount, 0);
+    const totalPayments = vendor.payments.reduce((sum: number, p: { amount: number }) => sum + p.amount, 0);
+    const balance = totalExpenses - totalPayments;
+
+    return {
+      vendorName: vendor.vendorName,
+      totalExpenses,
+      totalPayments,
+      balance,
+    };
+  });
+
+  // Filter out zero balance vendors if requested
+  if (!includeZeroBalance) {
+    return vendorBalances.filter((v: { balance: number }) => v.balance !== 0);
+  }
+
+  return vendorBalances;
+}
+
+export async function deleteVendor(vendorName: string) {
+  // Check if vendor has associated expenses or payments
+  const vendor = await prisma.vendors.findUnique({
+    where: { vendorName },
+    include: {
+      expenses: true,
+      payments: true,
+    },
+  });
+
+  if (!vendor) {
+    throw new Error("Vendor not found");
+  }
+
+  if (vendor.expenses.length > 0 || vendor.payments.length > 0) {
+    throw new Error("Cannot delete vendor with associated expenses or payments");
+  }
+
+  await prisma.vendors.delete({
+    where: { vendorName },
+  });
+
+  return vendor;
+}
+

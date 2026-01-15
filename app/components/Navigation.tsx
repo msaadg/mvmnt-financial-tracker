@@ -11,7 +11,7 @@ import {
 } from "@/app/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/app/components/ui/sheet";
 import { Avatar, AvatarFallback } from "@/app/components/ui/avatar";
-import { LayoutDashboard, DollarSign, CreditCard, BarChart3, LogOut, Wallet, Menu, Users } from "lucide-react";
+import { LayoutDashboard, DollarSign, CreditCard, BarChart3, LogOut, Wallet, Menu, Users, Receipt } from "lucide-react";
 import { useState } from "react";
 import { signOut, SessionProvider, useSession } from "next-auth/react";
 import { useToast } from "@/app/hooks/use-toast";
@@ -20,6 +20,7 @@ const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Donations", href: "/donations", icon: DollarSign },
   { name: "Expenses", href: "/expenses", icon: CreditCard },
+  { name: "Payments", href: "/payments", icon: Receipt },
   { name: "Funds Management", href: "/funds", icon: Wallet },
   { name: "Analytics & Ledger", href: "/analytics", icon: BarChart3 },
   // ... admin-only "User Management" will be rendered conditionally inside NavContent ...

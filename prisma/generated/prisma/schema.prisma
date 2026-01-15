@@ -64,11 +64,13 @@ model Expenses {
 
 // Payment table
 model Payment {
-  paymentId   Int    @id @default(autoincrement())
-  vendorName  String
-  collectorId Int
-  type        String
-  amount      Int
+  paymentId     Int      @id @default(autoincrement())
+  vendorName    String
+  collectorId   Int
+  type          String
+  amount        Int
+  date          DateTime
+  paymentMethod String
 
   collector Collectors? @relation(fields: [collectorId], references: [collectorId], onDelete: Cascade)
   vendor    Vendors?    @relation(fields: [vendorName], references: [vendorName], onDelete: Cascade)
