@@ -24,6 +24,7 @@ import ReceiptDialog from "@/app/components/ReceiptDialog";
 import { exportDonationsToCSV } from "@/app/lib/pdfGenerator";
 import axios from "axios";
 import { useToast } from "@/app/hooks/use-toast";
+import { SessionProvider, useSession } from "next-auth/react";
 // import { collectors } from "@/app/data/sampleData";
 
 interface Donation {
@@ -42,7 +43,11 @@ interface Donation {
   accountName?: string;
 }
 
-const Donations = () => {
+function Donations() {
+  return <SessionProvider> <DonationsContent /></SessionProvider> 
+}
+
+const DonationsContent = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
@@ -66,6 +71,10 @@ const Donations = () => {
   const { toast } = useToast();
   const [referrals, setReferrals] = useState<string[]>([]);
   const [collectors, setCollectors] = useState<string[]>([]);
+
+  // Admin-only: fetch donations from API on component mount
+  const { data: session } = useSession();
+  const isAdmin = !!(session?.user as any)?.role && (session?.user as any).role === "admin";
   
   useEffect(() => {
     fetchDonations();
@@ -123,8 +132,8 @@ const Donations = () => {
 
   const getStatusBadge = (status: string) => {
     switch (status.toLowerCase()) {
-      case "completed":
-        return <Badge className="bg-success text-success-foreground">Completed</Badge>;
+      case "approved":
+        return <Badge className="bg-success text-success-foreground">Approved</Badge>;
       case "pending":
         return <Badge className="bg-warning text-warning-foreground">Pending</Badge>;
       case "overdue":
@@ -426,22 +435,24 @@ const Donations = () => {
                     <TableCell>{getStatusBadge(donation.status)}</TableCell>
                     <TableCell>
                       <TooltipProvider>
-                        <div className="flex gap-1">
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button 
-                                variant="ghost" 
-                                size="sm" 
-                                className="h-8 w-8 p-0"
-                                onClick={() => handleEdit(donation)}
-                              >
-                                <Edit className="h-3 w-3" />
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Edit donation</p>
-                            </TooltipContent>
-                          </Tooltip>
+                        <div className="flex gap-1 justify-center">
+                          {isAdmin && 
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm" 
+                                  className="h-8 w-8 p-0"
+                                  onClick={() => handleEdit(donation)}
+                                >
+                                  <Edit className="h-3 w-3" />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Edit donation</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          }
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <Button 
@@ -465,21 +476,23 @@ const Donations = () => {
                               <p>Generate receipt</p>
                             </TooltipContent>
                           </Tooltip>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button 
-                                variant="ghost" 
-                                size="sm"
-                                className="h-8 w-8 p-0 text-destructive hover:text-destructive"
-                                onClick={() => handleDeleteClick(donation)}
-                              >
-                                <Trash2 className="h-3 w-3" />
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Delete donation</p>
-                            </TooltipContent>
-                          </Tooltip>
+                          {isAdmin && 
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm"
+                                  className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                                  onClick={() => handleDeleteClick(donation)}
+                                >
+                                  <Trash2 className="h-3 w-3" />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Delete donation</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          }
                         </div>
                       </TooltipProvider>
                     </TableCell>

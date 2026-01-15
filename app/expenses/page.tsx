@@ -14,6 +14,7 @@ import AddExpenseDialog from "@/app/components/AddExpenseDialog";
 import ExpenseReceiptDialog from "@/app/components/ExpenseReceiptDialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/app/components/ui/tooltip";
 import { useToast } from "@/app/hooks/use-toast";
+import { SessionProvider, useSession } from "next-auth/react";
 import { 
   AlertDialog, 
   AlertDialogAction, 
@@ -27,7 +28,11 @@ import {
 import { exportExpensesToCSV } from "@/app/lib/pdfGenerator";
 import axios from "axios";
 
-const Expenses = () => {
+function Expenses() {
+  return <SessionProvider><ExpensesContent /></SessionProvider>;
+}
+
+const ExpensesContent = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
@@ -47,6 +52,10 @@ const Expenses = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [collectors, setCollectors] = useState<string[]>([]);
+
+  // Admin-only: fetch donations from API on component mount
+  const { data: session } = useSession();
+  const isAdmin = !!(session?.user as any)?.role && (session?.user as any).role === "admin";
 
   // Fetch expenses from API
   useEffect(() => {
@@ -110,8 +119,8 @@ const Expenses = () => {
 
   const getStatusBadge = (status: string) => {
     switch (status.toLowerCase()) {
-      case "paid":
-        return <Badge className="bg-success text-success-foreground">Paid</Badge>;
+      case "approved":
+        return <Badge className="bg-success text-success-foreground">Approved</Badge>;
       case "pending":
         return <Badge className="bg-warning text-warning-foreground">Pending</Badge>;
       case "overdue":
@@ -445,25 +454,26 @@ const Expenses = () => {
                     <TableCell className="text-sm">{new Date(expense.date).toLocaleDateString('en-GB')}</TableCell>
                     <TableCell>{getStatusBadge(expense.status)}</TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-1">
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button 
-                                size="sm" 
-                                variant="ghost" 
-                                className="h-8 w-8 p-0"
-                                onClick={() => handleEditClick(expense)}
-                              >
-                                <Edit className="h-3 w-3" />
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Edit expense</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-
+                      <div className="flex items-center gap-1 justify-center">
+                        {isAdmin && 
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button 
+                                  size="sm" 
+                                  variant="ghost" 
+                                  className="h-8 w-8 p-0"
+                                  onClick={() => handleEditClick(expense)}
+                                >
+                                  <Edit className="h-3 w-3" />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Edit expense</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        }
                         {/* <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger asChild>
@@ -481,24 +491,25 @@ const Expenses = () => {
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider> */}
-
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button 
-                                size="sm" 
-                                variant="ghost" 
-                                className="h-8 w-8 p-0 text-destructive hover:text-destructive"
-                                onClick={() => handleDeleteClick(expense)}
-                              >
-                                <Trash2 className="h-3 w-3" />
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Delete expense</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
+                        {isAdmin && 
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button 
+                                  size="sm" 
+                                  variant="ghost" 
+                                  className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                                  onClick={() => handleDeleteClick(expense)}
+                                >
+                                  <Trash2 className="h-3 w-3" />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Delete expense</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        }
                       </div>
                     </TableCell>
                   </TableRow>

@@ -33,6 +33,7 @@ export async function createDonation(data: {
   notes?: string;
   referral: string;
   collector: string;
+  status: string;
 }) {
   // find referral and collector id
   const referralEntry = await prisma.referrals.findFirst({
@@ -63,7 +64,7 @@ export async function createDonation(data: {
       donorName: data.donorName,
       type: data.type,
       notes: data.notes,
-      status: "Completed",
+      status: data.status,
       referralId: referralEntry?.referralId,
       collectorId: collectorEntry?.collectorId
     },
@@ -79,6 +80,7 @@ export async function updateDonation(id: number, data: {
   notes?: string;
   referral?: string;
   collector?: string;
+  status: string;
 }) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const updateData: any = {};
@@ -89,7 +91,8 @@ export async function updateDonation(id: number, data: {
   if (data.donorName) updateData.donorName = data.donorName;
   if (data.type) updateData.type = data.type;
   if (data.notes !== undefined) updateData.notes = data.notes;
-  
+  updateData.status = data.status;
+
   // find referral and collector id if provided
   if (data.referral) {
     const referralEntry = await prisma.referrals.findFirst({
@@ -158,6 +161,7 @@ export async function updateExpense(id: number, data: {
   if (data.vendorProjName) updateData.vendorProjName = data.vendorProjName;
   if (data.category) updateData.category = data.category;
   if (data.description !== undefined) updateData.description = data.description;
+  updateData.status = data.status;
 
   // If collectors provided, replace payments
   if (Array.isArray(data.collectors)) {
@@ -176,13 +180,15 @@ export async function updateExpense(id: number, data: {
       await createPayment(id, collector);
     }
 
-    // Compute status based on collectors total vs amount
-    updateData.status = collectorsTotal < amountToUse ? "Pending" : "Paid";
+    // Old implementation of status
+    // // Compute status based on collectors total vs amount
+    // updateData.status = collectorsTotal < amountToUse ? "Pending" : "Paid";
   } else {
     // If collectors not provided but amount changed, re-evaluate status based on existing payments
     if (data.amount !== undefined) {
-      const paymentsTotal = existing.payments.reduce((sum: number, p: { amount: number }) => sum + p.amount, 0);
-      updateData.status = paymentsTotal < amountToUse ? "Pending" : "Paid";
+      // const paymentsTotal = existing.payments.reduce((sum: number, p: { amount: number }) => sum + p.amount, 0);
+      // updateData.status = paymentsTotal < amountToUse ? "Pending" : "Paid";
+      updateData.status = data.status;
     } else if (data.status) {
       updateData.status = data.status;
     }
@@ -766,6 +772,14 @@ export async function getUsers() {
   return prisma.powerUsers.findMany({
     select: { id: true, email: true, username: true, role: true },
     orderBy: { username: "asc" },
+    cacheStrategy: { ttl: 1 },
+  });
+}
+
+export async function getUserRole(email: string) {
+  return prisma.powerUsers.findUnique({
+    select: { role: true },
+    where: { email: email},
     cacheStrategy: { ttl: 1 },
   });
 }

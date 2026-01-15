@@ -1,11 +1,21 @@
 // app/api/expenses/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { createExpense, getCollectorByName, updateExpense, deleteExpense } from '@/app/lib/db';
+import { createExpense, getCollectorByName, updateExpense, deleteExpense, getUserRole } from '@/app/lib/db';
+import { getServerSession } from "next-auth";
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { date, amount, paymentMethod, vendorProjName, category, description, status: incomingStatus, collectors } = body;
+    
+    const session = await getServerSession();
+    
+    if (!session) {
+      return NextResponse.json({error: "Not Authenticated"}, {status: 401})
+    }
+    
+    const role = await getUserRole(session.user?.email || "");
+    const isAdmin = role.role === "admin" 
 
     // Validate required fields
     if (!date || amount === undefined || !paymentMethod || !vendorProjName || !category) {
@@ -65,8 +75,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Compute status based on collectors total vs amount
-    const computedStatus = collectorsTotal < parsedAmount ? "Pending" : "Paid";
+    // Old implementation of status
+    // // Compute status based on collectors total vs amount
+    // const computedStatus = collectorsTotal < parsedAmount ? "Pending" : "Paid";
 
     // Create the expense
     const expense = await createExpense({
@@ -76,7 +87,7 @@ export async function POST(request: NextRequest) {
       vendorProjName: vendorProjName,
       category,
       description,
-      status: computedStatus, // pass computed status
+      status: isAdmin ? "Approved" : "Pending", // pass computed status
       collectors: collectors,
     });
 
@@ -122,6 +133,15 @@ export async function PUT(request: NextRequest) {
       );
     }
 
+    const session = await getServerSession();
+    
+    if (!session) {
+      return NextResponse.json({error: "Not Authenticated"}, {status: 401})
+    }
+    
+    const role = await getUserRole(session.user?.email || "");
+    const isAdmin = role.role === "admin" 
+
     // If collectors provided, validate array and each collector
     if (collectors !== undefined) {
       if (!Array.isArray(collectors)) {
@@ -164,7 +184,7 @@ export async function PUT(request: NextRequest) {
         vendorProjName: vendorProjName,
         category,
         description,
-        status,
+        status: isAdmin ? "Approved" : "Pending",
         collectors // may be undefined
       });
 

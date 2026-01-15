@@ -1,11 +1,20 @@
 // app/api/donations/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { createDonation, getAllDonations, updateDonation, deleteDonation } from '@/app/lib/db';
+import { createDonation, getAllDonations, updateDonation, deleteDonation, getUserRole } from '@/app/lib/db';
+import { getServerSession } from "next-auth";
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { date, amount, paymentMethod, donorName, type, notes, referral, collector } = body;
+    const session = await getServerSession();
+    
+    if (!session) {
+      return NextResponse.json({error: "Not Authenticated"}, {status: 401})
+    }
+    
+    const role = await getUserRole(session.user?.email || "");
+    const isAdmin = role.role === "admin" 
 
     // Validate required fields
     if (!date || !amount || !paymentMethod || !donorName || !type || !referral || !collector) {
@@ -24,7 +33,8 @@ export async function POST(request: NextRequest) {
       type: type,
       notes: notes,
       referral: referral,
-      collector: collector
+      collector: collector,
+      status: isAdmin ? "Approved" : "Pending"
     });
 
     return NextResponse.json({
@@ -59,7 +69,7 @@ export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
     const { id, date, amount, paymentMethod, donorName, type, notes, referral, collector } = body;
-
+    
     // Validate ID
     if (!id) {
       return NextResponse.json(
@@ -68,6 +78,15 @@ export async function PUT(request: NextRequest) {
       );
     }
 
+    const session = await getServerSession();
+
+    if (!session) {
+      return NextResponse.json({error: "Not Authenticated"}, {status: 401})
+    }
+    
+    const role = await getUserRole(session.user?.email || "");
+    const isAdmin = role.role === "admin" 
+    
     // Update the donation
     const donation = await updateDonation(parseInt(id), {
       date: date ? new Date(date) : undefined,
@@ -77,7 +96,8 @@ export async function PUT(request: NextRequest) {
       type,
       notes,
       referral,
-      collector
+      collector,
+      status: isAdmin ? "Approved" : "Pending"
     });
 
     return NextResponse.json({
