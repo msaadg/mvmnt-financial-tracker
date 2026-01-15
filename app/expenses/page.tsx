@@ -464,7 +464,7 @@ const Expenses = () => {
                           </Tooltip>
                         </TooltipProvider>
 
-                        <TooltipProvider>
+                        {/* <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <Button 
@@ -480,7 +480,7 @@ const Expenses = () => {
                               <p>Generate receipt</p>
                             </TooltipContent>
                           </Tooltip>
-                        </TooltipProvider>
+                        </TooltipProvider> */}
 
                         <TooltipProvider>
                           <Tooltip>

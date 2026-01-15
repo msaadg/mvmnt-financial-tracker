@@ -467,15 +467,15 @@ export default function Admin() {
                   <Table>
                     <TableHeader className="sticky top-0 bg-background">
                       <TableRow>
-                        <TableHead>ID</TableHead>
+                        <TableHead>Index</TableHead>
                         <TableHead>Collector Name</TableHead>
                         <TableHead className="text-right">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {filteredCollectors.map((collector) => (
+                      {filteredCollectors.map((collector, index) => (
                         <TableRow key={collector.collectorId}>
-                          <TableCell className="text-muted-foreground">#{collector.collectorId}</TableCell>
+                          <TableCell className="text-muted-foreground">#{index + 1}</TableCell>
                           <TableCell className="font-medium">{collector.name}</TableCell>
                           <TableCell className="text-right">
                             <Button
@@ -563,15 +563,15 @@ export default function Admin() {
                   <Table>
                     <TableHeader className="sticky top-0 bg-background">
                       <TableRow>
-                        <TableHead>ID</TableHead>
+                        <TableHead>Index</TableHead>
                         <TableHead>Referral Name</TableHead>
                         <TableHead className="text-right">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {filteredReferrals.map((referral) => (
+                      {filteredReferrals.map((referral, index) => (
                         <TableRow key={referral.referralId}>
-                          <TableCell className="text-muted-foreground">#{referral.referralId}</TableCell>
+                          <TableCell className="text-muted-foreground">#{index + 1}</TableCell>
                           <TableCell className="font-medium">{referral.name}</TableCell>
                           <TableCell className="text-right">
                             <Button

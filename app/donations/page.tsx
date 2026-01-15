@@ -47,6 +47,7 @@ const Donations = () => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
   const [paymentFilter, setPaymentFilter] = useState("all");
+  const [referralFilter, setReferralFilter] = useState("all");
   const [collectorFilter, setCollectorFilter] = useState("all");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
@@ -63,11 +64,12 @@ const Donations = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
+  const [referrals, setReferrals] = useState<string[]>([]);
   const [collectors, setCollectors] = useState<string[]>([]);
   
   useEffect(() => {
     fetchDonations();
-    fetchCollectors();
+    fetchCollectorsReferrals();
   }, []);
 
   const fetchDonations = async () => {
@@ -84,10 +86,11 @@ const Donations = () => {
     }
   };
 
-  const fetchCollectors = async () => {
+  const fetchCollectorsReferrals = async () => {
     try {
       const response = await axios.get('/api/collectors');
       setCollectors(response.data.collectors || []);
+      setReferrals(response.data.referrals || []);
     } catch (err) {
       console.error('Failed to fetch collectors:', err);
     }
@@ -98,13 +101,14 @@ const Donations = () => {
     const matchesStatus = statusFilter === "all" || (donation.status || "").toLowerCase() === statusFilter;
     const matchesType = typeFilter === "all" || (donation.type || "").toLowerCase() === typeFilter;
     const matchesPayment = paymentFilter === "all" || (donation.paymentMethod || "").toLowerCase() === paymentFilter;
+    const matchesReferral = referralFilter === "all" || (donation.referral || "") === referralFilter;
     const matchesCollector = collectorFilter === "all" || (donation.collector || "") === collectorFilter;
 
     const donationDate = new Date(donation.date);
     const matchesDateFrom = !dateFrom || donationDate >= new Date(dateFrom);
     const matchesDateTo = !dateTo || donationDate <= new Date(dateTo);
 
-    return matchesSearch && matchesStatus && matchesType && matchesPayment && matchesCollector && matchesDateFrom && matchesDateTo;
+    return matchesSearch && matchesStatus && matchesType && matchesPayment && matchesReferral && matchesCollector && matchesDateFrom && matchesDateTo;
   });
 
   // derive summary values from filtered results so UI reflects current filters
@@ -282,7 +286,7 @@ const Donations = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 sm:gap-4">
             <div className="relative">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
@@ -323,6 +327,17 @@ const Donations = () => {
                 <SelectItem value="online">Online</SelectItem>
               </SelectContent>
             </Select>
+            <Select value={referralFilter} onValueChange={setReferralFilter}>
+              <SelectTrigger>
+                <SelectValue placeholder="Referral" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Referrals</SelectItem>
+                {referrals.map((r) => (
+                  <SelectItem key={r} value={r}>{r}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <Select value={collectorFilter} onValueChange={setCollectorFilter}>
               <SelectTrigger>
                 <SelectValue placeholder="Collector" />
@@ -334,7 +349,7 @@ const Donations = () => {
                 ))}
               </SelectContent>
             </Select>
-            <div className="col-span-1 lg:col-span-5 mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div className="col-span-1 lg:col-span-6 mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2">
               <div>
                 <label className="text-xs text-muted-foreground block mb-1">From Date</label>
                 <Input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="text-sm" />

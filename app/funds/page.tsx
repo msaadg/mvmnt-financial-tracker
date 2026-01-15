@@ -122,7 +122,7 @@ const FundsManagement = () => {
   // Filter collectors based on search term
   const filteredCollectorData = collectorData.filter((collector: any) =>
     collector.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  ).sort((a : any, b : any) => b.totalBalance - a.totalBalance);
 
   // Chart colors
   const COLORS = [

@@ -16,26 +16,26 @@ export async function GET() {
       ...donations.map((d: Donation) => ({
         id: `D-${d.id}`,
         date: d.date,
-        description: `Donation from ${d.donorName}`,
+        description: d.donorName,
         type: 'Donation',
         subType: d.type,
         paymentMethod: d.paymentMethod,
         amount: d.amount,
         isIncome: true,
         status: d.status,
-        reference: d.donorName,
+        reference: `Donation from ${d.donorName}`
       })),
       ...expenses.map((e: Expense) => ({
         id: `E-${e.id}`,
         date: e.date,
-        description: e.description,
+        description: e.vendorName,
         type: 'Expense',
         subType: e.category,
         paymentMethod: e.paymentMethod,
         amount: e.amount,
         isIncome: false,
         status: e.status,
-        reference: e.vendorName,
+        reference: e.description,
       }))
     ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
