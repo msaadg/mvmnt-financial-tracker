@@ -30,7 +30,7 @@ export async function GET() {
         date: e.date,
         description: e.vendorName,
         type: 'Expense',
-        subType: e.category,
+        subType: e.project,
         paymentMethod: e.paymentMethod,
         amount: e.amount,
         isIncome: false,

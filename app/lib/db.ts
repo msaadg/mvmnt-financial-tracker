@@ -129,70 +129,40 @@ export async function deleteDonation(id: number) {
 export async function updateExpense(id: number, data: {
   date?: Date;
   amount?: number;
-  paymentMethod?: string;
-  vendorProjName?: string;
-  category?: string;
+  vendorName?: string;
+  project?: string;
   description?: string;
   status?: string;
-  collectors?: {
-    name: string;
-    type: string;
-    amount: number;
-  }[];
 }) {
-  // Fetch existing expense with payments
+  // Fetch existing expense
   const existing = await prisma.expenses.findUnique({
-    where: { transacId: id },
-    include: { payments: true },
+    where: { transacId: id }
   });
   if (!existing) {
     throw new Error(`Expense with id ${id} not found.`);
   }
 
+  const vendor_existing = await prisma.vendors.findUnique({
+    where: { vendorName: data.vendorName }
+  })
+
+  if (!vendor_existing) {
+    await prisma.vendors.create(
+      {data : 
+        {vendorName : data.vendorName}
+      }
+    );
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const updateData: any = {};
 
-  // determine amount to use for validation/status
-  const amountToUse = data.amount !== undefined ? data.amount : existing.amount;
-
   if (data.date) updateData.date = data.date;
   if (data.amount !== undefined) updateData.amount = data.amount;
-  if (data.paymentMethod) updateData.paymentMethod = data.paymentMethod;
-  if (data.vendorProjName) updateData.vendorProjName = data.vendorProjName;
-  if (data.category) updateData.category = data.category;
+  if (data.vendorName) updateData.vendorName = data.vendorName;
+  if (data.project) updateData.project = data.project;
   if (data.description !== undefined) updateData.description = data.description;
   updateData.status = data.status;
-
-  // If collectors provided, replace payments
-  if (Array.isArray(data.collectors)) {
-    const collectorsTotal = data.collectors.reduce((sum, c) => sum + (c.amount || 0), 0);
-    if (collectorsTotal > amountToUse) {
-      throw new Error('Sum of collector amounts exceeds the expense amount.');
-    }
-
-    // Delete existing payments for this expense
-    await prisma.payment.deleteMany({
-      where: { expenseId: id },
-    });
-
-    // Create new payments
-    for (const collector of data.collectors) {
-      await createPayment(id, collector);
-    }
-
-    // Old implementation of status
-    // // Compute status based on collectors total vs amount
-    // updateData.status = collectorsTotal < amountToUse ? "Pending" : "Paid";
-  } else {
-    // If collectors not provided but amount changed, re-evaluate status based on existing payments
-    if (data.amount !== undefined) {
-      // const paymentsTotal = existing.payments.reduce((sum: number, p: { amount: number }) => sum + p.amount, 0);
-      // updateData.status = paymentsTotal < amountToUse ? "Pending" : "Paid";
-      updateData.status = data.status;
-    } else if (data.status) {
-      updateData.status = data.status;
-    }
-  }
 
   return prisma.expenses.update({
     where: { transacId: id },
@@ -200,12 +170,7 @@ export async function updateExpense(id: number, data: {
   });
 }
 
-export async function deleteExpense(id: number) {
-  // First delete all related payments
-  await prisma.payment.deleteMany({
-    where: { expenseId: id },
-  });
-  
+export async function deleteExpense(id: number) {  
   // Then delete the expense
   return prisma.expenses.delete({
     where: { transacId: id },
@@ -215,43 +180,35 @@ export async function deleteExpense(id: number) {
 export async function createExpense(data: {
   date: Date;
   amount: number;
-  paymentMethod: string;
-  vendorProjName: string;
-  category: string;
+  vendorName: string;
+  project: string;
   description?: string;
   status: string;
-  collectors: {
-    name: string;
-    type: string;
-    amount: number;
-  }[];
 }) {
-  // Validate collectors total doesn't exceed expense amount
-  const collectorsTotal = data.collectors.reduce((sum, c) => sum + (c.amount || 0), 0);
-  if (collectorsTotal > data.amount) {
-    throw new Error('Sum of collector amounts exceeds the expense amount.');
+  
+  const vendor_existing = await prisma.vendors.findUnique({
+    where: { vendorName: data.vendorName }
+  })
+
+  if (!vendor_existing) {
+    await prisma.vendors.create(
+      {data : 
+        {vendorName : data.vendorName}
+      }
+    );
   }
 
-  // Compute status based on collectors total vs amount (override incoming)
-  const computedStatus = collectorsTotal < data.amount ? "Pending" : "Paid";
-
-  // create expense (initially no payments)
+  // create expense
   const expense = await prisma.expenses.create({
     data: {
       date: data.date,
       amount: data.amount,
-      paymentMethod: data.paymentMethod,
-      vendorProjName: data.vendorProjName,
-      category: data.category,
+      vendorName: data.vendorName,
+      project: data.project,
       description: data.description,
-      status: computedStatus,
+      status: data.status,
     },
   });
-  
-  // add payments (await each to ensure they are created)
-  for (const collector of data.collectors) {
-    await createPayment(expense.transacId, collector);
-  }
 
   return expense;
 }
@@ -316,34 +273,27 @@ export async function getReferralByName(name: string) {
   });
 }
 
+export async function getAllVendors() {
+  return prisma.vendors.findMany({
+    cacheStrategy: { ttl: 1 },
+  });
+}
+
 export async function getAllExpenses() {
   const expenses = await prisma.expenses.findMany({
-    include: {
-      payments: {
-        include: {
-          collector: true
-        }
-      }
-    },
     cacheStrategy: { ttl: 1 },
   });
 
   // Transform into the desired format
-  const formatted = expenses.map((expense: { transacId: number; vendorProjName: string | null; amount: number; category: string; paymentMethod: string; date: Date; status: string; description: string | null; payments: Array<{ collector: { name: string } | null; type: string; amount: number }> }) => ({
+  const formatted = expenses.map((expense: { transacId: number; vendorName: string | null; amount: number; project: string; date: Date; status: string; description: string | null}) => ({
     id: expense.transacId,
-    vendorName: expense.vendorProjName || "Unknown Vendor",
+    vendorName: expense.vendorName || "Unknown Vendor",
     amount: expense.amount,
-    category: expense.category,
-    paymentMethod: expense.paymentMethod,
+    project: expense.project,
     date: expense.date.toISOString().split("T")[0], // format as YYYY-MM-DD
     status: expense.status,
     description: expense.description || "",
-    invoiceNumber: "INV-2025-000", // default value
-    collectors: expense.payments.map((p: { collector: { name: string } | null; type: string; amount: number }) => ({
-      name: p.collector?.name || "Unknown Collector",
-      type: p.type,
-      amount: p.amount,
-    })),
+    invoiceNumber: "INV-2025-000"
   }));
 
   return formatted;
@@ -428,7 +378,6 @@ export async function getMonthlyExpenseStats() {
   // Get current month expenses (from first day at 00:00:00 to just before first day of next month)
   const monthExpenses = await prisma.expenses.findMany({
     where: {
-      status: "Paid",
       date: {
         gte: firstDayOfMonth,
         lt: firstDayOfNextMonth,
@@ -445,7 +394,6 @@ export async function getMonthlyExpenseStats() {
 
   const prevMonthExpenses = await prisma.expenses.findMany({
     where: {
-      status: "Paid",
       date: {
         gte: prevMonthFirst,
         lt: prevMonthEnd,
@@ -475,7 +423,6 @@ export async function getDashboardStats() {
   // Get current month donations
   const monthDonations = await prisma.donation.findMany({
     where: {
-      status: "Completed",
       date: {
         gte: firstDayOfMonth,
         lt: firstDayOfNextMonth,
@@ -486,7 +433,6 @@ export async function getDashboardStats() {
   // Get current month expenses
   const monthExpenses = await prisma.expenses.findMany({
     where: {
-      status: "Paid",
       date: {
         gte: firstDayOfMonth,
         lt: firstDayOfNextMonth,
@@ -504,7 +450,6 @@ export async function getDashboardStats() {
 
   const prevMonthDonations = await prisma.donation.findMany({
     where: {
-      status: "Completed",
       date: {
         gte: prevMonthFirst,
         lt: prevMonthEnd,
@@ -514,7 +459,6 @@ export async function getDashboardStats() {
 
   const prevMonthExpenses = await prisma.expenses.findMany({
     where: {
-      status: "Paid",
       date: {
         gte: prevMonthFirst,
         lt: prevMonthEnd,
@@ -573,14 +517,14 @@ export async function getRecentTransactions(limit: number = 5) {
       date: d.date.toISOString().split('T')[0],
       category: d.type,
     })),
-    ...expenses.map((e: { transacId: number; vendorProjName: string | null; amount: number; date: Date; category: string }) => ({
+    ...expenses.map((e: { transacId: number; vendorName: string | null; amount: number; date: Date; project: string }) => ({
       id: `E-${e.transacId}`,
       type: 'expense' as const,
       donor: undefined,
-      vendor: e.vendorProjName || 'Unknown',
+      vendor: e.vendorName || 'Unknown',
       amount: e.amount,
       date: e.date.toISOString().split('T')[0],
-      category: e.category,
+      category: e.project,
     }))
   ];
 
@@ -609,11 +553,9 @@ export async function getReferralLeaderboard() {
 
 export async function getAnalyticsData() {
   const donations = await prisma.donation.findMany({
-    where: { status: "Completed" },
   });
 
   const expenses = await prisma.expenses.findMany({
-    where: { status: "Paid" },
   });
 
   // Get monthly data for the last 6 months

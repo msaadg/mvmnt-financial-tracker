@@ -29,6 +29,11 @@ export type Referrals = $Result.DefaultSelection<Prisma.$ReferralsPayload>
  */
 export type Collectors = $Result.DefaultSelection<Prisma.$CollectorsPayload>
 /**
+ * Model Vendors
+ * 
+ */
+export type Vendors = $Result.DefaultSelection<Prisma.$VendorsPayload>
+/**
  * Model Donation
  * 
  */
@@ -190,6 +195,16 @@ export class PrismaClient<
     * ```
     */
   get collectors(): Prisma.CollectorsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.vendors`: Exposes CRUD operations for the **Vendors** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Vendors
+    * const vendors = await prisma.vendors.findMany()
+    * ```
+    */
+  get vendors(): Prisma.VendorsDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.donation`: Exposes CRUD operations for the **Donation** model.
@@ -657,6 +672,7 @@ export namespace Prisma {
     PowerUsers: 'PowerUsers',
     Referrals: 'Referrals',
     Collectors: 'Collectors',
+    Vendors: 'Vendors',
     Donation: 'Donation',
     Expenses: 'Expenses',
     Payment: 'Payment'
@@ -675,7 +691,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "powerUsers" | "referrals" | "collectors" | "donation" | "expenses" | "payment"
+      modelProps: "powerUsers" | "referrals" | "collectors" | "vendors" | "donation" | "expenses" | "payment"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -898,6 +914,80 @@ export namespace Prisma {
           count: {
             args: Prisma.CollectorsCountArgs<ExtArgs>
             result: $Utils.Optional<CollectorsCountAggregateOutputType> | number
+          }
+        }
+      }
+      Vendors: {
+        payload: Prisma.$VendorsPayload<ExtArgs>
+        fields: Prisma.VendorsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.VendorsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VendorsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.VendorsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VendorsPayload>
+          }
+          findFirst: {
+            args: Prisma.VendorsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VendorsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.VendorsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VendorsPayload>
+          }
+          findMany: {
+            args: Prisma.VendorsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VendorsPayload>[]
+          }
+          create: {
+            args: Prisma.VendorsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VendorsPayload>
+          }
+          createMany: {
+            args: Prisma.VendorsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.VendorsCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VendorsPayload>[]
+          }
+          delete: {
+            args: Prisma.VendorsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VendorsPayload>
+          }
+          update: {
+            args: Prisma.VendorsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VendorsPayload>
+          }
+          deleteMany: {
+            args: Prisma.VendorsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.VendorsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.VendorsUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VendorsPayload>[]
+          }
+          upsert: {
+            args: Prisma.VendorsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VendorsPayload>
+          }
+          aggregate: {
+            args: Prisma.VendorsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateVendors>
+          }
+          groupBy: {
+            args: Prisma.VendorsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<VendorsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.VendorsCountArgs<ExtArgs>
+            result: $Utils.Optional<VendorsCountAggregateOutputType> | number
           }
         }
       }
@@ -1234,6 +1324,7 @@ export namespace Prisma {
     powerUsers?: PowerUsersOmit
     referrals?: ReferralsOmit
     collectors?: CollectorsOmit
+    vendors?: VendorsOmit
     donation?: DonationOmit
     expenses?: ExpensesOmit
     payment?: PaymentOmit
@@ -1384,32 +1475,41 @@ export namespace Prisma {
 
 
   /**
-   * Count Type ExpensesCountOutputType
+   * Count Type VendorsCountOutputType
    */
 
-  export type ExpensesCountOutputType = {
+  export type VendorsCountOutputType = {
+    expenses: number
     payments: number
   }
 
-  export type ExpensesCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    payments?: boolean | ExpensesCountOutputTypeCountPaymentsArgs
+  export type VendorsCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    expenses?: boolean | VendorsCountOutputTypeCountExpensesArgs
+    payments?: boolean | VendorsCountOutputTypeCountPaymentsArgs
   }
 
   // Custom InputTypes
   /**
-   * ExpensesCountOutputType without action
+   * VendorsCountOutputType without action
    */
-  export type ExpensesCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type VendorsCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ExpensesCountOutputType
+     * Select specific fields to fetch from the VendorsCountOutputType
      */
-    select?: ExpensesCountOutputTypeSelect<ExtArgs> | null
+    select?: VendorsCountOutputTypeSelect<ExtArgs> | null
   }
 
   /**
-   * ExpensesCountOutputType without action
+   * VendorsCountOutputType without action
    */
-  export type ExpensesCountOutputTypeCountPaymentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type VendorsCountOutputTypeCountExpensesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ExpensesWhereInput
+  }
+
+  /**
+   * VendorsCountOutputType without action
+   */
+  export type VendorsCountOutputTypeCountPaymentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: PaymentWhereInput
   }
 
@@ -1440,23 +1540,23 @@ export namespace Prisma {
 
   export type PowerUsersMinAggregateOutputType = {
     id: number | null
-    email: string | null
     username: string | null
     role: string | null
+    email: string | null
   }
 
   export type PowerUsersMaxAggregateOutputType = {
     id: number | null
-    email: string | null
     username: string | null
     role: string | null
+    email: string | null
   }
 
   export type PowerUsersCountAggregateOutputType = {
     id: number
-    email: number
     username: number
     role: number
+    email: number
     _all: number
   }
 
@@ -1471,23 +1571,23 @@ export namespace Prisma {
 
   export type PowerUsersMinAggregateInputType = {
     id?: true
-    email?: true
     username?: true
     role?: true
+    email?: true
   }
 
   export type PowerUsersMaxAggregateInputType = {
     id?: true
-    email?: true
     username?: true
     role?: true
+    email?: true
   }
 
   export type PowerUsersCountAggregateInputType = {
     id?: true
-    email?: true
     username?: true
     role?: true
+    email?: true
     _all?: true
   }
 
@@ -1579,9 +1679,9 @@ export namespace Prisma {
 
   export type PowerUsersGroupByOutputType = {
     id: number
-    email: string
     username: string
     role: string
+    email: string
     _count: PowerUsersCountAggregateOutputType | null
     _avg: PowerUsersAvgAggregateOutputType | null
     _sum: PowerUsersSumAggregateOutputType | null
@@ -1605,42 +1705,42 @@ export namespace Prisma {
 
   export type PowerUsersSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    email?: boolean
     username?: boolean
     role?: boolean
+    email?: boolean
   }, ExtArgs["result"]["powerUsers"]>
 
   export type PowerUsersSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    email?: boolean
     username?: boolean
     role?: boolean
+    email?: boolean
   }, ExtArgs["result"]["powerUsers"]>
 
   export type PowerUsersSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    email?: boolean
     username?: boolean
     role?: boolean
+    email?: boolean
   }, ExtArgs["result"]["powerUsers"]>
 
   export type PowerUsersSelectScalar = {
     id?: boolean
-    email?: boolean
     username?: boolean
     role?: boolean
+    email?: boolean
   }
 
-  export type PowerUsersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "username" | "role", ExtArgs["result"]["powerUsers"]>
+  export type PowerUsersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "username" | "role" | "email", ExtArgs["result"]["powerUsers"]>
 
   export type $PowerUsersPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "PowerUsers"
     objects: {}
     scalars: $Extensions.GetPayloadResult<{
       id: number
-      email: string
       username: string
       role: string
+      email: string
     }, ExtArgs["result"]["powerUsers"]>
     composites: {}
   }
@@ -2065,9 +2165,9 @@ export namespace Prisma {
    */
   interface PowerUsersFieldRefs {
     readonly id: FieldRef<"PowerUsers", 'Int'>
-    readonly email: FieldRef<"PowerUsers", 'String'>
     readonly username: FieldRef<"PowerUsers", 'String'>
     readonly role: FieldRef<"PowerUsers", 'String'>
+    readonly email: FieldRef<"PowerUsers", 'String'>
   }
     
 
@@ -4593,6 +4693,1052 @@ export namespace Prisma {
 
 
   /**
+   * Model Vendors
+   */
+
+  export type AggregateVendors = {
+    _count: VendorsCountAggregateOutputType | null
+    _min: VendorsMinAggregateOutputType | null
+    _max: VendorsMaxAggregateOutputType | null
+  }
+
+  export type VendorsMinAggregateOutputType = {
+    vendorName: string | null
+  }
+
+  export type VendorsMaxAggregateOutputType = {
+    vendorName: string | null
+  }
+
+  export type VendorsCountAggregateOutputType = {
+    vendorName: number
+    _all: number
+  }
+
+
+  export type VendorsMinAggregateInputType = {
+    vendorName?: true
+  }
+
+  export type VendorsMaxAggregateInputType = {
+    vendorName?: true
+  }
+
+  export type VendorsCountAggregateInputType = {
+    vendorName?: true
+    _all?: true
+  }
+
+  export type VendorsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Vendors to aggregate.
+     */
+    where?: VendorsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Vendors to fetch.
+     */
+    orderBy?: VendorsOrderByWithRelationInput | VendorsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: VendorsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Vendors from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Vendors.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Vendors
+    **/
+    _count?: true | VendorsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: VendorsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: VendorsMaxAggregateInputType
+  }
+
+  export type GetVendorsAggregateType<T extends VendorsAggregateArgs> = {
+        [P in keyof T & keyof AggregateVendors]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateVendors[P]>
+      : GetScalarType<T[P], AggregateVendors[P]>
+  }
+
+
+
+
+  export type VendorsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: VendorsWhereInput
+    orderBy?: VendorsOrderByWithAggregationInput | VendorsOrderByWithAggregationInput[]
+    by: VendorsScalarFieldEnum[] | VendorsScalarFieldEnum
+    having?: VendorsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: VendorsCountAggregateInputType | true
+    _min?: VendorsMinAggregateInputType
+    _max?: VendorsMaxAggregateInputType
+  }
+
+  export type VendorsGroupByOutputType = {
+    vendorName: string
+    _count: VendorsCountAggregateOutputType | null
+    _min: VendorsMinAggregateOutputType | null
+    _max: VendorsMaxAggregateOutputType | null
+  }
+
+  type GetVendorsGroupByPayload<T extends VendorsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<VendorsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof VendorsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], VendorsGroupByOutputType[P]>
+            : GetScalarType<T[P], VendorsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type VendorsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    vendorName?: boolean
+    expenses?: boolean | Vendors$expensesArgs<ExtArgs>
+    payments?: boolean | Vendors$paymentsArgs<ExtArgs>
+    _count?: boolean | VendorsCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["vendors"]>
+
+  export type VendorsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    vendorName?: boolean
+  }, ExtArgs["result"]["vendors"]>
+
+  export type VendorsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    vendorName?: boolean
+  }, ExtArgs["result"]["vendors"]>
+
+  export type VendorsSelectScalar = {
+    vendorName?: boolean
+  }
+
+  export type VendorsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"vendorName", ExtArgs["result"]["vendors"]>
+  export type VendorsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    expenses?: boolean | Vendors$expensesArgs<ExtArgs>
+    payments?: boolean | Vendors$paymentsArgs<ExtArgs>
+    _count?: boolean | VendorsCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type VendorsIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type VendorsIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $VendorsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Vendors"
+    objects: {
+      expenses: Prisma.$ExpensesPayload<ExtArgs>[]
+      payments: Prisma.$PaymentPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      vendorName: string
+    }, ExtArgs["result"]["vendors"]>
+    composites: {}
+  }
+
+  type VendorsGetPayload<S extends boolean | null | undefined | VendorsDefaultArgs> = $Result.GetResult<Prisma.$VendorsPayload, S>
+
+  type VendorsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<VendorsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: VendorsCountAggregateInputType | true
+    }
+
+  export interface VendorsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Vendors'], meta: { name: 'Vendors' } }
+    /**
+     * Find zero or one Vendors that matches the filter.
+     * @param {VendorsFindUniqueArgs} args - Arguments to find a Vendors
+     * @example
+     * // Get one Vendors
+     * const vendors = await prisma.vendors.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends VendorsFindUniqueArgs>(args: SelectSubset<T, VendorsFindUniqueArgs<ExtArgs>>): Prisma__VendorsClient<$Result.GetResult<Prisma.$VendorsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Vendors that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {VendorsFindUniqueOrThrowArgs} args - Arguments to find a Vendors
+     * @example
+     * // Get one Vendors
+     * const vendors = await prisma.vendors.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends VendorsFindUniqueOrThrowArgs>(args: SelectSubset<T, VendorsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__VendorsClient<$Result.GetResult<Prisma.$VendorsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Vendors that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VendorsFindFirstArgs} args - Arguments to find a Vendors
+     * @example
+     * // Get one Vendors
+     * const vendors = await prisma.vendors.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends VendorsFindFirstArgs>(args?: SelectSubset<T, VendorsFindFirstArgs<ExtArgs>>): Prisma__VendorsClient<$Result.GetResult<Prisma.$VendorsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Vendors that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VendorsFindFirstOrThrowArgs} args - Arguments to find a Vendors
+     * @example
+     * // Get one Vendors
+     * const vendors = await prisma.vendors.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends VendorsFindFirstOrThrowArgs>(args?: SelectSubset<T, VendorsFindFirstOrThrowArgs<ExtArgs>>): Prisma__VendorsClient<$Result.GetResult<Prisma.$VendorsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Vendors that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VendorsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Vendors
+     * const vendors = await prisma.vendors.findMany()
+     * 
+     * // Get first 10 Vendors
+     * const vendors = await prisma.vendors.findMany({ take: 10 })
+     * 
+     * // Only select the `vendorName`
+     * const vendorsWithVendorNameOnly = await prisma.vendors.findMany({ select: { vendorName: true } })
+     * 
+     */
+    findMany<T extends VendorsFindManyArgs>(args?: SelectSubset<T, VendorsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VendorsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Vendors.
+     * @param {VendorsCreateArgs} args - Arguments to create a Vendors.
+     * @example
+     * // Create one Vendors
+     * const Vendors = await prisma.vendors.create({
+     *   data: {
+     *     // ... data to create a Vendors
+     *   }
+     * })
+     * 
+     */
+    create<T extends VendorsCreateArgs>(args: SelectSubset<T, VendorsCreateArgs<ExtArgs>>): Prisma__VendorsClient<$Result.GetResult<Prisma.$VendorsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Vendors.
+     * @param {VendorsCreateManyArgs} args - Arguments to create many Vendors.
+     * @example
+     * // Create many Vendors
+     * const vendors = await prisma.vendors.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends VendorsCreateManyArgs>(args?: SelectSubset<T, VendorsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Vendors and returns the data saved in the database.
+     * @param {VendorsCreateManyAndReturnArgs} args - Arguments to create many Vendors.
+     * @example
+     * // Create many Vendors
+     * const vendors = await prisma.vendors.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Vendors and only return the `vendorName`
+     * const vendorsWithVendorNameOnly = await prisma.vendors.createManyAndReturn({
+     *   select: { vendorName: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends VendorsCreateManyAndReturnArgs>(args?: SelectSubset<T, VendorsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VendorsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Vendors.
+     * @param {VendorsDeleteArgs} args - Arguments to delete one Vendors.
+     * @example
+     * // Delete one Vendors
+     * const Vendors = await prisma.vendors.delete({
+     *   where: {
+     *     // ... filter to delete one Vendors
+     *   }
+     * })
+     * 
+     */
+    delete<T extends VendorsDeleteArgs>(args: SelectSubset<T, VendorsDeleteArgs<ExtArgs>>): Prisma__VendorsClient<$Result.GetResult<Prisma.$VendorsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Vendors.
+     * @param {VendorsUpdateArgs} args - Arguments to update one Vendors.
+     * @example
+     * // Update one Vendors
+     * const vendors = await prisma.vendors.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends VendorsUpdateArgs>(args: SelectSubset<T, VendorsUpdateArgs<ExtArgs>>): Prisma__VendorsClient<$Result.GetResult<Prisma.$VendorsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Vendors.
+     * @param {VendorsDeleteManyArgs} args - Arguments to filter Vendors to delete.
+     * @example
+     * // Delete a few Vendors
+     * const { count } = await prisma.vendors.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends VendorsDeleteManyArgs>(args?: SelectSubset<T, VendorsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Vendors.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VendorsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Vendors
+     * const vendors = await prisma.vendors.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends VendorsUpdateManyArgs>(args: SelectSubset<T, VendorsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Vendors and returns the data updated in the database.
+     * @param {VendorsUpdateManyAndReturnArgs} args - Arguments to update many Vendors.
+     * @example
+     * // Update many Vendors
+     * const vendors = await prisma.vendors.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Vendors and only return the `vendorName`
+     * const vendorsWithVendorNameOnly = await prisma.vendors.updateManyAndReturn({
+     *   select: { vendorName: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends VendorsUpdateManyAndReturnArgs>(args: SelectSubset<T, VendorsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VendorsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Vendors.
+     * @param {VendorsUpsertArgs} args - Arguments to update or create a Vendors.
+     * @example
+     * // Update or create a Vendors
+     * const vendors = await prisma.vendors.upsert({
+     *   create: {
+     *     // ... data to create a Vendors
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Vendors we want to update
+     *   }
+     * })
+     */
+    upsert<T extends VendorsUpsertArgs>(args: SelectSubset<T, VendorsUpsertArgs<ExtArgs>>): Prisma__VendorsClient<$Result.GetResult<Prisma.$VendorsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Vendors.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VendorsCountArgs} args - Arguments to filter Vendors to count.
+     * @example
+     * // Count the number of Vendors
+     * const count = await prisma.vendors.count({
+     *   where: {
+     *     // ... the filter for the Vendors we want to count
+     *   }
+     * })
+    **/
+    count<T extends VendorsCountArgs>(
+      args?: Subset<T, VendorsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], VendorsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Vendors.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VendorsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends VendorsAggregateArgs>(args: Subset<T, VendorsAggregateArgs>): Prisma.PrismaPromise<GetVendorsAggregateType<T>>
+
+    /**
+     * Group by Vendors.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VendorsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends VendorsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: VendorsGroupByArgs['orderBy'] }
+        : { orderBy?: VendorsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, VendorsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetVendorsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Vendors model
+   */
+  readonly fields: VendorsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Vendors.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__VendorsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    expenses<T extends Vendors$expensesArgs<ExtArgs> = {}>(args?: Subset<T, Vendors$expensesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExpensesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    payments<T extends Vendors$paymentsArgs<ExtArgs> = {}>(args?: Subset<T, Vendors$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Vendors model
+   */
+  interface VendorsFieldRefs {
+    readonly vendorName: FieldRef<"Vendors", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Vendors findUnique
+   */
+  export type VendorsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Vendors
+     */
+    select?: VendorsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Vendors
+     */
+    omit?: VendorsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VendorsInclude<ExtArgs> | null
+    /**
+     * Filter, which Vendors to fetch.
+     */
+    where: VendorsWhereUniqueInput
+  }
+
+  /**
+   * Vendors findUniqueOrThrow
+   */
+  export type VendorsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Vendors
+     */
+    select?: VendorsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Vendors
+     */
+    omit?: VendorsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VendorsInclude<ExtArgs> | null
+    /**
+     * Filter, which Vendors to fetch.
+     */
+    where: VendorsWhereUniqueInput
+  }
+
+  /**
+   * Vendors findFirst
+   */
+  export type VendorsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Vendors
+     */
+    select?: VendorsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Vendors
+     */
+    omit?: VendorsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VendorsInclude<ExtArgs> | null
+    /**
+     * Filter, which Vendors to fetch.
+     */
+    where?: VendorsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Vendors to fetch.
+     */
+    orderBy?: VendorsOrderByWithRelationInput | VendorsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Vendors.
+     */
+    cursor?: VendorsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Vendors from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Vendors.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Vendors.
+     */
+    distinct?: VendorsScalarFieldEnum | VendorsScalarFieldEnum[]
+  }
+
+  /**
+   * Vendors findFirstOrThrow
+   */
+  export type VendorsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Vendors
+     */
+    select?: VendorsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Vendors
+     */
+    omit?: VendorsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VendorsInclude<ExtArgs> | null
+    /**
+     * Filter, which Vendors to fetch.
+     */
+    where?: VendorsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Vendors to fetch.
+     */
+    orderBy?: VendorsOrderByWithRelationInput | VendorsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Vendors.
+     */
+    cursor?: VendorsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Vendors from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Vendors.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Vendors.
+     */
+    distinct?: VendorsScalarFieldEnum | VendorsScalarFieldEnum[]
+  }
+
+  /**
+   * Vendors findMany
+   */
+  export type VendorsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Vendors
+     */
+    select?: VendorsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Vendors
+     */
+    omit?: VendorsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VendorsInclude<ExtArgs> | null
+    /**
+     * Filter, which Vendors to fetch.
+     */
+    where?: VendorsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Vendors to fetch.
+     */
+    orderBy?: VendorsOrderByWithRelationInput | VendorsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Vendors.
+     */
+    cursor?: VendorsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Vendors from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Vendors.
+     */
+    skip?: number
+    distinct?: VendorsScalarFieldEnum | VendorsScalarFieldEnum[]
+  }
+
+  /**
+   * Vendors create
+   */
+  export type VendorsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Vendors
+     */
+    select?: VendorsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Vendors
+     */
+    omit?: VendorsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VendorsInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Vendors.
+     */
+    data: XOR<VendorsCreateInput, VendorsUncheckedCreateInput>
+  }
+
+  /**
+   * Vendors createMany
+   */
+  export type VendorsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Vendors.
+     */
+    data: VendorsCreateManyInput | VendorsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Vendors createManyAndReturn
+   */
+  export type VendorsCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Vendors
+     */
+    select?: VendorsSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Vendors
+     */
+    omit?: VendorsOmit<ExtArgs> | null
+    /**
+     * The data used to create many Vendors.
+     */
+    data: VendorsCreateManyInput | VendorsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Vendors update
+   */
+  export type VendorsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Vendors
+     */
+    select?: VendorsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Vendors
+     */
+    omit?: VendorsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VendorsInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Vendors.
+     */
+    data: XOR<VendorsUpdateInput, VendorsUncheckedUpdateInput>
+    /**
+     * Choose, which Vendors to update.
+     */
+    where: VendorsWhereUniqueInput
+  }
+
+  /**
+   * Vendors updateMany
+   */
+  export type VendorsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Vendors.
+     */
+    data: XOR<VendorsUpdateManyMutationInput, VendorsUncheckedUpdateManyInput>
+    /**
+     * Filter which Vendors to update
+     */
+    where?: VendorsWhereInput
+    /**
+     * Limit how many Vendors to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Vendors updateManyAndReturn
+   */
+  export type VendorsUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Vendors
+     */
+    select?: VendorsSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Vendors
+     */
+    omit?: VendorsOmit<ExtArgs> | null
+    /**
+     * The data used to update Vendors.
+     */
+    data: XOR<VendorsUpdateManyMutationInput, VendorsUncheckedUpdateManyInput>
+    /**
+     * Filter which Vendors to update
+     */
+    where?: VendorsWhereInput
+    /**
+     * Limit how many Vendors to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Vendors upsert
+   */
+  export type VendorsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Vendors
+     */
+    select?: VendorsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Vendors
+     */
+    omit?: VendorsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VendorsInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Vendors to update in case it exists.
+     */
+    where: VendorsWhereUniqueInput
+    /**
+     * In case the Vendors found by the `where` argument doesn't exist, create a new Vendors with this data.
+     */
+    create: XOR<VendorsCreateInput, VendorsUncheckedCreateInput>
+    /**
+     * In case the Vendors was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<VendorsUpdateInput, VendorsUncheckedUpdateInput>
+  }
+
+  /**
+   * Vendors delete
+   */
+  export type VendorsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Vendors
+     */
+    select?: VendorsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Vendors
+     */
+    omit?: VendorsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VendorsInclude<ExtArgs> | null
+    /**
+     * Filter which Vendors to delete.
+     */
+    where: VendorsWhereUniqueInput
+  }
+
+  /**
+   * Vendors deleteMany
+   */
+  export type VendorsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Vendors to delete
+     */
+    where?: VendorsWhereInput
+    /**
+     * Limit how many Vendors to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Vendors.expenses
+   */
+  export type Vendors$expensesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Expenses
+     */
+    select?: ExpensesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Expenses
+     */
+    omit?: ExpensesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExpensesInclude<ExtArgs> | null
+    where?: ExpensesWhereInput
+    orderBy?: ExpensesOrderByWithRelationInput | ExpensesOrderByWithRelationInput[]
+    cursor?: ExpensesWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ExpensesScalarFieldEnum | ExpensesScalarFieldEnum[]
+  }
+
+  /**
+   * Vendors.payments
+   */
+  export type Vendors$paymentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Payment
+     */
+    select?: PaymentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Payment
+     */
+    omit?: PaymentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentInclude<ExtArgs> | null
+    where?: PaymentWhereInput
+    orderBy?: PaymentOrderByWithRelationInput | PaymentOrderByWithRelationInput[]
+    cursor?: PaymentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PaymentScalarFieldEnum | PaymentScalarFieldEnum[]
+  }
+
+  /**
+   * Vendors without action
+   */
+  export type VendorsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Vendors
+     */
+    select?: VendorsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Vendors
+     */
+    omit?: VendorsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VendorsInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Donation
    */
 
@@ -4622,39 +5768,39 @@ export namespace Prisma {
     transacId: number | null
     date: Date | null
     amount: number | null
-    paymentMethod: string | null
     donorName: string | null
     referralId: number | null
     collectorId: number | null
     type: string | null
     status: string | null
     notes: string | null
+    paymentMethod: string | null
   }
 
   export type DonationMaxAggregateOutputType = {
     transacId: number | null
     date: Date | null
     amount: number | null
-    paymentMethod: string | null
     donorName: string | null
     referralId: number | null
     collectorId: number | null
     type: string | null
     status: string | null
     notes: string | null
+    paymentMethod: string | null
   }
 
   export type DonationCountAggregateOutputType = {
     transacId: number
     date: number
     amount: number
-    paymentMethod: number
     donorName: number
     referralId: number
     collectorId: number
     type: number
     status: number
     notes: number
+    paymentMethod: number
     _all: number
   }
 
@@ -4677,39 +5823,39 @@ export namespace Prisma {
     transacId?: true
     date?: true
     amount?: true
-    paymentMethod?: true
     donorName?: true
     referralId?: true
     collectorId?: true
     type?: true
     status?: true
     notes?: true
+    paymentMethod?: true
   }
 
   export type DonationMaxAggregateInputType = {
     transacId?: true
     date?: true
     amount?: true
-    paymentMethod?: true
     donorName?: true
     referralId?: true
     collectorId?: true
     type?: true
     status?: true
     notes?: true
+    paymentMethod?: true
   }
 
   export type DonationCountAggregateInputType = {
     transacId?: true
     date?: true
     amount?: true
-    paymentMethod?: true
     donorName?: true
     referralId?: true
     collectorId?: true
     type?: true
     status?: true
     notes?: true
+    paymentMethod?: true
     _all?: true
   }
 
@@ -4803,13 +5949,13 @@ export namespace Prisma {
     transacId: number
     date: Date
     amount: number
-    paymentMethod: string
     donorName: string
     referralId: number
     collectorId: number
     type: string
     status: string
     notes: string | null
+    paymentMethod: string
     _count: DonationCountAggregateOutputType | null
     _avg: DonationAvgAggregateOutputType | null
     _sum: DonationSumAggregateOutputType | null
@@ -4835,91 +5981,91 @@ export namespace Prisma {
     transacId?: boolean
     date?: boolean
     amount?: boolean
-    paymentMethod?: boolean
     donorName?: boolean
     referralId?: boolean
     collectorId?: boolean
     type?: boolean
     status?: boolean
     notes?: boolean
-    referral?: boolean | Donation$referralArgs<ExtArgs>
-    collector?: boolean | Donation$collectorArgs<ExtArgs>
+    paymentMethod?: boolean
+    collector?: boolean | CollectorsDefaultArgs<ExtArgs>
+    referral?: boolean | ReferralsDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["donation"]>
 
   export type DonationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     transacId?: boolean
     date?: boolean
     amount?: boolean
-    paymentMethod?: boolean
     donorName?: boolean
     referralId?: boolean
     collectorId?: boolean
     type?: boolean
     status?: boolean
     notes?: boolean
-    referral?: boolean | Donation$referralArgs<ExtArgs>
-    collector?: boolean | Donation$collectorArgs<ExtArgs>
+    paymentMethod?: boolean
+    collector?: boolean | CollectorsDefaultArgs<ExtArgs>
+    referral?: boolean | ReferralsDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["donation"]>
 
   export type DonationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     transacId?: boolean
     date?: boolean
     amount?: boolean
-    paymentMethod?: boolean
     donorName?: boolean
     referralId?: boolean
     collectorId?: boolean
     type?: boolean
     status?: boolean
     notes?: boolean
-    referral?: boolean | Donation$referralArgs<ExtArgs>
-    collector?: boolean | Donation$collectorArgs<ExtArgs>
+    paymentMethod?: boolean
+    collector?: boolean | CollectorsDefaultArgs<ExtArgs>
+    referral?: boolean | ReferralsDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["donation"]>
 
   export type DonationSelectScalar = {
     transacId?: boolean
     date?: boolean
     amount?: boolean
-    paymentMethod?: boolean
     donorName?: boolean
     referralId?: boolean
     collectorId?: boolean
     type?: boolean
     status?: boolean
     notes?: boolean
+    paymentMethod?: boolean
   }
 
-  export type DonationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"transacId" | "date" | "amount" | "paymentMethod" | "donorName" | "referralId" | "collectorId" | "type" | "status" | "notes", ExtArgs["result"]["donation"]>
+  export type DonationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"transacId" | "date" | "amount" | "donorName" | "referralId" | "collectorId" | "type" | "status" | "notes" | "paymentMethod", ExtArgs["result"]["donation"]>
   export type DonationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    referral?: boolean | Donation$referralArgs<ExtArgs>
-    collector?: boolean | Donation$collectorArgs<ExtArgs>
+    collector?: boolean | CollectorsDefaultArgs<ExtArgs>
+    referral?: boolean | ReferralsDefaultArgs<ExtArgs>
   }
   export type DonationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    referral?: boolean | Donation$referralArgs<ExtArgs>
-    collector?: boolean | Donation$collectorArgs<ExtArgs>
+    collector?: boolean | CollectorsDefaultArgs<ExtArgs>
+    referral?: boolean | ReferralsDefaultArgs<ExtArgs>
   }
   export type DonationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    referral?: boolean | Donation$referralArgs<ExtArgs>
-    collector?: boolean | Donation$collectorArgs<ExtArgs>
+    collector?: boolean | CollectorsDefaultArgs<ExtArgs>
+    referral?: boolean | ReferralsDefaultArgs<ExtArgs>
   }
 
   export type $DonationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Donation"
     objects: {
-      referral: Prisma.$ReferralsPayload<ExtArgs> | null
-      collector: Prisma.$CollectorsPayload<ExtArgs> | null
+      collector: Prisma.$CollectorsPayload<ExtArgs>
+      referral: Prisma.$ReferralsPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       transacId: number
       date: Date
       amount: number
-      paymentMethod: string
       donorName: string
       referralId: number
       collectorId: number
       type: string
       status: string
       notes: string | null
+      paymentMethod: string
     }, ExtArgs["result"]["donation"]>
     composites: {}
   }
@@ -5314,8 +6460,8 @@ export namespace Prisma {
    */
   export interface Prisma__DonationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    referral<T extends Donation$referralArgs<ExtArgs> = {}>(args?: Subset<T, Donation$referralArgs<ExtArgs>>): Prisma__ReferralsClient<$Result.GetResult<Prisma.$ReferralsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    collector<T extends Donation$collectorArgs<ExtArgs> = {}>(args?: Subset<T, Donation$collectorArgs<ExtArgs>>): Prisma__CollectorsClient<$Result.GetResult<Prisma.$CollectorsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    collector<T extends CollectorsDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CollectorsDefaultArgs<ExtArgs>>): Prisma__CollectorsClient<$Result.GetResult<Prisma.$CollectorsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    referral<T extends ReferralsDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ReferralsDefaultArgs<ExtArgs>>): Prisma__ReferralsClient<$Result.GetResult<Prisma.$ReferralsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5348,13 +6494,13 @@ export namespace Prisma {
     readonly transacId: FieldRef<"Donation", 'Int'>
     readonly date: FieldRef<"Donation", 'DateTime'>
     readonly amount: FieldRef<"Donation", 'Int'>
-    readonly paymentMethod: FieldRef<"Donation", 'String'>
     readonly donorName: FieldRef<"Donation", 'String'>
     readonly referralId: FieldRef<"Donation", 'Int'>
     readonly collectorId: FieldRef<"Donation", 'Int'>
     readonly type: FieldRef<"Donation", 'String'>
     readonly status: FieldRef<"Donation", 'String'>
     readonly notes: FieldRef<"Donation", 'String'>
+    readonly paymentMethod: FieldRef<"Donation", 'String'>
   }
     
 
@@ -5751,44 +6897,6 @@ export namespace Prisma {
   }
 
   /**
-   * Donation.referral
-   */
-  export type Donation$referralArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Referrals
-     */
-    select?: ReferralsSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Referrals
-     */
-    omit?: ReferralsOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ReferralsInclude<ExtArgs> | null
-    where?: ReferralsWhereInput
-  }
-
-  /**
-   * Donation.collector
-   */
-  export type Donation$collectorArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Collectors
-     */
-    select?: CollectorsSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Collectors
-     */
-    omit?: CollectorsOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CollectorsInclude<ExtArgs> | null
-    where?: CollectorsWhereInput
-  }
-
-  /**
    * Donation without action
    */
   export type DonationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5833,9 +6941,8 @@ export namespace Prisma {
     transacId: number | null
     date: Date | null
     amount: number | null
-    paymentMethod: string | null
-    vendorProjName: string | null
-    category: string | null
+    vendorName: string | null
+    project: string | null
     description: string | null
     status: string | null
   }
@@ -5844,9 +6951,8 @@ export namespace Prisma {
     transacId: number | null
     date: Date | null
     amount: number | null
-    paymentMethod: string | null
-    vendorProjName: string | null
-    category: string | null
+    vendorName: string | null
+    project: string | null
     description: string | null
     status: string | null
   }
@@ -5855,9 +6961,8 @@ export namespace Prisma {
     transacId: number
     date: number
     amount: number
-    paymentMethod: number
-    vendorProjName: number
-    category: number
+    vendorName: number
+    project: number
     description: number
     status: number
     _all: number
@@ -5878,9 +6983,8 @@ export namespace Prisma {
     transacId?: true
     date?: true
     amount?: true
-    paymentMethod?: true
-    vendorProjName?: true
-    category?: true
+    vendorName?: true
+    project?: true
     description?: true
     status?: true
   }
@@ -5889,9 +6993,8 @@ export namespace Prisma {
     transacId?: true
     date?: true
     amount?: true
-    paymentMethod?: true
-    vendorProjName?: true
-    category?: true
+    vendorName?: true
+    project?: true
     description?: true
     status?: true
   }
@@ -5900,9 +7003,8 @@ export namespace Prisma {
     transacId?: true
     date?: true
     amount?: true
-    paymentMethod?: true
-    vendorProjName?: true
-    category?: true
+    vendorName?: true
+    project?: true
     description?: true
     status?: true
     _all?: true
@@ -5998,9 +7100,8 @@ export namespace Prisma {
     transacId: number
     date: Date
     amount: number
-    paymentMethod: string
-    vendorProjName: string
-    category: string
+    vendorName: string
+    project: string
     description: string | null
     status: string
     _count: ExpensesCountAggregateOutputType | null
@@ -6028,68 +7129,67 @@ export namespace Prisma {
     transacId?: boolean
     date?: boolean
     amount?: boolean
-    paymentMethod?: boolean
-    vendorProjName?: boolean
-    category?: boolean
+    vendorName?: boolean
+    project?: boolean
     description?: boolean
     status?: boolean
-    payments?: boolean | Expenses$paymentsArgs<ExtArgs>
-    _count?: boolean | ExpensesCountOutputTypeDefaultArgs<ExtArgs>
+    vendor?: boolean | Expenses$vendorArgs<ExtArgs>
   }, ExtArgs["result"]["expenses"]>
 
   export type ExpensesSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     transacId?: boolean
     date?: boolean
     amount?: boolean
-    paymentMethod?: boolean
-    vendorProjName?: boolean
-    category?: boolean
+    vendorName?: boolean
+    project?: boolean
     description?: boolean
     status?: boolean
+    vendor?: boolean | Expenses$vendorArgs<ExtArgs>
   }, ExtArgs["result"]["expenses"]>
 
   export type ExpensesSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     transacId?: boolean
     date?: boolean
     amount?: boolean
-    paymentMethod?: boolean
-    vendorProjName?: boolean
-    category?: boolean
+    vendorName?: boolean
+    project?: boolean
     description?: boolean
     status?: boolean
+    vendor?: boolean | Expenses$vendorArgs<ExtArgs>
   }, ExtArgs["result"]["expenses"]>
 
   export type ExpensesSelectScalar = {
     transacId?: boolean
     date?: boolean
     amount?: boolean
-    paymentMethod?: boolean
-    vendorProjName?: boolean
-    category?: boolean
+    vendorName?: boolean
+    project?: boolean
     description?: boolean
     status?: boolean
   }
 
-  export type ExpensesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"transacId" | "date" | "amount" | "paymentMethod" | "vendorProjName" | "category" | "description" | "status", ExtArgs["result"]["expenses"]>
+  export type ExpensesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"transacId" | "date" | "amount" | "vendorName" | "project" | "description" | "status", ExtArgs["result"]["expenses"]>
   export type ExpensesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    payments?: boolean | Expenses$paymentsArgs<ExtArgs>
-    _count?: boolean | ExpensesCountOutputTypeDefaultArgs<ExtArgs>
+    vendor?: boolean | Expenses$vendorArgs<ExtArgs>
   }
-  export type ExpensesIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-  export type ExpensesIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type ExpensesIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    vendor?: boolean | Expenses$vendorArgs<ExtArgs>
+  }
+  export type ExpensesIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    vendor?: boolean | Expenses$vendorArgs<ExtArgs>
+  }
 
   export type $ExpensesPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Expenses"
     objects: {
-      payments: Prisma.$PaymentPayload<ExtArgs>[]
+      vendor: Prisma.$VendorsPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       transacId: number
       date: Date
       amount: number
-      paymentMethod: string
-      vendorProjName: string
-      category: string
+      vendorName: string
+      project: string
       description: string | null
       status: string
     }, ExtArgs["result"]["expenses"]>
@@ -6486,7 +7586,7 @@ export namespace Prisma {
    */
   export interface Prisma__ExpensesClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    payments<T extends Expenses$paymentsArgs<ExtArgs> = {}>(args?: Subset<T, Expenses$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    vendor<T extends Expenses$vendorArgs<ExtArgs> = {}>(args?: Subset<T, Expenses$vendorArgs<ExtArgs>>): Prisma__VendorsClient<$Result.GetResult<Prisma.$VendorsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6519,9 +7619,8 @@ export namespace Prisma {
     readonly transacId: FieldRef<"Expenses", 'Int'>
     readonly date: FieldRef<"Expenses", 'DateTime'>
     readonly amount: FieldRef<"Expenses", 'Int'>
-    readonly paymentMethod: FieldRef<"Expenses", 'String'>
-    readonly vendorProjName: FieldRef<"Expenses", 'String'>
-    readonly category: FieldRef<"Expenses", 'String'>
+    readonly vendorName: FieldRef<"Expenses", 'String'>
+    readonly project: FieldRef<"Expenses", 'String'>
     readonly description: FieldRef<"Expenses", 'String'>
     readonly status: FieldRef<"Expenses", 'String'>
   }
@@ -6773,6 +7872,10 @@ export namespace Prisma {
      */
     data: ExpensesCreateManyInput | ExpensesCreateManyInput[]
     skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExpensesIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -6843,6 +7946,10 @@ export namespace Prisma {
      * Limit how many Expenses to update.
      */
     limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExpensesIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -6912,27 +8019,22 @@ export namespace Prisma {
   }
 
   /**
-   * Expenses.payments
+   * Expenses.vendor
    */
-  export type Expenses$paymentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Expenses$vendorArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Payment
+     * Select specific fields to fetch from the Vendors
      */
-    select?: PaymentSelect<ExtArgs> | null
+    select?: VendorsSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Payment
+     * Omit specific fields from the Vendors
      */
-    omit?: PaymentOmit<ExtArgs> | null
+    omit?: VendorsOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: PaymentInclude<ExtArgs> | null
-    where?: PaymentWhereInput
-    orderBy?: PaymentOrderByWithRelationInput | PaymentOrderByWithRelationInput[]
-    cursor?: PaymentWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: PaymentScalarFieldEnum | PaymentScalarFieldEnum[]
+    include?: VendorsInclude<ExtArgs> | null
+    where?: VendorsWhereInput
   }
 
   /**
@@ -6968,21 +8070,19 @@ export namespace Prisma {
 
   export type PaymentAvgAggregateOutputType = {
     paymentId: number | null
-    expenseId: number | null
     collectorId: number | null
     amount: number | null
   }
 
   export type PaymentSumAggregateOutputType = {
     paymentId: number | null
-    expenseId: number | null
     collectorId: number | null
     amount: number | null
   }
 
   export type PaymentMinAggregateOutputType = {
     paymentId: number | null
-    expenseId: number | null
+    vendorName: string | null
     collectorId: number | null
     type: string | null
     amount: number | null
@@ -6990,7 +8090,7 @@ export namespace Prisma {
 
   export type PaymentMaxAggregateOutputType = {
     paymentId: number | null
-    expenseId: number | null
+    vendorName: string | null
     collectorId: number | null
     type: string | null
     amount: number | null
@@ -6998,7 +8098,7 @@ export namespace Prisma {
 
   export type PaymentCountAggregateOutputType = {
     paymentId: number
-    expenseId: number
+    vendorName: number
     collectorId: number
     type: number
     amount: number
@@ -7008,21 +8108,19 @@ export namespace Prisma {
 
   export type PaymentAvgAggregateInputType = {
     paymentId?: true
-    expenseId?: true
     collectorId?: true
     amount?: true
   }
 
   export type PaymentSumAggregateInputType = {
     paymentId?: true
-    expenseId?: true
     collectorId?: true
     amount?: true
   }
 
   export type PaymentMinAggregateInputType = {
     paymentId?: true
-    expenseId?: true
+    vendorName?: true
     collectorId?: true
     type?: true
     amount?: true
@@ -7030,7 +8128,7 @@ export namespace Prisma {
 
   export type PaymentMaxAggregateInputType = {
     paymentId?: true
-    expenseId?: true
+    vendorName?: true
     collectorId?: true
     type?: true
     amount?: true
@@ -7038,7 +8136,7 @@ export namespace Prisma {
 
   export type PaymentCountAggregateInputType = {
     paymentId?: true
-    expenseId?: true
+    vendorName?: true
     collectorId?: true
     type?: true
     amount?: true
@@ -7133,7 +8231,7 @@ export namespace Prisma {
 
   export type PaymentGroupByOutputType = {
     paymentId: number
-    expenseId: number | null
+    vendorName: string
     collectorId: number
     type: string
     amount: number
@@ -7160,65 +8258,65 @@ export namespace Prisma {
 
   export type PaymentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     paymentId?: boolean
-    expenseId?: boolean
+    vendorName?: boolean
     collectorId?: boolean
     type?: boolean
     amount?: boolean
     collector?: boolean | Payment$collectorArgs<ExtArgs>
-    expense?: boolean | Payment$expenseArgs<ExtArgs>
+    vendor?: boolean | Payment$vendorArgs<ExtArgs>
   }, ExtArgs["result"]["payment"]>
 
   export type PaymentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     paymentId?: boolean
-    expenseId?: boolean
+    vendorName?: boolean
     collectorId?: boolean
     type?: boolean
     amount?: boolean
     collector?: boolean | Payment$collectorArgs<ExtArgs>
-    expense?: boolean | Payment$expenseArgs<ExtArgs>
+    vendor?: boolean | Payment$vendorArgs<ExtArgs>
   }, ExtArgs["result"]["payment"]>
 
   export type PaymentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     paymentId?: boolean
-    expenseId?: boolean
+    vendorName?: boolean
     collectorId?: boolean
     type?: boolean
     amount?: boolean
     collector?: boolean | Payment$collectorArgs<ExtArgs>
-    expense?: boolean | Payment$expenseArgs<ExtArgs>
+    vendor?: boolean | Payment$vendorArgs<ExtArgs>
   }, ExtArgs["result"]["payment"]>
 
   export type PaymentSelectScalar = {
     paymentId?: boolean
-    expenseId?: boolean
+    vendorName?: boolean
     collectorId?: boolean
     type?: boolean
     amount?: boolean
   }
 
-  export type PaymentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"paymentId" | "expenseId" | "collectorId" | "type" | "amount", ExtArgs["result"]["payment"]>
+  export type PaymentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"paymentId" | "vendorName" | "collectorId" | "type" | "amount", ExtArgs["result"]["payment"]>
   export type PaymentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     collector?: boolean | Payment$collectorArgs<ExtArgs>
-    expense?: boolean | Payment$expenseArgs<ExtArgs>
+    vendor?: boolean | Payment$vendorArgs<ExtArgs>
   }
   export type PaymentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     collector?: boolean | Payment$collectorArgs<ExtArgs>
-    expense?: boolean | Payment$expenseArgs<ExtArgs>
+    vendor?: boolean | Payment$vendorArgs<ExtArgs>
   }
   export type PaymentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     collector?: boolean | Payment$collectorArgs<ExtArgs>
-    expense?: boolean | Payment$expenseArgs<ExtArgs>
+    vendor?: boolean | Payment$vendorArgs<ExtArgs>
   }
 
   export type $PaymentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Payment"
     objects: {
       collector: Prisma.$CollectorsPayload<ExtArgs> | null
-      expense: Prisma.$ExpensesPayload<ExtArgs> | null
+      vendor: Prisma.$VendorsPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       paymentId: number
-      expenseId: number | null
+      vendorName: string
       collectorId: number
       type: string
       amount: number
@@ -7617,7 +8715,7 @@ export namespace Prisma {
   export interface Prisma__PaymentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     collector<T extends Payment$collectorArgs<ExtArgs> = {}>(args?: Subset<T, Payment$collectorArgs<ExtArgs>>): Prisma__CollectorsClient<$Result.GetResult<Prisma.$CollectorsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    expense<T extends Payment$expenseArgs<ExtArgs> = {}>(args?: Subset<T, Payment$expenseArgs<ExtArgs>>): Prisma__ExpensesClient<$Result.GetResult<Prisma.$ExpensesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    vendor<T extends Payment$vendorArgs<ExtArgs> = {}>(args?: Subset<T, Payment$vendorArgs<ExtArgs>>): Prisma__VendorsClient<$Result.GetResult<Prisma.$VendorsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7648,7 +8746,7 @@ export namespace Prisma {
    */
   interface PaymentFieldRefs {
     readonly paymentId: FieldRef<"Payment", 'Int'>
-    readonly expenseId: FieldRef<"Payment", 'Int'>
+    readonly vendorName: FieldRef<"Payment", 'String'>
     readonly collectorId: FieldRef<"Payment", 'Int'>
     readonly type: FieldRef<"Payment", 'String'>
     readonly amount: FieldRef<"Payment", 'Int'>
@@ -8067,22 +9165,22 @@ export namespace Prisma {
   }
 
   /**
-   * Payment.expense
+   * Payment.vendor
    */
-  export type Payment$expenseArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Payment$vendorArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Expenses
+     * Select specific fields to fetch from the Vendors
      */
-    select?: ExpensesSelect<ExtArgs> | null
+    select?: VendorsSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Expenses
+     * Omit specific fields from the Vendors
      */
-    omit?: ExpensesOmit<ExtArgs> | null
+    omit?: VendorsOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ExpensesInclude<ExtArgs> | null
-    where?: ExpensesWhereInput
+    include?: VendorsInclude<ExtArgs> | null
+    where?: VendorsWhereInput
   }
 
   /**
@@ -8120,9 +9218,9 @@ export namespace Prisma {
 
   export const PowerUsersScalarFieldEnum: {
     id: 'id',
-    email: 'email',
     username: 'username',
-    role: 'role'
+    role: 'role',
+    email: 'email'
   };
 
   export type PowerUsersScalarFieldEnum = (typeof PowerUsersScalarFieldEnum)[keyof typeof PowerUsersScalarFieldEnum]
@@ -8144,17 +9242,24 @@ export namespace Prisma {
   export type CollectorsScalarFieldEnum = (typeof CollectorsScalarFieldEnum)[keyof typeof CollectorsScalarFieldEnum]
 
 
+  export const VendorsScalarFieldEnum: {
+    vendorName: 'vendorName'
+  };
+
+  export type VendorsScalarFieldEnum = (typeof VendorsScalarFieldEnum)[keyof typeof VendorsScalarFieldEnum]
+
+
   export const DonationScalarFieldEnum: {
     transacId: 'transacId',
     date: 'date',
     amount: 'amount',
-    paymentMethod: 'paymentMethod',
     donorName: 'donorName',
     referralId: 'referralId',
     collectorId: 'collectorId',
     type: 'type',
     status: 'status',
-    notes: 'notes'
+    notes: 'notes',
+    paymentMethod: 'paymentMethod'
   };
 
   export type DonationScalarFieldEnum = (typeof DonationScalarFieldEnum)[keyof typeof DonationScalarFieldEnum]
@@ -8164,9 +9269,8 @@ export namespace Prisma {
     transacId: 'transacId',
     date: 'date',
     amount: 'amount',
-    paymentMethod: 'paymentMethod',
-    vendorProjName: 'vendorProjName',
-    category: 'category',
+    vendorName: 'vendorName',
+    project: 'project',
     description: 'description',
     status: 'status'
   };
@@ -8176,7 +9280,7 @@ export namespace Prisma {
 
   export const PaymentScalarFieldEnum: {
     paymentId: 'paymentId',
-    expenseId: 'expenseId',
+    vendorName: 'vendorName',
     collectorId: 'collectorId',
     type: 'type',
     amount: 'amount'
@@ -8278,33 +9382,33 @@ export namespace Prisma {
     OR?: PowerUsersWhereInput[]
     NOT?: PowerUsersWhereInput | PowerUsersWhereInput[]
     id?: IntFilter<"PowerUsers"> | number
-    email?: StringFilter<"PowerUsers"> | string
     username?: StringFilter<"PowerUsers"> | string
     role?: StringFilter<"PowerUsers"> | string
+    email?: StringFilter<"PowerUsers"> | string
   }
 
   export type PowerUsersOrderByWithRelationInput = {
     id?: SortOrder
-    email?: SortOrder
     username?: SortOrder
     role?: SortOrder
+    email?: SortOrder
   }
 
   export type PowerUsersWhereUniqueInput = Prisma.AtLeast<{
     id?: number
-    email?: string
     username?: string
+    email?: string
     AND?: PowerUsersWhereInput | PowerUsersWhereInput[]
     OR?: PowerUsersWhereInput[]
     NOT?: PowerUsersWhereInput | PowerUsersWhereInput[]
     role?: StringFilter<"PowerUsers"> | string
-  }, "id" | "email" | "username">
+  }, "id" | "username" | "email">
 
   export type PowerUsersOrderByWithAggregationInput = {
     id?: SortOrder
-    email?: SortOrder
     username?: SortOrder
     role?: SortOrder
+    email?: SortOrder
     _count?: PowerUsersCountOrderByAggregateInput
     _avg?: PowerUsersAvgOrderByAggregateInput
     _max?: PowerUsersMaxOrderByAggregateInput
@@ -8317,9 +9421,9 @@ export namespace Prisma {
     OR?: PowerUsersScalarWhereWithAggregatesInput[]
     NOT?: PowerUsersScalarWhereWithAggregatesInput | PowerUsersScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"PowerUsers"> | number
-    email?: StringWithAggregatesFilter<"PowerUsers"> | string
     username?: StringWithAggregatesFilter<"PowerUsers"> | string
     role?: StringWithAggregatesFilter<"PowerUsers"> | string
+    email?: StringWithAggregatesFilter<"PowerUsers"> | string
   }
 
   export type ReferralsWhereInput = {
@@ -8409,6 +9513,44 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"Collectors"> | string
   }
 
+  export type VendorsWhereInput = {
+    AND?: VendorsWhereInput | VendorsWhereInput[]
+    OR?: VendorsWhereInput[]
+    NOT?: VendorsWhereInput | VendorsWhereInput[]
+    vendorName?: StringFilter<"Vendors"> | string
+    expenses?: ExpensesListRelationFilter
+    payments?: PaymentListRelationFilter
+  }
+
+  export type VendorsOrderByWithRelationInput = {
+    vendorName?: SortOrder
+    expenses?: ExpensesOrderByRelationAggregateInput
+    payments?: PaymentOrderByRelationAggregateInput
+  }
+
+  export type VendorsWhereUniqueInput = Prisma.AtLeast<{
+    vendorName?: string
+    AND?: VendorsWhereInput | VendorsWhereInput[]
+    OR?: VendorsWhereInput[]
+    NOT?: VendorsWhereInput | VendorsWhereInput[]
+    expenses?: ExpensesListRelationFilter
+    payments?: PaymentListRelationFilter
+  }, "vendorName">
+
+  export type VendorsOrderByWithAggregationInput = {
+    vendorName?: SortOrder
+    _count?: VendorsCountOrderByAggregateInput
+    _max?: VendorsMaxOrderByAggregateInput
+    _min?: VendorsMinOrderByAggregateInput
+  }
+
+  export type VendorsScalarWhereWithAggregatesInput = {
+    AND?: VendorsScalarWhereWithAggregatesInput | VendorsScalarWhereWithAggregatesInput[]
+    OR?: VendorsScalarWhereWithAggregatesInput[]
+    NOT?: VendorsScalarWhereWithAggregatesInput | VendorsScalarWhereWithAggregatesInput[]
+    vendorName?: StringWithAggregatesFilter<"Vendors"> | string
+  }
+
   export type DonationWhereInput = {
     AND?: DonationWhereInput | DonationWhereInput[]
     OR?: DonationWhereInput[]
@@ -8416,30 +9558,30 @@ export namespace Prisma {
     transacId?: IntFilter<"Donation"> | number
     date?: DateTimeFilter<"Donation"> | Date | string
     amount?: IntFilter<"Donation"> | number
-    paymentMethod?: StringFilter<"Donation"> | string
     donorName?: StringFilter<"Donation"> | string
     referralId?: IntFilter<"Donation"> | number
     collectorId?: IntFilter<"Donation"> | number
     type?: StringFilter<"Donation"> | string
     status?: StringFilter<"Donation"> | string
     notes?: StringNullableFilter<"Donation"> | string | null
-    referral?: XOR<ReferralsNullableScalarRelationFilter, ReferralsWhereInput> | null
-    collector?: XOR<CollectorsNullableScalarRelationFilter, CollectorsWhereInput> | null
+    paymentMethod?: StringFilter<"Donation"> | string
+    collector?: XOR<CollectorsScalarRelationFilter, CollectorsWhereInput>
+    referral?: XOR<ReferralsScalarRelationFilter, ReferralsWhereInput>
   }
 
   export type DonationOrderByWithRelationInput = {
     transacId?: SortOrder
     date?: SortOrder
     amount?: SortOrder
-    paymentMethod?: SortOrder
     donorName?: SortOrder
     referralId?: SortOrder
     collectorId?: SortOrder
     type?: SortOrder
     status?: SortOrder
     notes?: SortOrderInput | SortOrder
-    referral?: ReferralsOrderByWithRelationInput
+    paymentMethod?: SortOrder
     collector?: CollectorsOrderByWithRelationInput
+    referral?: ReferralsOrderByWithRelationInput
   }
 
   export type DonationWhereUniqueInput = Prisma.AtLeast<{
@@ -8449,28 +9591,28 @@ export namespace Prisma {
     NOT?: DonationWhereInput | DonationWhereInput[]
     date?: DateTimeFilter<"Donation"> | Date | string
     amount?: IntFilter<"Donation"> | number
-    paymentMethod?: StringFilter<"Donation"> | string
     donorName?: StringFilter<"Donation"> | string
     referralId?: IntFilter<"Donation"> | number
     collectorId?: IntFilter<"Donation"> | number
     type?: StringFilter<"Donation"> | string
     status?: StringFilter<"Donation"> | string
     notes?: StringNullableFilter<"Donation"> | string | null
-    referral?: XOR<ReferralsNullableScalarRelationFilter, ReferralsWhereInput> | null
-    collector?: XOR<CollectorsNullableScalarRelationFilter, CollectorsWhereInput> | null
+    paymentMethod?: StringFilter<"Donation"> | string
+    collector?: XOR<CollectorsScalarRelationFilter, CollectorsWhereInput>
+    referral?: XOR<ReferralsScalarRelationFilter, ReferralsWhereInput>
   }, "transacId">
 
   export type DonationOrderByWithAggregationInput = {
     transacId?: SortOrder
     date?: SortOrder
     amount?: SortOrder
-    paymentMethod?: SortOrder
     donorName?: SortOrder
     referralId?: SortOrder
     collectorId?: SortOrder
     type?: SortOrder
     status?: SortOrder
     notes?: SortOrderInput | SortOrder
+    paymentMethod?: SortOrder
     _count?: DonationCountOrderByAggregateInput
     _avg?: DonationAvgOrderByAggregateInput
     _max?: DonationMaxOrderByAggregateInput
@@ -8485,13 +9627,13 @@ export namespace Prisma {
     transacId?: IntWithAggregatesFilter<"Donation"> | number
     date?: DateTimeWithAggregatesFilter<"Donation"> | Date | string
     amount?: IntWithAggregatesFilter<"Donation"> | number
-    paymentMethod?: StringWithAggregatesFilter<"Donation"> | string
     donorName?: StringWithAggregatesFilter<"Donation"> | string
     referralId?: IntWithAggregatesFilter<"Donation"> | number
     collectorId?: IntWithAggregatesFilter<"Donation"> | number
     type?: StringWithAggregatesFilter<"Donation"> | string
     status?: StringWithAggregatesFilter<"Donation"> | string
     notes?: StringNullableWithAggregatesFilter<"Donation"> | string | null
+    paymentMethod?: StringWithAggregatesFilter<"Donation"> | string
   }
 
   export type ExpensesWhereInput = {
@@ -8501,24 +9643,22 @@ export namespace Prisma {
     transacId?: IntFilter<"Expenses"> | number
     date?: DateTimeFilter<"Expenses"> | Date | string
     amount?: IntFilter<"Expenses"> | number
-    paymentMethod?: StringFilter<"Expenses"> | string
-    vendorProjName?: StringFilter<"Expenses"> | string
-    category?: StringFilter<"Expenses"> | string
+    vendorName?: StringFilter<"Expenses"> | string
+    project?: StringFilter<"Expenses"> | string
     description?: StringNullableFilter<"Expenses"> | string | null
     status?: StringFilter<"Expenses"> | string
-    payments?: PaymentListRelationFilter
+    vendor?: XOR<VendorsNullableScalarRelationFilter, VendorsWhereInput> | null
   }
 
   export type ExpensesOrderByWithRelationInput = {
     transacId?: SortOrder
     date?: SortOrder
     amount?: SortOrder
-    paymentMethod?: SortOrder
-    vendorProjName?: SortOrder
-    category?: SortOrder
+    vendorName?: SortOrder
+    project?: SortOrder
     description?: SortOrderInput | SortOrder
     status?: SortOrder
-    payments?: PaymentOrderByRelationAggregateInput
+    vendor?: VendorsOrderByWithRelationInput
   }
 
   export type ExpensesWhereUniqueInput = Prisma.AtLeast<{
@@ -8528,21 +9668,19 @@ export namespace Prisma {
     NOT?: ExpensesWhereInput | ExpensesWhereInput[]
     date?: DateTimeFilter<"Expenses"> | Date | string
     amount?: IntFilter<"Expenses"> | number
-    paymentMethod?: StringFilter<"Expenses"> | string
-    vendorProjName?: StringFilter<"Expenses"> | string
-    category?: StringFilter<"Expenses"> | string
+    vendorName?: StringFilter<"Expenses"> | string
+    project?: StringFilter<"Expenses"> | string
     description?: StringNullableFilter<"Expenses"> | string | null
     status?: StringFilter<"Expenses"> | string
-    payments?: PaymentListRelationFilter
+    vendor?: XOR<VendorsNullableScalarRelationFilter, VendorsWhereInput> | null
   }, "transacId">
 
   export type ExpensesOrderByWithAggregationInput = {
     transacId?: SortOrder
     date?: SortOrder
     amount?: SortOrder
-    paymentMethod?: SortOrder
-    vendorProjName?: SortOrder
-    category?: SortOrder
+    vendorName?: SortOrder
+    project?: SortOrder
     description?: SortOrderInput | SortOrder
     status?: SortOrder
     _count?: ExpensesCountOrderByAggregateInput
@@ -8559,9 +9697,8 @@ export namespace Prisma {
     transacId?: IntWithAggregatesFilter<"Expenses"> | number
     date?: DateTimeWithAggregatesFilter<"Expenses"> | Date | string
     amount?: IntWithAggregatesFilter<"Expenses"> | number
-    paymentMethod?: StringWithAggregatesFilter<"Expenses"> | string
-    vendorProjName?: StringWithAggregatesFilter<"Expenses"> | string
-    category?: StringWithAggregatesFilter<"Expenses"> | string
+    vendorName?: StringWithAggregatesFilter<"Expenses"> | string
+    project?: StringWithAggregatesFilter<"Expenses"> | string
     description?: StringNullableWithAggregatesFilter<"Expenses"> | string | null
     status?: StringWithAggregatesFilter<"Expenses"> | string
   }
@@ -8571,22 +9708,22 @@ export namespace Prisma {
     OR?: PaymentWhereInput[]
     NOT?: PaymentWhereInput | PaymentWhereInput[]
     paymentId?: IntFilter<"Payment"> | number
-    expenseId?: IntNullableFilter<"Payment"> | number | null
+    vendorName?: StringFilter<"Payment"> | string
     collectorId?: IntFilter<"Payment"> | number
     type?: StringFilter<"Payment"> | string
     amount?: IntFilter<"Payment"> | number
     collector?: XOR<CollectorsNullableScalarRelationFilter, CollectorsWhereInput> | null
-    expense?: XOR<ExpensesNullableScalarRelationFilter, ExpensesWhereInput> | null
+    vendor?: XOR<VendorsNullableScalarRelationFilter, VendorsWhereInput> | null
   }
 
   export type PaymentOrderByWithRelationInput = {
     paymentId?: SortOrder
-    expenseId?: SortOrderInput | SortOrder
+    vendorName?: SortOrder
     collectorId?: SortOrder
     type?: SortOrder
     amount?: SortOrder
     collector?: CollectorsOrderByWithRelationInput
-    expense?: ExpensesOrderByWithRelationInput
+    vendor?: VendorsOrderByWithRelationInput
   }
 
   export type PaymentWhereUniqueInput = Prisma.AtLeast<{
@@ -8594,17 +9731,17 @@ export namespace Prisma {
     AND?: PaymentWhereInput | PaymentWhereInput[]
     OR?: PaymentWhereInput[]
     NOT?: PaymentWhereInput | PaymentWhereInput[]
-    expenseId?: IntNullableFilter<"Payment"> | number | null
+    vendorName?: StringFilter<"Payment"> | string
     collectorId?: IntFilter<"Payment"> | number
     type?: StringFilter<"Payment"> | string
     amount?: IntFilter<"Payment"> | number
     collector?: XOR<CollectorsNullableScalarRelationFilter, CollectorsWhereInput> | null
-    expense?: XOR<ExpensesNullableScalarRelationFilter, ExpensesWhereInput> | null
+    vendor?: XOR<VendorsNullableScalarRelationFilter, VendorsWhereInput> | null
   }, "paymentId">
 
   export type PaymentOrderByWithAggregationInput = {
     paymentId?: SortOrder
-    expenseId?: SortOrderInput | SortOrder
+    vendorName?: SortOrder
     collectorId?: SortOrder
     type?: SortOrder
     amount?: SortOrder
@@ -8620,56 +9757,56 @@ export namespace Prisma {
     OR?: PaymentScalarWhereWithAggregatesInput[]
     NOT?: PaymentScalarWhereWithAggregatesInput | PaymentScalarWhereWithAggregatesInput[]
     paymentId?: IntWithAggregatesFilter<"Payment"> | number
-    expenseId?: IntNullableWithAggregatesFilter<"Payment"> | number | null
+    vendorName?: StringWithAggregatesFilter<"Payment"> | string
     collectorId?: IntWithAggregatesFilter<"Payment"> | number
     type?: StringWithAggregatesFilter<"Payment"> | string
     amount?: IntWithAggregatesFilter<"Payment"> | number
   }
 
   export type PowerUsersCreateInput = {
-    email: string
     username: string
     role: string
+    email: string
   }
 
   export type PowerUsersUncheckedCreateInput = {
     id?: number
-    email: string
     username: string
     role: string
+    email: string
   }
 
   export type PowerUsersUpdateInput = {
-    email?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
   }
 
   export type PowerUsersUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
-    email?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
   }
 
   export type PowerUsersCreateManyInput = {
     id?: number
-    email: string
     username: string
     role: string
+    email: string
   }
 
   export type PowerUsersUpdateManyMutationInput = {
-    email?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
   }
 
   export type PowerUsersUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
-    email?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
   }
 
   export type ReferralsCreateInput = {
@@ -8748,145 +9885,172 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
   }
 
+  export type VendorsCreateInput = {
+    vendorName: string
+    expenses?: ExpensesCreateNestedManyWithoutVendorInput
+    payments?: PaymentCreateNestedManyWithoutVendorInput
+  }
+
+  export type VendorsUncheckedCreateInput = {
+    vendorName: string
+    expenses?: ExpensesUncheckedCreateNestedManyWithoutVendorInput
+    payments?: PaymentUncheckedCreateNestedManyWithoutVendorInput
+  }
+
+  export type VendorsUpdateInput = {
+    vendorName?: StringFieldUpdateOperationsInput | string
+    expenses?: ExpensesUpdateManyWithoutVendorNestedInput
+    payments?: PaymentUpdateManyWithoutVendorNestedInput
+  }
+
+  export type VendorsUncheckedUpdateInput = {
+    vendorName?: StringFieldUpdateOperationsInput | string
+    expenses?: ExpensesUncheckedUpdateManyWithoutVendorNestedInput
+    payments?: PaymentUncheckedUpdateManyWithoutVendorNestedInput
+  }
+
+  export type VendorsCreateManyInput = {
+    vendorName: string
+  }
+
+  export type VendorsUpdateManyMutationInput = {
+    vendorName?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type VendorsUncheckedUpdateManyInput = {
+    vendorName?: StringFieldUpdateOperationsInput | string
+  }
+
   export type DonationCreateInput = {
     date: Date | string
     amount: number
-    paymentMethod: string
     donorName: string
     type: string
     status: string
     notes?: string | null
-    referral?: ReferralsCreateNestedOneWithoutDonationsInput
-    collector?: CollectorsCreateNestedOneWithoutDonationsInput
+    paymentMethod: string
+    collector: CollectorsCreateNestedOneWithoutDonationsInput
+    referral: ReferralsCreateNestedOneWithoutDonationsInput
   }
 
   export type DonationUncheckedCreateInput = {
     transacId?: number
     date: Date | string
     amount: number
-    paymentMethod: string
     donorName: string
     referralId: number
     collectorId: number
     type: string
     status: string
     notes?: string | null
+    paymentMethod: string
   }
 
   export type DonationUpdateInput = {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     amount?: IntFieldUpdateOperationsInput | number
-    paymentMethod?: StringFieldUpdateOperationsInput | string
     donorName?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
-    referral?: ReferralsUpdateOneWithoutDonationsNestedInput
-    collector?: CollectorsUpdateOneWithoutDonationsNestedInput
+    paymentMethod?: StringFieldUpdateOperationsInput | string
+    collector?: CollectorsUpdateOneRequiredWithoutDonationsNestedInput
+    referral?: ReferralsUpdateOneRequiredWithoutDonationsNestedInput
   }
 
   export type DonationUncheckedUpdateInput = {
     transacId?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     amount?: IntFieldUpdateOperationsInput | number
-    paymentMethod?: StringFieldUpdateOperationsInput | string
     donorName?: StringFieldUpdateOperationsInput | string
     referralId?: IntFieldUpdateOperationsInput | number
     collectorId?: IntFieldUpdateOperationsInput | number
     type?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentMethod?: StringFieldUpdateOperationsInput | string
   }
 
   export type DonationCreateManyInput = {
     transacId?: number
     date: Date | string
     amount: number
-    paymentMethod: string
     donorName: string
     referralId: number
     collectorId: number
     type: string
     status: string
     notes?: string | null
+    paymentMethod: string
   }
 
   export type DonationUpdateManyMutationInput = {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     amount?: IntFieldUpdateOperationsInput | number
-    paymentMethod?: StringFieldUpdateOperationsInput | string
     donorName?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentMethod?: StringFieldUpdateOperationsInput | string
   }
 
   export type DonationUncheckedUpdateManyInput = {
     transacId?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     amount?: IntFieldUpdateOperationsInput | number
-    paymentMethod?: StringFieldUpdateOperationsInput | string
     donorName?: StringFieldUpdateOperationsInput | string
     referralId?: IntFieldUpdateOperationsInput | number
     collectorId?: IntFieldUpdateOperationsInput | number
     type?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentMethod?: StringFieldUpdateOperationsInput | string
   }
 
   export type ExpensesCreateInput = {
     date: Date | string
     amount: number
-    paymentMethod: string
-    vendorProjName: string
-    category: string
+    project: string
     description?: string | null
     status: string
-    payments?: PaymentCreateNestedManyWithoutExpenseInput
+    vendor?: VendorsCreateNestedOneWithoutExpensesInput
   }
 
   export type ExpensesUncheckedCreateInput = {
     transacId?: number
     date: Date | string
     amount: number
-    paymentMethod: string
-    vendorProjName: string
-    category: string
+    vendorName: string
+    project: string
     description?: string | null
     status: string
-    payments?: PaymentUncheckedCreateNestedManyWithoutExpenseInput
   }
 
   export type ExpensesUpdateInput = {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     amount?: IntFieldUpdateOperationsInput | number
-    paymentMethod?: StringFieldUpdateOperationsInput | string
-    vendorProjName?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
+    project?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
-    payments?: PaymentUpdateManyWithoutExpenseNestedInput
+    vendor?: VendorsUpdateOneWithoutExpensesNestedInput
   }
 
   export type ExpensesUncheckedUpdateInput = {
     transacId?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     amount?: IntFieldUpdateOperationsInput | number
-    paymentMethod?: StringFieldUpdateOperationsInput | string
-    vendorProjName?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
+    vendorName?: StringFieldUpdateOperationsInput | string
+    project?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
-    payments?: PaymentUncheckedUpdateManyWithoutExpenseNestedInput
   }
 
   export type ExpensesCreateManyInput = {
     transacId?: number
     date: Date | string
     amount: number
-    paymentMethod: string
-    vendorProjName: string
-    category: string
+    vendorName: string
+    project: string
     description?: string | null
     status: string
   }
@@ -8894,9 +10058,7 @@ export namespace Prisma {
   export type ExpensesUpdateManyMutationInput = {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     amount?: IntFieldUpdateOperationsInput | number
-    paymentMethod?: StringFieldUpdateOperationsInput | string
-    vendorProjName?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
+    project?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
   }
@@ -8905,9 +10067,8 @@ export namespace Prisma {
     transacId?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     amount?: IntFieldUpdateOperationsInput | number
-    paymentMethod?: StringFieldUpdateOperationsInput | string
-    vendorProjName?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
+    vendorName?: StringFieldUpdateOperationsInput | string
+    project?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
   }
@@ -8916,12 +10077,12 @@ export namespace Prisma {
     type: string
     amount: number
     collector?: CollectorsCreateNestedOneWithoutPaymentsInput
-    expense?: ExpensesCreateNestedOneWithoutPaymentsInput
+    vendor?: VendorsCreateNestedOneWithoutPaymentsInput
   }
 
   export type PaymentUncheckedCreateInput = {
     paymentId?: number
-    expenseId?: number | null
+    vendorName: string
     collectorId: number
     type: string
     amount: number
@@ -8931,12 +10092,12 @@ export namespace Prisma {
     type?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     collector?: CollectorsUpdateOneWithoutPaymentsNestedInput
-    expense?: ExpensesUpdateOneWithoutPaymentsNestedInput
+    vendor?: VendorsUpdateOneWithoutPaymentsNestedInput
   }
 
   export type PaymentUncheckedUpdateInput = {
     paymentId?: IntFieldUpdateOperationsInput | number
-    expenseId?: NullableIntFieldUpdateOperationsInput | number | null
+    vendorName?: StringFieldUpdateOperationsInput | string
     collectorId?: IntFieldUpdateOperationsInput | number
     type?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
@@ -8944,7 +10105,7 @@ export namespace Prisma {
 
   export type PaymentCreateManyInput = {
     paymentId?: number
-    expenseId?: number | null
+    vendorName: string
     collectorId: number
     type: string
     amount: number
@@ -8957,7 +10118,7 @@ export namespace Prisma {
 
   export type PaymentUncheckedUpdateManyInput = {
     paymentId?: IntFieldUpdateOperationsInput | number
-    expenseId?: NullableIntFieldUpdateOperationsInput | number | null
+    vendorName?: StringFieldUpdateOperationsInput | string
     collectorId?: IntFieldUpdateOperationsInput | number
     type?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
@@ -8991,9 +10152,9 @@ export namespace Prisma {
 
   export type PowerUsersCountOrderByAggregateInput = {
     id?: SortOrder
-    email?: SortOrder
     username?: SortOrder
     role?: SortOrder
+    email?: SortOrder
   }
 
   export type PowerUsersAvgOrderByAggregateInput = {
@@ -9002,16 +10163,16 @@ export namespace Prisma {
 
   export type PowerUsersMaxOrderByAggregateInput = {
     id?: SortOrder
-    email?: SortOrder
     username?: SortOrder
     role?: SortOrder
+    email?: SortOrder
   }
 
   export type PowerUsersMinOrderByAggregateInput = {
     id?: SortOrder
-    email?: SortOrder
     username?: SortOrder
     role?: SortOrder
+    email?: SortOrder
   }
 
   export type PowerUsersSumOrderByAggregateInput = {
@@ -9118,6 +10279,28 @@ export namespace Prisma {
     collectorId?: SortOrder
   }
 
+  export type ExpensesListRelationFilter = {
+    every?: ExpensesWhereInput
+    some?: ExpensesWhereInput
+    none?: ExpensesWhereInput
+  }
+
+  export type ExpensesOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type VendorsCountOrderByAggregateInput = {
+    vendorName?: SortOrder
+  }
+
+  export type VendorsMaxOrderByAggregateInput = {
+    vendorName?: SortOrder
+  }
+
+  export type VendorsMinOrderByAggregateInput = {
+    vendorName?: SortOrder
+  }
+
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -9144,14 +10327,14 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
-  export type ReferralsNullableScalarRelationFilter = {
-    is?: ReferralsWhereInput | null
-    isNot?: ReferralsWhereInput | null
+  export type CollectorsScalarRelationFilter = {
+    is?: CollectorsWhereInput
+    isNot?: CollectorsWhereInput
   }
 
-  export type CollectorsNullableScalarRelationFilter = {
-    is?: CollectorsWhereInput | null
-    isNot?: CollectorsWhereInput | null
+  export type ReferralsScalarRelationFilter = {
+    is?: ReferralsWhereInput
+    isNot?: ReferralsWhereInput
   }
 
   export type SortOrderInput = {
@@ -9163,13 +10346,13 @@ export namespace Prisma {
     transacId?: SortOrder
     date?: SortOrder
     amount?: SortOrder
-    paymentMethod?: SortOrder
     donorName?: SortOrder
     referralId?: SortOrder
     collectorId?: SortOrder
     type?: SortOrder
     status?: SortOrder
     notes?: SortOrder
+    paymentMethod?: SortOrder
   }
 
   export type DonationAvgOrderByAggregateInput = {
@@ -9183,26 +10366,26 @@ export namespace Prisma {
     transacId?: SortOrder
     date?: SortOrder
     amount?: SortOrder
-    paymentMethod?: SortOrder
     donorName?: SortOrder
     referralId?: SortOrder
     collectorId?: SortOrder
     type?: SortOrder
     status?: SortOrder
     notes?: SortOrder
+    paymentMethod?: SortOrder
   }
 
   export type DonationMinOrderByAggregateInput = {
     transacId?: SortOrder
     date?: SortOrder
     amount?: SortOrder
-    paymentMethod?: SortOrder
     donorName?: SortOrder
     referralId?: SortOrder
     collectorId?: SortOrder
     type?: SortOrder
     status?: SortOrder
     notes?: SortOrder
+    paymentMethod?: SortOrder
   }
 
   export type DonationSumOrderByAggregateInput = {
@@ -9244,13 +10427,17 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
+  export type VendorsNullableScalarRelationFilter = {
+    is?: VendorsWhereInput | null
+    isNot?: VendorsWhereInput | null
+  }
+
   export type ExpensesCountOrderByAggregateInput = {
     transacId?: SortOrder
     date?: SortOrder
     amount?: SortOrder
-    paymentMethod?: SortOrder
-    vendorProjName?: SortOrder
-    category?: SortOrder
+    vendorName?: SortOrder
+    project?: SortOrder
     description?: SortOrder
     status?: SortOrder
   }
@@ -9264,9 +10451,8 @@ export namespace Prisma {
     transacId?: SortOrder
     date?: SortOrder
     amount?: SortOrder
-    paymentMethod?: SortOrder
-    vendorProjName?: SortOrder
-    category?: SortOrder
+    vendorName?: SortOrder
+    project?: SortOrder
     description?: SortOrder
     status?: SortOrder
   }
@@ -9275,9 +10461,8 @@ export namespace Prisma {
     transacId?: SortOrder
     date?: SortOrder
     amount?: SortOrder
-    paymentMethod?: SortOrder
-    vendorProjName?: SortOrder
-    category?: SortOrder
+    vendorName?: SortOrder
+    project?: SortOrder
     description?: SortOrder
     status?: SortOrder
   }
@@ -9287,25 +10472,14 @@ export namespace Prisma {
     amount?: SortOrder
   }
 
-  export type IntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type ExpensesNullableScalarRelationFilter = {
-    is?: ExpensesWhereInput | null
-    isNot?: ExpensesWhereInput | null
+  export type CollectorsNullableScalarRelationFilter = {
+    is?: CollectorsWhereInput | null
+    isNot?: CollectorsWhereInput | null
   }
 
   export type PaymentCountOrderByAggregateInput = {
     paymentId?: SortOrder
-    expenseId?: SortOrder
+    vendorName?: SortOrder
     collectorId?: SortOrder
     type?: SortOrder
     amount?: SortOrder
@@ -9313,14 +10487,13 @@ export namespace Prisma {
 
   export type PaymentAvgOrderByAggregateInput = {
     paymentId?: SortOrder
-    expenseId?: SortOrder
     collectorId?: SortOrder
     amount?: SortOrder
   }
 
   export type PaymentMaxOrderByAggregateInput = {
     paymentId?: SortOrder
-    expenseId?: SortOrder
+    vendorName?: SortOrder
     collectorId?: SortOrder
     type?: SortOrder
     amount?: SortOrder
@@ -9328,7 +10501,7 @@ export namespace Prisma {
 
   export type PaymentMinOrderByAggregateInput = {
     paymentId?: SortOrder
-    expenseId?: SortOrder
+    vendorName?: SortOrder
     collectorId?: SortOrder
     type?: SortOrder
     amount?: SortOrder
@@ -9336,25 +10509,8 @@ export namespace Prisma {
 
   export type PaymentSumOrderByAggregateInput = {
     paymentId?: SortOrder
-    expenseId?: SortOrder
     collectorId?: SortOrder
     amount?: SortOrder
-  }
-
-  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -9495,16 +10651,100 @@ export namespace Prisma {
     deleteMany?: PaymentScalarWhereInput | PaymentScalarWhereInput[]
   }
 
-  export type ReferralsCreateNestedOneWithoutDonationsInput = {
-    create?: XOR<ReferralsCreateWithoutDonationsInput, ReferralsUncheckedCreateWithoutDonationsInput>
-    connectOrCreate?: ReferralsCreateOrConnectWithoutDonationsInput
-    connect?: ReferralsWhereUniqueInput
+  export type ExpensesCreateNestedManyWithoutVendorInput = {
+    create?: XOR<ExpensesCreateWithoutVendorInput, ExpensesUncheckedCreateWithoutVendorInput> | ExpensesCreateWithoutVendorInput[] | ExpensesUncheckedCreateWithoutVendorInput[]
+    connectOrCreate?: ExpensesCreateOrConnectWithoutVendorInput | ExpensesCreateOrConnectWithoutVendorInput[]
+    createMany?: ExpensesCreateManyVendorInputEnvelope
+    connect?: ExpensesWhereUniqueInput | ExpensesWhereUniqueInput[]
+  }
+
+  export type PaymentCreateNestedManyWithoutVendorInput = {
+    create?: XOR<PaymentCreateWithoutVendorInput, PaymentUncheckedCreateWithoutVendorInput> | PaymentCreateWithoutVendorInput[] | PaymentUncheckedCreateWithoutVendorInput[]
+    connectOrCreate?: PaymentCreateOrConnectWithoutVendorInput | PaymentCreateOrConnectWithoutVendorInput[]
+    createMany?: PaymentCreateManyVendorInputEnvelope
+    connect?: PaymentWhereUniqueInput | PaymentWhereUniqueInput[]
+  }
+
+  export type ExpensesUncheckedCreateNestedManyWithoutVendorInput = {
+    create?: XOR<ExpensesCreateWithoutVendorInput, ExpensesUncheckedCreateWithoutVendorInput> | ExpensesCreateWithoutVendorInput[] | ExpensesUncheckedCreateWithoutVendorInput[]
+    connectOrCreate?: ExpensesCreateOrConnectWithoutVendorInput | ExpensesCreateOrConnectWithoutVendorInput[]
+    createMany?: ExpensesCreateManyVendorInputEnvelope
+    connect?: ExpensesWhereUniqueInput | ExpensesWhereUniqueInput[]
+  }
+
+  export type PaymentUncheckedCreateNestedManyWithoutVendorInput = {
+    create?: XOR<PaymentCreateWithoutVendorInput, PaymentUncheckedCreateWithoutVendorInput> | PaymentCreateWithoutVendorInput[] | PaymentUncheckedCreateWithoutVendorInput[]
+    connectOrCreate?: PaymentCreateOrConnectWithoutVendorInput | PaymentCreateOrConnectWithoutVendorInput[]
+    createMany?: PaymentCreateManyVendorInputEnvelope
+    connect?: PaymentWhereUniqueInput | PaymentWhereUniqueInput[]
+  }
+
+  export type ExpensesUpdateManyWithoutVendorNestedInput = {
+    create?: XOR<ExpensesCreateWithoutVendorInput, ExpensesUncheckedCreateWithoutVendorInput> | ExpensesCreateWithoutVendorInput[] | ExpensesUncheckedCreateWithoutVendorInput[]
+    connectOrCreate?: ExpensesCreateOrConnectWithoutVendorInput | ExpensesCreateOrConnectWithoutVendorInput[]
+    upsert?: ExpensesUpsertWithWhereUniqueWithoutVendorInput | ExpensesUpsertWithWhereUniqueWithoutVendorInput[]
+    createMany?: ExpensesCreateManyVendorInputEnvelope
+    set?: ExpensesWhereUniqueInput | ExpensesWhereUniqueInput[]
+    disconnect?: ExpensesWhereUniqueInput | ExpensesWhereUniqueInput[]
+    delete?: ExpensesWhereUniqueInput | ExpensesWhereUniqueInput[]
+    connect?: ExpensesWhereUniqueInput | ExpensesWhereUniqueInput[]
+    update?: ExpensesUpdateWithWhereUniqueWithoutVendorInput | ExpensesUpdateWithWhereUniqueWithoutVendorInput[]
+    updateMany?: ExpensesUpdateManyWithWhereWithoutVendorInput | ExpensesUpdateManyWithWhereWithoutVendorInput[]
+    deleteMany?: ExpensesScalarWhereInput | ExpensesScalarWhereInput[]
+  }
+
+  export type PaymentUpdateManyWithoutVendorNestedInput = {
+    create?: XOR<PaymentCreateWithoutVendorInput, PaymentUncheckedCreateWithoutVendorInput> | PaymentCreateWithoutVendorInput[] | PaymentUncheckedCreateWithoutVendorInput[]
+    connectOrCreate?: PaymentCreateOrConnectWithoutVendorInput | PaymentCreateOrConnectWithoutVendorInput[]
+    upsert?: PaymentUpsertWithWhereUniqueWithoutVendorInput | PaymentUpsertWithWhereUniqueWithoutVendorInput[]
+    createMany?: PaymentCreateManyVendorInputEnvelope
+    set?: PaymentWhereUniqueInput | PaymentWhereUniqueInput[]
+    disconnect?: PaymentWhereUniqueInput | PaymentWhereUniqueInput[]
+    delete?: PaymentWhereUniqueInput | PaymentWhereUniqueInput[]
+    connect?: PaymentWhereUniqueInput | PaymentWhereUniqueInput[]
+    update?: PaymentUpdateWithWhereUniqueWithoutVendorInput | PaymentUpdateWithWhereUniqueWithoutVendorInput[]
+    updateMany?: PaymentUpdateManyWithWhereWithoutVendorInput | PaymentUpdateManyWithWhereWithoutVendorInput[]
+    deleteMany?: PaymentScalarWhereInput | PaymentScalarWhereInput[]
+  }
+
+  export type ExpensesUncheckedUpdateManyWithoutVendorNestedInput = {
+    create?: XOR<ExpensesCreateWithoutVendorInput, ExpensesUncheckedCreateWithoutVendorInput> | ExpensesCreateWithoutVendorInput[] | ExpensesUncheckedCreateWithoutVendorInput[]
+    connectOrCreate?: ExpensesCreateOrConnectWithoutVendorInput | ExpensesCreateOrConnectWithoutVendorInput[]
+    upsert?: ExpensesUpsertWithWhereUniqueWithoutVendorInput | ExpensesUpsertWithWhereUniqueWithoutVendorInput[]
+    createMany?: ExpensesCreateManyVendorInputEnvelope
+    set?: ExpensesWhereUniqueInput | ExpensesWhereUniqueInput[]
+    disconnect?: ExpensesWhereUniqueInput | ExpensesWhereUniqueInput[]
+    delete?: ExpensesWhereUniqueInput | ExpensesWhereUniqueInput[]
+    connect?: ExpensesWhereUniqueInput | ExpensesWhereUniqueInput[]
+    update?: ExpensesUpdateWithWhereUniqueWithoutVendorInput | ExpensesUpdateWithWhereUniqueWithoutVendorInput[]
+    updateMany?: ExpensesUpdateManyWithWhereWithoutVendorInput | ExpensesUpdateManyWithWhereWithoutVendorInput[]
+    deleteMany?: ExpensesScalarWhereInput | ExpensesScalarWhereInput[]
+  }
+
+  export type PaymentUncheckedUpdateManyWithoutVendorNestedInput = {
+    create?: XOR<PaymentCreateWithoutVendorInput, PaymentUncheckedCreateWithoutVendorInput> | PaymentCreateWithoutVendorInput[] | PaymentUncheckedCreateWithoutVendorInput[]
+    connectOrCreate?: PaymentCreateOrConnectWithoutVendorInput | PaymentCreateOrConnectWithoutVendorInput[]
+    upsert?: PaymentUpsertWithWhereUniqueWithoutVendorInput | PaymentUpsertWithWhereUniqueWithoutVendorInput[]
+    createMany?: PaymentCreateManyVendorInputEnvelope
+    set?: PaymentWhereUniqueInput | PaymentWhereUniqueInput[]
+    disconnect?: PaymentWhereUniqueInput | PaymentWhereUniqueInput[]
+    delete?: PaymentWhereUniqueInput | PaymentWhereUniqueInput[]
+    connect?: PaymentWhereUniqueInput | PaymentWhereUniqueInput[]
+    update?: PaymentUpdateWithWhereUniqueWithoutVendorInput | PaymentUpdateWithWhereUniqueWithoutVendorInput[]
+    updateMany?: PaymentUpdateManyWithWhereWithoutVendorInput | PaymentUpdateManyWithWhereWithoutVendorInput[]
+    deleteMany?: PaymentScalarWhereInput | PaymentScalarWhereInput[]
   }
 
   export type CollectorsCreateNestedOneWithoutDonationsInput = {
     create?: XOR<CollectorsCreateWithoutDonationsInput, CollectorsUncheckedCreateWithoutDonationsInput>
     connectOrCreate?: CollectorsCreateOrConnectWithoutDonationsInput
     connect?: CollectorsWhereUniqueInput
+  }
+
+  export type ReferralsCreateNestedOneWithoutDonationsInput = {
+    create?: XOR<ReferralsCreateWithoutDonationsInput, ReferralsUncheckedCreateWithoutDonationsInput>
+    connectOrCreate?: ReferralsCreateOrConnectWithoutDonationsInput
+    connect?: ReferralsWhereUniqueInput
   }
 
   export type DateTimeFieldUpdateOperationsInput = {
@@ -9515,66 +10755,36 @@ export namespace Prisma {
     set?: string | null
   }
 
-  export type ReferralsUpdateOneWithoutDonationsNestedInput = {
-    create?: XOR<ReferralsCreateWithoutDonationsInput, ReferralsUncheckedCreateWithoutDonationsInput>
-    connectOrCreate?: ReferralsCreateOrConnectWithoutDonationsInput
-    upsert?: ReferralsUpsertWithoutDonationsInput
-    disconnect?: ReferralsWhereInput | boolean
-    delete?: ReferralsWhereInput | boolean
-    connect?: ReferralsWhereUniqueInput
-    update?: XOR<XOR<ReferralsUpdateToOneWithWhereWithoutDonationsInput, ReferralsUpdateWithoutDonationsInput>, ReferralsUncheckedUpdateWithoutDonationsInput>
-  }
-
-  export type CollectorsUpdateOneWithoutDonationsNestedInput = {
+  export type CollectorsUpdateOneRequiredWithoutDonationsNestedInput = {
     create?: XOR<CollectorsCreateWithoutDonationsInput, CollectorsUncheckedCreateWithoutDonationsInput>
     connectOrCreate?: CollectorsCreateOrConnectWithoutDonationsInput
     upsert?: CollectorsUpsertWithoutDonationsInput
-    disconnect?: CollectorsWhereInput | boolean
-    delete?: CollectorsWhereInput | boolean
     connect?: CollectorsWhereUniqueInput
     update?: XOR<XOR<CollectorsUpdateToOneWithWhereWithoutDonationsInput, CollectorsUpdateWithoutDonationsInput>, CollectorsUncheckedUpdateWithoutDonationsInput>
   }
 
-  export type PaymentCreateNestedManyWithoutExpenseInput = {
-    create?: XOR<PaymentCreateWithoutExpenseInput, PaymentUncheckedCreateWithoutExpenseInput> | PaymentCreateWithoutExpenseInput[] | PaymentUncheckedCreateWithoutExpenseInput[]
-    connectOrCreate?: PaymentCreateOrConnectWithoutExpenseInput | PaymentCreateOrConnectWithoutExpenseInput[]
-    createMany?: PaymentCreateManyExpenseInputEnvelope
-    connect?: PaymentWhereUniqueInput | PaymentWhereUniqueInput[]
+  export type ReferralsUpdateOneRequiredWithoutDonationsNestedInput = {
+    create?: XOR<ReferralsCreateWithoutDonationsInput, ReferralsUncheckedCreateWithoutDonationsInput>
+    connectOrCreate?: ReferralsCreateOrConnectWithoutDonationsInput
+    upsert?: ReferralsUpsertWithoutDonationsInput
+    connect?: ReferralsWhereUniqueInput
+    update?: XOR<XOR<ReferralsUpdateToOneWithWhereWithoutDonationsInput, ReferralsUpdateWithoutDonationsInput>, ReferralsUncheckedUpdateWithoutDonationsInput>
   }
 
-  export type PaymentUncheckedCreateNestedManyWithoutExpenseInput = {
-    create?: XOR<PaymentCreateWithoutExpenseInput, PaymentUncheckedCreateWithoutExpenseInput> | PaymentCreateWithoutExpenseInput[] | PaymentUncheckedCreateWithoutExpenseInput[]
-    connectOrCreate?: PaymentCreateOrConnectWithoutExpenseInput | PaymentCreateOrConnectWithoutExpenseInput[]
-    createMany?: PaymentCreateManyExpenseInputEnvelope
-    connect?: PaymentWhereUniqueInput | PaymentWhereUniqueInput[]
+  export type VendorsCreateNestedOneWithoutExpensesInput = {
+    create?: XOR<VendorsCreateWithoutExpensesInput, VendorsUncheckedCreateWithoutExpensesInput>
+    connectOrCreate?: VendorsCreateOrConnectWithoutExpensesInput
+    connect?: VendorsWhereUniqueInput
   }
 
-  export type PaymentUpdateManyWithoutExpenseNestedInput = {
-    create?: XOR<PaymentCreateWithoutExpenseInput, PaymentUncheckedCreateWithoutExpenseInput> | PaymentCreateWithoutExpenseInput[] | PaymentUncheckedCreateWithoutExpenseInput[]
-    connectOrCreate?: PaymentCreateOrConnectWithoutExpenseInput | PaymentCreateOrConnectWithoutExpenseInput[]
-    upsert?: PaymentUpsertWithWhereUniqueWithoutExpenseInput | PaymentUpsertWithWhereUniqueWithoutExpenseInput[]
-    createMany?: PaymentCreateManyExpenseInputEnvelope
-    set?: PaymentWhereUniqueInput | PaymentWhereUniqueInput[]
-    disconnect?: PaymentWhereUniqueInput | PaymentWhereUniqueInput[]
-    delete?: PaymentWhereUniqueInput | PaymentWhereUniqueInput[]
-    connect?: PaymentWhereUniqueInput | PaymentWhereUniqueInput[]
-    update?: PaymentUpdateWithWhereUniqueWithoutExpenseInput | PaymentUpdateWithWhereUniqueWithoutExpenseInput[]
-    updateMany?: PaymentUpdateManyWithWhereWithoutExpenseInput | PaymentUpdateManyWithWhereWithoutExpenseInput[]
-    deleteMany?: PaymentScalarWhereInput | PaymentScalarWhereInput[]
-  }
-
-  export type PaymentUncheckedUpdateManyWithoutExpenseNestedInput = {
-    create?: XOR<PaymentCreateWithoutExpenseInput, PaymentUncheckedCreateWithoutExpenseInput> | PaymentCreateWithoutExpenseInput[] | PaymentUncheckedCreateWithoutExpenseInput[]
-    connectOrCreate?: PaymentCreateOrConnectWithoutExpenseInput | PaymentCreateOrConnectWithoutExpenseInput[]
-    upsert?: PaymentUpsertWithWhereUniqueWithoutExpenseInput | PaymentUpsertWithWhereUniqueWithoutExpenseInput[]
-    createMany?: PaymentCreateManyExpenseInputEnvelope
-    set?: PaymentWhereUniqueInput | PaymentWhereUniqueInput[]
-    disconnect?: PaymentWhereUniqueInput | PaymentWhereUniqueInput[]
-    delete?: PaymentWhereUniqueInput | PaymentWhereUniqueInput[]
-    connect?: PaymentWhereUniqueInput | PaymentWhereUniqueInput[]
-    update?: PaymentUpdateWithWhereUniqueWithoutExpenseInput | PaymentUpdateWithWhereUniqueWithoutExpenseInput[]
-    updateMany?: PaymentUpdateManyWithWhereWithoutExpenseInput | PaymentUpdateManyWithWhereWithoutExpenseInput[]
-    deleteMany?: PaymentScalarWhereInput | PaymentScalarWhereInput[]
+  export type VendorsUpdateOneWithoutExpensesNestedInput = {
+    create?: XOR<VendorsCreateWithoutExpensesInput, VendorsUncheckedCreateWithoutExpensesInput>
+    connectOrCreate?: VendorsCreateOrConnectWithoutExpensesInput
+    upsert?: VendorsUpsertWithoutExpensesInput
+    disconnect?: VendorsWhereInput | boolean
+    delete?: VendorsWhereInput | boolean
+    connect?: VendorsWhereUniqueInput
+    update?: XOR<XOR<VendorsUpdateToOneWithWhereWithoutExpensesInput, VendorsUpdateWithoutExpensesInput>, VendorsUncheckedUpdateWithoutExpensesInput>
   }
 
   export type CollectorsCreateNestedOneWithoutPaymentsInput = {
@@ -9583,10 +10793,10 @@ export namespace Prisma {
     connect?: CollectorsWhereUniqueInput
   }
 
-  export type ExpensesCreateNestedOneWithoutPaymentsInput = {
-    create?: XOR<ExpensesCreateWithoutPaymentsInput, ExpensesUncheckedCreateWithoutPaymentsInput>
-    connectOrCreate?: ExpensesCreateOrConnectWithoutPaymentsInput
-    connect?: ExpensesWhereUniqueInput
+  export type VendorsCreateNestedOneWithoutPaymentsInput = {
+    create?: XOR<VendorsCreateWithoutPaymentsInput, VendorsUncheckedCreateWithoutPaymentsInput>
+    connectOrCreate?: VendorsCreateOrConnectWithoutPaymentsInput
+    connect?: VendorsWhereUniqueInput
   }
 
   export type CollectorsUpdateOneWithoutPaymentsNestedInput = {
@@ -9599,22 +10809,14 @@ export namespace Prisma {
     update?: XOR<XOR<CollectorsUpdateToOneWithWhereWithoutPaymentsInput, CollectorsUpdateWithoutPaymentsInput>, CollectorsUncheckedUpdateWithoutPaymentsInput>
   }
 
-  export type ExpensesUpdateOneWithoutPaymentsNestedInput = {
-    create?: XOR<ExpensesCreateWithoutPaymentsInput, ExpensesUncheckedCreateWithoutPaymentsInput>
-    connectOrCreate?: ExpensesCreateOrConnectWithoutPaymentsInput
-    upsert?: ExpensesUpsertWithoutPaymentsInput
-    disconnect?: ExpensesWhereInput | boolean
-    delete?: ExpensesWhereInput | boolean
-    connect?: ExpensesWhereUniqueInput
-    update?: XOR<XOR<ExpensesUpdateToOneWithWhereWithoutPaymentsInput, ExpensesUpdateWithoutPaymentsInput>, ExpensesUncheckedUpdateWithoutPaymentsInput>
-  }
-
-  export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
+  export type VendorsUpdateOneWithoutPaymentsNestedInput = {
+    create?: XOR<VendorsCreateWithoutPaymentsInput, VendorsUncheckedCreateWithoutPaymentsInput>
+    connectOrCreate?: VendorsCreateOrConnectWithoutPaymentsInput
+    upsert?: VendorsUpsertWithoutPaymentsInput
+    disconnect?: VendorsWhereInput | boolean
+    delete?: VendorsWhereInput | boolean
+    connect?: VendorsWhereUniqueInput
+    update?: XOR<XOR<VendorsUpdateToOneWithWhereWithoutPaymentsInput, VendorsUpdateWithoutPaymentsInput>, VendorsUncheckedUpdateWithoutPaymentsInput>
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -9753,54 +10955,27 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
-  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
-  }
-
-  export type NestedFloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
-  }
-
   export type DonationCreateWithoutReferralInput = {
     date: Date | string
     amount: number
-    paymentMethod: string
     donorName: string
     type: string
     status: string
     notes?: string | null
-    collector?: CollectorsCreateNestedOneWithoutDonationsInput
+    paymentMethod: string
+    collector: CollectorsCreateNestedOneWithoutDonationsInput
   }
 
   export type DonationUncheckedCreateWithoutReferralInput = {
     transacId?: number
     date: Date | string
     amount: number
-    paymentMethod: string
     donorName: string
     collectorId: number
     type: string
     status: string
     notes?: string | null
+    paymentMethod: string
   }
 
   export type DonationCreateOrConnectWithoutReferralInput = {
@@ -9836,36 +11011,36 @@ export namespace Prisma {
     transacId?: IntFilter<"Donation"> | number
     date?: DateTimeFilter<"Donation"> | Date | string
     amount?: IntFilter<"Donation"> | number
-    paymentMethod?: StringFilter<"Donation"> | string
     donorName?: StringFilter<"Donation"> | string
     referralId?: IntFilter<"Donation"> | number
     collectorId?: IntFilter<"Donation"> | number
     type?: StringFilter<"Donation"> | string
     status?: StringFilter<"Donation"> | string
     notes?: StringNullableFilter<"Donation"> | string | null
+    paymentMethod?: StringFilter<"Donation"> | string
   }
 
   export type DonationCreateWithoutCollectorInput = {
     date: Date | string
     amount: number
-    paymentMethod: string
     donorName: string
     type: string
     status: string
     notes?: string | null
-    referral?: ReferralsCreateNestedOneWithoutDonationsInput
+    paymentMethod: string
+    referral: ReferralsCreateNestedOneWithoutDonationsInput
   }
 
   export type DonationUncheckedCreateWithoutCollectorInput = {
     transacId?: number
     date: Date | string
     amount: number
-    paymentMethod: string
     donorName: string
     referralId: number
     type: string
     status: string
     notes?: string | null
+    paymentMethod: string
   }
 
   export type DonationCreateOrConnectWithoutCollectorInput = {
@@ -9881,12 +11056,12 @@ export namespace Prisma {
   export type PaymentCreateWithoutCollectorInput = {
     type: string
     amount: number
-    expense?: ExpensesCreateNestedOneWithoutPaymentsInput
+    vendor?: VendorsCreateNestedOneWithoutPaymentsInput
   }
 
   export type PaymentUncheckedCreateWithoutCollectorInput = {
     paymentId?: number
-    expenseId?: number | null
+    vendorName: string
     type: string
     amount: number
   }
@@ -9938,24 +11113,105 @@ export namespace Prisma {
     OR?: PaymentScalarWhereInput[]
     NOT?: PaymentScalarWhereInput | PaymentScalarWhereInput[]
     paymentId?: IntFilter<"Payment"> | number
-    expenseId?: IntNullableFilter<"Payment"> | number | null
+    vendorName?: StringFilter<"Payment"> | string
     collectorId?: IntFilter<"Payment"> | number
     type?: StringFilter<"Payment"> | string
     amount?: IntFilter<"Payment"> | number
   }
 
-  export type ReferralsCreateWithoutDonationsInput = {
-    name: string
+  export type ExpensesCreateWithoutVendorInput = {
+    date: Date | string
+    amount: number
+    project: string
+    description?: string | null
+    status: string
   }
 
-  export type ReferralsUncheckedCreateWithoutDonationsInput = {
-    referralId?: number
-    name: string
+  export type ExpensesUncheckedCreateWithoutVendorInput = {
+    transacId?: number
+    date: Date | string
+    amount: number
+    project: string
+    description?: string | null
+    status: string
   }
 
-  export type ReferralsCreateOrConnectWithoutDonationsInput = {
-    where: ReferralsWhereUniqueInput
-    create: XOR<ReferralsCreateWithoutDonationsInput, ReferralsUncheckedCreateWithoutDonationsInput>
+  export type ExpensesCreateOrConnectWithoutVendorInput = {
+    where: ExpensesWhereUniqueInput
+    create: XOR<ExpensesCreateWithoutVendorInput, ExpensesUncheckedCreateWithoutVendorInput>
+  }
+
+  export type ExpensesCreateManyVendorInputEnvelope = {
+    data: ExpensesCreateManyVendorInput | ExpensesCreateManyVendorInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type PaymentCreateWithoutVendorInput = {
+    type: string
+    amount: number
+    collector?: CollectorsCreateNestedOneWithoutPaymentsInput
+  }
+
+  export type PaymentUncheckedCreateWithoutVendorInput = {
+    paymentId?: number
+    collectorId: number
+    type: string
+    amount: number
+  }
+
+  export type PaymentCreateOrConnectWithoutVendorInput = {
+    where: PaymentWhereUniqueInput
+    create: XOR<PaymentCreateWithoutVendorInput, PaymentUncheckedCreateWithoutVendorInput>
+  }
+
+  export type PaymentCreateManyVendorInputEnvelope = {
+    data: PaymentCreateManyVendorInput | PaymentCreateManyVendorInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ExpensesUpsertWithWhereUniqueWithoutVendorInput = {
+    where: ExpensesWhereUniqueInput
+    update: XOR<ExpensesUpdateWithoutVendorInput, ExpensesUncheckedUpdateWithoutVendorInput>
+    create: XOR<ExpensesCreateWithoutVendorInput, ExpensesUncheckedCreateWithoutVendorInput>
+  }
+
+  export type ExpensesUpdateWithWhereUniqueWithoutVendorInput = {
+    where: ExpensesWhereUniqueInput
+    data: XOR<ExpensesUpdateWithoutVendorInput, ExpensesUncheckedUpdateWithoutVendorInput>
+  }
+
+  export type ExpensesUpdateManyWithWhereWithoutVendorInput = {
+    where: ExpensesScalarWhereInput
+    data: XOR<ExpensesUpdateManyMutationInput, ExpensesUncheckedUpdateManyWithoutVendorInput>
+  }
+
+  export type ExpensesScalarWhereInput = {
+    AND?: ExpensesScalarWhereInput | ExpensesScalarWhereInput[]
+    OR?: ExpensesScalarWhereInput[]
+    NOT?: ExpensesScalarWhereInput | ExpensesScalarWhereInput[]
+    transacId?: IntFilter<"Expenses"> | number
+    date?: DateTimeFilter<"Expenses"> | Date | string
+    amount?: IntFilter<"Expenses"> | number
+    vendorName?: StringFilter<"Expenses"> | string
+    project?: StringFilter<"Expenses"> | string
+    description?: StringNullableFilter<"Expenses"> | string | null
+    status?: StringFilter<"Expenses"> | string
+  }
+
+  export type PaymentUpsertWithWhereUniqueWithoutVendorInput = {
+    where: PaymentWhereUniqueInput
+    update: XOR<PaymentUpdateWithoutVendorInput, PaymentUncheckedUpdateWithoutVendorInput>
+    create: XOR<PaymentCreateWithoutVendorInput, PaymentUncheckedCreateWithoutVendorInput>
+  }
+
+  export type PaymentUpdateWithWhereUniqueWithoutVendorInput = {
+    where: PaymentWhereUniqueInput
+    data: XOR<PaymentUpdateWithoutVendorInput, PaymentUncheckedUpdateWithoutVendorInput>
+  }
+
+  export type PaymentUpdateManyWithWhereWithoutVendorInput = {
+    where: PaymentScalarWhereInput
+    data: XOR<PaymentUpdateManyMutationInput, PaymentUncheckedUpdateManyWithoutVendorInput>
   }
 
   export type CollectorsCreateWithoutDonationsInput = {
@@ -9974,24 +11230,18 @@ export namespace Prisma {
     create: XOR<CollectorsCreateWithoutDonationsInput, CollectorsUncheckedCreateWithoutDonationsInput>
   }
 
-  export type ReferralsUpsertWithoutDonationsInput = {
-    update: XOR<ReferralsUpdateWithoutDonationsInput, ReferralsUncheckedUpdateWithoutDonationsInput>
+  export type ReferralsCreateWithoutDonationsInput = {
+    name: string
+  }
+
+  export type ReferralsUncheckedCreateWithoutDonationsInput = {
+    referralId?: number
+    name: string
+  }
+
+  export type ReferralsCreateOrConnectWithoutDonationsInput = {
+    where: ReferralsWhereUniqueInput
     create: XOR<ReferralsCreateWithoutDonationsInput, ReferralsUncheckedCreateWithoutDonationsInput>
-    where?: ReferralsWhereInput
-  }
-
-  export type ReferralsUpdateToOneWithWhereWithoutDonationsInput = {
-    where?: ReferralsWhereInput
-    data: XOR<ReferralsUpdateWithoutDonationsInput, ReferralsUncheckedUpdateWithoutDonationsInput>
-  }
-
-  export type ReferralsUpdateWithoutDonationsInput = {
-    name?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type ReferralsUncheckedUpdateWithoutDonationsInput = {
-    referralId?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
   }
 
   export type CollectorsUpsertWithoutDonationsInput = {
@@ -10016,43 +11266,60 @@ export namespace Prisma {
     payments?: PaymentUncheckedUpdateManyWithoutCollectorNestedInput
   }
 
-  export type PaymentCreateWithoutExpenseInput = {
-    type: string
-    amount: number
-    collector?: CollectorsCreateNestedOneWithoutPaymentsInput
+  export type ReferralsUpsertWithoutDonationsInput = {
+    update: XOR<ReferralsUpdateWithoutDonationsInput, ReferralsUncheckedUpdateWithoutDonationsInput>
+    create: XOR<ReferralsCreateWithoutDonationsInput, ReferralsUncheckedCreateWithoutDonationsInput>
+    where?: ReferralsWhereInput
   }
 
-  export type PaymentUncheckedCreateWithoutExpenseInput = {
-    paymentId?: number
-    collectorId: number
-    type: string
-    amount: number
+  export type ReferralsUpdateToOneWithWhereWithoutDonationsInput = {
+    where?: ReferralsWhereInput
+    data: XOR<ReferralsUpdateWithoutDonationsInput, ReferralsUncheckedUpdateWithoutDonationsInput>
   }
 
-  export type PaymentCreateOrConnectWithoutExpenseInput = {
-    where: PaymentWhereUniqueInput
-    create: XOR<PaymentCreateWithoutExpenseInput, PaymentUncheckedCreateWithoutExpenseInput>
+  export type ReferralsUpdateWithoutDonationsInput = {
+    name?: StringFieldUpdateOperationsInput | string
   }
 
-  export type PaymentCreateManyExpenseInputEnvelope = {
-    data: PaymentCreateManyExpenseInput | PaymentCreateManyExpenseInput[]
-    skipDuplicates?: boolean
+  export type ReferralsUncheckedUpdateWithoutDonationsInput = {
+    referralId?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
   }
 
-  export type PaymentUpsertWithWhereUniqueWithoutExpenseInput = {
-    where: PaymentWhereUniqueInput
-    update: XOR<PaymentUpdateWithoutExpenseInput, PaymentUncheckedUpdateWithoutExpenseInput>
-    create: XOR<PaymentCreateWithoutExpenseInput, PaymentUncheckedCreateWithoutExpenseInput>
+  export type VendorsCreateWithoutExpensesInput = {
+    vendorName: string
+    payments?: PaymentCreateNestedManyWithoutVendorInput
   }
 
-  export type PaymentUpdateWithWhereUniqueWithoutExpenseInput = {
-    where: PaymentWhereUniqueInput
-    data: XOR<PaymentUpdateWithoutExpenseInput, PaymentUncheckedUpdateWithoutExpenseInput>
+  export type VendorsUncheckedCreateWithoutExpensesInput = {
+    vendorName: string
+    payments?: PaymentUncheckedCreateNestedManyWithoutVendorInput
   }
 
-  export type PaymentUpdateManyWithWhereWithoutExpenseInput = {
-    where: PaymentScalarWhereInput
-    data: XOR<PaymentUpdateManyMutationInput, PaymentUncheckedUpdateManyWithoutExpenseInput>
+  export type VendorsCreateOrConnectWithoutExpensesInput = {
+    where: VendorsWhereUniqueInput
+    create: XOR<VendorsCreateWithoutExpensesInput, VendorsUncheckedCreateWithoutExpensesInput>
+  }
+
+  export type VendorsUpsertWithoutExpensesInput = {
+    update: XOR<VendorsUpdateWithoutExpensesInput, VendorsUncheckedUpdateWithoutExpensesInput>
+    create: XOR<VendorsCreateWithoutExpensesInput, VendorsUncheckedCreateWithoutExpensesInput>
+    where?: VendorsWhereInput
+  }
+
+  export type VendorsUpdateToOneWithWhereWithoutExpensesInput = {
+    where?: VendorsWhereInput
+    data: XOR<VendorsUpdateWithoutExpensesInput, VendorsUncheckedUpdateWithoutExpensesInput>
+  }
+
+  export type VendorsUpdateWithoutExpensesInput = {
+    vendorName?: StringFieldUpdateOperationsInput | string
+    payments?: PaymentUpdateManyWithoutVendorNestedInput
+  }
+
+  export type VendorsUncheckedUpdateWithoutExpensesInput = {
+    vendorName?: StringFieldUpdateOperationsInput | string
+    payments?: PaymentUncheckedUpdateManyWithoutVendorNestedInput
   }
 
   export type CollectorsCreateWithoutPaymentsInput = {
@@ -10071,30 +11338,19 @@ export namespace Prisma {
     create: XOR<CollectorsCreateWithoutPaymentsInput, CollectorsUncheckedCreateWithoutPaymentsInput>
   }
 
-  export type ExpensesCreateWithoutPaymentsInput = {
-    date: Date | string
-    amount: number
-    paymentMethod: string
-    vendorProjName: string
-    category: string
-    description?: string | null
-    status: string
+  export type VendorsCreateWithoutPaymentsInput = {
+    vendorName: string
+    expenses?: ExpensesCreateNestedManyWithoutVendorInput
   }
 
-  export type ExpensesUncheckedCreateWithoutPaymentsInput = {
-    transacId?: number
-    date: Date | string
-    amount: number
-    paymentMethod: string
-    vendorProjName: string
-    category: string
-    description?: string | null
-    status: string
+  export type VendorsUncheckedCreateWithoutPaymentsInput = {
+    vendorName: string
+    expenses?: ExpensesUncheckedCreateNestedManyWithoutVendorInput
   }
 
-  export type ExpensesCreateOrConnectWithoutPaymentsInput = {
-    where: ExpensesWhereUniqueInput
-    create: XOR<ExpensesCreateWithoutPaymentsInput, ExpensesUncheckedCreateWithoutPaymentsInput>
+  export type VendorsCreateOrConnectWithoutPaymentsInput = {
+    where: VendorsWhereUniqueInput
+    create: XOR<VendorsCreateWithoutPaymentsInput, VendorsUncheckedCreateWithoutPaymentsInput>
   }
 
   export type CollectorsUpsertWithoutPaymentsInput = {
@@ -10119,100 +11375,89 @@ export namespace Prisma {
     donations?: DonationUncheckedUpdateManyWithoutCollectorNestedInput
   }
 
-  export type ExpensesUpsertWithoutPaymentsInput = {
-    update: XOR<ExpensesUpdateWithoutPaymentsInput, ExpensesUncheckedUpdateWithoutPaymentsInput>
-    create: XOR<ExpensesCreateWithoutPaymentsInput, ExpensesUncheckedCreateWithoutPaymentsInput>
-    where?: ExpensesWhereInput
+  export type VendorsUpsertWithoutPaymentsInput = {
+    update: XOR<VendorsUpdateWithoutPaymentsInput, VendorsUncheckedUpdateWithoutPaymentsInput>
+    create: XOR<VendorsCreateWithoutPaymentsInput, VendorsUncheckedCreateWithoutPaymentsInput>
+    where?: VendorsWhereInput
   }
 
-  export type ExpensesUpdateToOneWithWhereWithoutPaymentsInput = {
-    where?: ExpensesWhereInput
-    data: XOR<ExpensesUpdateWithoutPaymentsInput, ExpensesUncheckedUpdateWithoutPaymentsInput>
+  export type VendorsUpdateToOneWithWhereWithoutPaymentsInput = {
+    where?: VendorsWhereInput
+    data: XOR<VendorsUpdateWithoutPaymentsInput, VendorsUncheckedUpdateWithoutPaymentsInput>
   }
 
-  export type ExpensesUpdateWithoutPaymentsInput = {
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
-    amount?: IntFieldUpdateOperationsInput | number
-    paymentMethod?: StringFieldUpdateOperationsInput | string
-    vendorProjName?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+  export type VendorsUpdateWithoutPaymentsInput = {
+    vendorName?: StringFieldUpdateOperationsInput | string
+    expenses?: ExpensesUpdateManyWithoutVendorNestedInput
   }
 
-  export type ExpensesUncheckedUpdateWithoutPaymentsInput = {
-    transacId?: IntFieldUpdateOperationsInput | number
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
-    amount?: IntFieldUpdateOperationsInput | number
-    paymentMethod?: StringFieldUpdateOperationsInput | string
-    vendorProjName?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+  export type VendorsUncheckedUpdateWithoutPaymentsInput = {
+    vendorName?: StringFieldUpdateOperationsInput | string
+    expenses?: ExpensesUncheckedUpdateManyWithoutVendorNestedInput
   }
 
   export type DonationCreateManyReferralInput = {
     transacId?: number
     date: Date | string
     amount: number
-    paymentMethod: string
     donorName: string
     collectorId: number
     type: string
     status: string
     notes?: string | null
+    paymentMethod: string
   }
 
   export type DonationUpdateWithoutReferralInput = {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     amount?: IntFieldUpdateOperationsInput | number
-    paymentMethod?: StringFieldUpdateOperationsInput | string
     donorName?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
-    collector?: CollectorsUpdateOneWithoutDonationsNestedInput
+    paymentMethod?: StringFieldUpdateOperationsInput | string
+    collector?: CollectorsUpdateOneRequiredWithoutDonationsNestedInput
   }
 
   export type DonationUncheckedUpdateWithoutReferralInput = {
     transacId?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     amount?: IntFieldUpdateOperationsInput | number
-    paymentMethod?: StringFieldUpdateOperationsInput | string
     donorName?: StringFieldUpdateOperationsInput | string
     collectorId?: IntFieldUpdateOperationsInput | number
     type?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentMethod?: StringFieldUpdateOperationsInput | string
   }
 
   export type DonationUncheckedUpdateManyWithoutReferralInput = {
     transacId?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     amount?: IntFieldUpdateOperationsInput | number
-    paymentMethod?: StringFieldUpdateOperationsInput | string
     donorName?: StringFieldUpdateOperationsInput | string
     collectorId?: IntFieldUpdateOperationsInput | number
     type?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentMethod?: StringFieldUpdateOperationsInput | string
   }
 
   export type DonationCreateManyCollectorInput = {
     transacId?: number
     date: Date | string
     amount: number
-    paymentMethod: string
     donorName: string
     referralId: number
     type: string
     status: string
     notes?: string | null
+    paymentMethod: string
   }
 
   export type PaymentCreateManyCollectorInput = {
     paymentId?: number
-    expenseId?: number | null
+    vendorName: string
     type: string
     amount: number
   }
@@ -10220,79 +11465,114 @@ export namespace Prisma {
   export type DonationUpdateWithoutCollectorInput = {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     amount?: IntFieldUpdateOperationsInput | number
-    paymentMethod?: StringFieldUpdateOperationsInput | string
     donorName?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
-    referral?: ReferralsUpdateOneWithoutDonationsNestedInput
+    paymentMethod?: StringFieldUpdateOperationsInput | string
+    referral?: ReferralsUpdateOneRequiredWithoutDonationsNestedInput
   }
 
   export type DonationUncheckedUpdateWithoutCollectorInput = {
     transacId?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     amount?: IntFieldUpdateOperationsInput | number
-    paymentMethod?: StringFieldUpdateOperationsInput | string
     donorName?: StringFieldUpdateOperationsInput | string
     referralId?: IntFieldUpdateOperationsInput | number
     type?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentMethod?: StringFieldUpdateOperationsInput | string
   }
 
   export type DonationUncheckedUpdateManyWithoutCollectorInput = {
     transacId?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     amount?: IntFieldUpdateOperationsInput | number
-    paymentMethod?: StringFieldUpdateOperationsInput | string
     donorName?: StringFieldUpdateOperationsInput | string
     referralId?: IntFieldUpdateOperationsInput | number
     type?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentMethod?: StringFieldUpdateOperationsInput | string
   }
 
   export type PaymentUpdateWithoutCollectorInput = {
     type?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
-    expense?: ExpensesUpdateOneWithoutPaymentsNestedInput
+    vendor?: VendorsUpdateOneWithoutPaymentsNestedInput
   }
 
   export type PaymentUncheckedUpdateWithoutCollectorInput = {
     paymentId?: IntFieldUpdateOperationsInput | number
-    expenseId?: NullableIntFieldUpdateOperationsInput | number | null
+    vendorName?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
   }
 
   export type PaymentUncheckedUpdateManyWithoutCollectorInput = {
     paymentId?: IntFieldUpdateOperationsInput | number
-    expenseId?: NullableIntFieldUpdateOperationsInput | number | null
+    vendorName?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
   }
 
-  export type PaymentCreateManyExpenseInput = {
+  export type ExpensesCreateManyVendorInput = {
+    transacId?: number
+    date: Date | string
+    amount: number
+    project: string
+    description?: string | null
+    status: string
+  }
+
+  export type PaymentCreateManyVendorInput = {
     paymentId?: number
     collectorId: number
     type: string
     amount: number
   }
 
-  export type PaymentUpdateWithoutExpenseInput = {
+  export type ExpensesUpdateWithoutVendorInput = {
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    amount?: IntFieldUpdateOperationsInput | number
+    project?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ExpensesUncheckedUpdateWithoutVendorInput = {
+    transacId?: IntFieldUpdateOperationsInput | number
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    amount?: IntFieldUpdateOperationsInput | number
+    project?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ExpensesUncheckedUpdateManyWithoutVendorInput = {
+    transacId?: IntFieldUpdateOperationsInput | number
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    amount?: IntFieldUpdateOperationsInput | number
+    project?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type PaymentUpdateWithoutVendorInput = {
     type?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     collector?: CollectorsUpdateOneWithoutPaymentsNestedInput
   }
 
-  export type PaymentUncheckedUpdateWithoutExpenseInput = {
+  export type PaymentUncheckedUpdateWithoutVendorInput = {
     paymentId?: IntFieldUpdateOperationsInput | number
     collectorId?: IntFieldUpdateOperationsInput | number
     type?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
   }
 
-  export type PaymentUncheckedUpdateManyWithoutExpenseInput = {
+  export type PaymentUncheckedUpdateManyWithoutVendorInput = {
     paymentId?: IntFieldUpdateOperationsInput | number
     collectorId?: IntFieldUpdateOperationsInput | number
     type?: StringFieldUpdateOperationsInput | string

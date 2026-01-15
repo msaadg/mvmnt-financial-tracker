@@ -6,7 +6,7 @@ import { getServerSession } from "next-auth";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { date, amount, paymentMethod, vendorProjName, category, description, status: incomingStatus, collectors } = body;
+    const { date, amount, vendorName, project, description } = body;
     
     const session = await getServerSession();
     
@@ -18,17 +18,9 @@ export async function POST(request: NextRequest) {
     const isAdmin = role.role === "admin" 
 
     // Validate required fields
-    if (!date || amount === undefined || !paymentMethod || !vendorProjName || !category) {
+    if (!date || amount === undefined || !vendorName || !project) {
       return NextResponse.json(
         { message: 'Missing required fields' },
-        { status: 400 }
-      );
-    }
-
-    // Ensure collectors array is provided and is an array
-    if (!Array.isArray(collectors) || collectors.length === 0) {
-      return NextResponse.json(
-        { message: 'Collectors must be provided and cannot be empty' },
         { status: 400 }
       );
     }
@@ -41,54 +33,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate collectors exist and sum their amounts
-    let collectorsTotal = 0;
-    for (const c of collectors) {
-      if (!c || !c.name) {
-        return NextResponse.json(
-          { message: `Collector entry missing name` },
-          { status: 400 }
-        );
-      }
-      const collectorEntry = await getCollectorByName(c.name);
-      if (!collectorEntry) {
-        return NextResponse.json(
-          { message: `Collector "${c.name}" not found in database. Please seed the database first.` },
-          { status: 404 }
-        );
-      }
-      const cAmount = Number(c.amount || 0);
-      if (isNaN(cAmount) || cAmount < 0) {
-        return NextResponse.json(
-          { message: `Invalid amount for collector "${c.name}"` },
-          { status: 400 }
-        );
-      }
-      collectorsTotal += cAmount;
-    }
-
-    // Ensure collectors total does not exceed the expense amount
-    if (collectorsTotal > parsedAmount) {
-      return NextResponse.json(
-        { message: 'Sum of collector amounts exceeds the total expense amount' },
-        { status: 400 }
-      );
-    }
-
-    // Old implementation of status
-    // // Compute status based on collectors total vs amount
-    // const computedStatus = collectorsTotal < parsedAmount ? "Pending" : "Paid";
-
     // Create the expense
     const expense = await createExpense({
       date: new Date(date),
       amount: parsedAmount,
-      paymentMethod: paymentMethod,
-      vendorProjName: vendorProjName,
-      category,
-      description,
+      vendorName: vendorName,
+      project : project,
+      description : description,
       status: isAdmin ? "Approved" : "Pending", // pass computed status
-      collectors: collectors,
     });
 
     return NextResponse.json({
@@ -123,7 +75,7 @@ export async function GET() {
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
-    const { id, date, amount, paymentMethod, vendorProjName, category, description, status, collectors } = body;
+    const { id, date, amount, vendorName, project, description } = body;
 
     // Validate ID
     if (!id) {
@@ -142,50 +94,15 @@ export async function PUT(request: NextRequest) {
     const role = await getUserRole(session.user?.email || "");
     const isAdmin = role.role === "admin" 
 
-    // If collectors provided, validate array and each collector
-    if (collectors !== undefined) {
-      if (!Array.isArray(collectors)) {
-        return NextResponse.json(
-          { message: 'Collectors must be an array' },
-          { status: 400 }
-        );
-      }
-
-      for (const c of collectors) {
-        if (!c || !c.name) {
-          return NextResponse.json(
-            { message: 'Collector entry missing name' },
-            { status: 400 }
-          );
-        }
-        const collectorEntry = await getCollectorByName(c.name);
-        if (!collectorEntry) {
-          return NextResponse.json(
-            { message: `Collector "${c.name}" not found in database. Please seed the database first.` },
-            { status: 404 }
-          );
-        }
-        const cAmount = Number(c.amount || 0);
-        if (isNaN(cAmount) || cAmount < 0) {
-          return NextResponse.json(
-            { message: `Invalid amount for collector "${c.name}"` },
-            { status: 400 }
-          );
-        }
-      }
-    }
-
     // Perform the update (updateExpense will validate totals and handle payments)
     try {
       const expense = await updateExpense(parseInt(id), {
         date: date ? new Date(date) : undefined,
         amount: amount !== undefined ? Number(amount) : undefined,
-        paymentMethod,
-        vendorProjName: vendorProjName,
-        category,
-        description,
+        vendorName: vendorName,
+        project: project,
+        description: description,
         status: isAdmin ? "Approved" : "Pending",
-        collectors // may be undefined
       });
 
       return NextResponse.json({

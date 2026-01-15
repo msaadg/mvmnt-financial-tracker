@@ -122,9 +122,9 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
 
 exports.Prisma.PowerUsersScalarFieldEnum = {
   id: 'id',
-  email: 'email',
   username: 'username',
-  role: 'role'
+  role: 'role',
+  email: 'email'
 };
 
 exports.Prisma.ReferralsScalarFieldEnum = {
@@ -137,33 +137,36 @@ exports.Prisma.CollectorsScalarFieldEnum = {
   name: 'name'
 };
 
+exports.Prisma.VendorsScalarFieldEnum = {
+  vendorName: 'vendorName'
+};
+
 exports.Prisma.DonationScalarFieldEnum = {
   transacId: 'transacId',
   date: 'date',
   amount: 'amount',
-  paymentMethod: 'paymentMethod',
   donorName: 'donorName',
   referralId: 'referralId',
   collectorId: 'collectorId',
   type: 'type',
   status: 'status',
-  notes: 'notes'
+  notes: 'notes',
+  paymentMethod: 'paymentMethod'
 };
 
 exports.Prisma.ExpensesScalarFieldEnum = {
   transacId: 'transacId',
   date: 'date',
   amount: 'amount',
-  paymentMethod: 'paymentMethod',
-  vendorProjName: 'vendorProjName',
-  category: 'category',
+  vendorName: 'vendorName',
+  project: 'project',
   description: 'description',
   status: 'status'
 };
 
 exports.Prisma.PaymentScalarFieldEnum = {
   paymentId: 'paymentId',
-  expenseId: 'expenseId',
+  vendorName: 'vendorName',
   collectorId: 'collectorId',
   type: 'type',
   amount: 'amount'
@@ -189,6 +192,7 @@ exports.Prisma.ModelName = {
   PowerUsers: 'PowerUsers',
   Referrals: 'Referrals',
   Collectors: 'Collectors',
+  Vendors: 'Vendors',
   Donation: 'Donation',
   Expenses: 'Expenses',
   Payment: 'Payment'

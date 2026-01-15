@@ -91,21 +91,18 @@ const ExpensesContent = () => {
   const filteredExpenses = expenses.filter(expense => {
     const vendorName = expense.vendorName || expense.vendorProject?.name || "";
     const description = expense.description || "";
+    const project = expense.project?.name || "";
     
     const matchesSearch = vendorName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         description.toLowerCase().includes(searchTerm.toLowerCase());
+                            description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "all" || expense.status.toLowerCase() === statusFilter;
-    const matchesCategory = categoryFilter === "all" || expense.category.toLowerCase() === categoryFilter;
-    const matchesPayment = paymentFilter === "all" || expense.paymentMethod?.toLowerCase() === paymentFilter;
-    const matchesCollector = collectorFilter === "all" || 
-                            expense.collectors?.some((c: any) => c.name === collectorFilter);
+    const matchesProject = project.toLowerCase().includes(searchTerm.toLowerCase());
     
     const expenseDate = new Date(expense.date);
     const matchesDateFrom = !dateFrom || expenseDate >= new Date(dateFrom);
     const matchesDateTo = !dateTo || expenseDate <= new Date(dateTo);
     
-    return matchesSearch && matchesStatus && matchesCategory && matchesPayment && 
-           matchesCollector && matchesDateFrom && matchesDateTo;
+    return matchesSearch && matchesStatus && matchesProject && matchesDateFrom && matchesDateTo;
   });
 
   const totalExpenses = filteredExpenses.reduce((sum, expense) => sum + Number(expense.amount || 0), 0);
@@ -205,7 +202,7 @@ const ExpensesContent = () => {
     try {
       const csvData = filteredExpenses.map(e => ({
         id: e.id.toString(),
-        vendorName: e.vendorName || e.vendorProject?.name || "N/A",
+        vendorName: e.vendorName || "N/A",
         amount: e.amount,
         category: e.category,
         paymentMethod: e.paymentMethod,
@@ -413,11 +410,9 @@ const ExpensesContent = () => {
               <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Vendor/Project</TableHead>
+                  <TableHead>Vendor</TableHead>
                   <TableHead>Amount</TableHead>
-                  <TableHead>Category</TableHead>
-                  <TableHead>Payment Method</TableHead>
-                  <TableHead>Collectors</TableHead>
+                  <TableHead>Project</TableHead>
                   <TableHead>Date</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Actions</TableHead>
@@ -429,7 +424,7 @@ const ExpensesContent = () => {
                     <TableCell>
                       <div>
                         <p className="font-medium text-foreground text-sm">
-                          {expense.vendorName || expense.vendorProject?.name || "N/A"}
+                          {expense.vendorName || "N/A"}
                         </p>
                         <p className="text-xs text-muted-foreground truncate max-w-[150px]">{expense.description}</p>
                       </div>
@@ -438,23 +433,12 @@ const ExpensesContent = () => {
                       {formatAmount(expense.amount)}
                     </TableCell>
                     <TableCell>
-                      {getCategoryBadge(expense.category)}
-                    </TableCell>
-                    <TableCell className="text-sm">{expense.paymentMethod}</TableCell>
-                    <TableCell>
-                      <div className="space-y-1 max-w-[200px]">
-                        {expense.collectors?.map((collector: any, index: number) => (
-                          <div key={index} className="text-xs">
-                            <span className="font-medium">{collector.name}</span>
-                            <span className="text-muted-foreground block sm:inline"> ({collector.type}: {formatAmount(Number(collector.amount))})</span>
-                          </div>
-                        ))}
-                      </div>
+                      {getCategoryBadge(expense.project)}
                     </TableCell>
                     <TableCell className="text-sm">{new Date(expense.date).toLocaleDateString('en-GB')}</TableCell>
                     <TableCell>{getStatusBadge(expense.status)}</TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-1 justify-center">
+                      <div className="flex items-center gap-1">
                         {isAdmin && 
                           <TooltipProvider>
                             <Tooltip>
