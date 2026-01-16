@@ -52,12 +52,14 @@ export default function PaymentDialog({
 }: PaymentDialogProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loadingBalance, setLoadingBalance] = useState(false);
   const [collectors, setCollectors] = useState<string[]>([]);
   const { toast } = useToast();
 
   // Form state
   const [vendorName, setVendorName] = useState(payment?.vendorName || initialVendorName || "");
   const [collector, setCollector] = useState(payment?.collector || "");
+  const [balance, setBalance] = useState(0);
   const [type, setType] = useState(payment?.type || "zakat");
   const [amount, setAmount] = useState(payment?.amount?.toString() || "");
   const [paymentMethod, setPaymentMethod] = useState(payment?.paymentMethod || "cash");
@@ -72,6 +74,10 @@ export default function PaymentDialog({
   useEffect(() => {
     fetchCollectors();
   }, []);
+
+  useEffect(() => {
+    fetchBalance();
+  }, [collector]);
 
   useEffect(() => {
     if (payment) {
@@ -92,6 +98,21 @@ export default function PaymentDialog({
       setCollectors(response.data.collectors || []);
     } catch (err) {
       console.error("Failed to fetch collectors:", err);
+    }
+  };
+
+  const fetchBalance = async () => {
+    if (!collector) return;
+    setLoadingBalance(true);
+    try {
+      const response = await axios.get("/api/collectors/balance", {
+        params: { name: collector },
+      });
+      setBalance(response.data.balance);
+    } catch (err) {
+      console.error("Failed to fetch balance:", err);
+    } finally {
+      setLoadingBalance(false);
     }
   };
 
@@ -205,6 +226,23 @@ export default function PaymentDialog({
                   ))}
                 </SelectContent>
               </Select>
+              {collector && (
+                <div className="mt-2 p-2.5 bg-gray-200 rounded-md">
+                  <p className="text-sm flex items-center">
+                    {loadingBalance ? (
+                      <>
+                        <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
+                        <span>Loading balance...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="font-medium">Current Balance:</span>{" "}
+                        <span className="font-semibold ml-1">PKR {balance.toLocaleString()}</span>
+                      </>
+                    )}
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Amount */}
@@ -216,7 +254,8 @@ export default function PaymentDialog({
                 min="1"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                placeholder="Enter amount"
+                placeholder={collector ? "Enter amount" : "Select collector first"}
+                disabled={!collector}
                 required
               />
             </div>

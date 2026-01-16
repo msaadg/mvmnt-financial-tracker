@@ -1018,6 +1018,30 @@ export async function getVendorBalances(includeZeroBalance: boolean = false) {
   return vendorBalances;
 }
 
+export async function getCollectorBalance(name: string) {
+  const collector = await prisma.collectors.findMany({
+    where : { name },
+    cacheStrategy: { ttl: 1 },
+  });
+  const collectorId = collector[0].collectorId;
+  const collectorDonations = await prisma.donation.findMany({
+      where : { collectorId : collectorId }
+    }
+  );
+  const collectorPayments = await prisma.payment.findMany({
+      where : { collectorId : collectorId }
+    }
+  );
+
+  const totalDonations = collectorDonations.reduce((sum: number, d: {amount: number}) => sum + d.amount, 0);
+  const totalPayments = collectorPayments.reduce((sum: number, p: {amount: number}) => sum + p.amount, 0);
+
+  const balance = totalDonations - totalPayments;
+
+
+  return balance;
+}
+
 export async function deleteVendor(vendorName: string) {
   // Check if vendor has associated expenses or payments
   const vendor = await prisma.vendors.findUnique({
