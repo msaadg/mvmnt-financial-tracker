@@ -17,7 +17,7 @@ const Analytics = () => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
-  const [subtypeFilter, setSubtypeFilter] = useState("all");
+  const [subtypeFilter, setSubtypeFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [paymentFilter, setPaymentFilter] = useState("all");
   const [dateRange, setDateRange] = useState("all");
@@ -67,9 +67,9 @@ const Analytics = () => {
 
   const filteredLedger = ledgerData.filter((entry: any) => {
     const matchesSearch = entry.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         entry.reference.toLowerCase().includes(searchTerm.toLowerCase());
+    entry.reference.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = typeFilter === "all" || entry.type.toLowerCase() === typeFilter;
-    const matchesSubtype = subtypeFilter === "all" || entry.subType.toLowerCase() === subtypeFilter;
+    const matchesSubtype = entry.subType.toLowerCase().includes(subtypeFilter.toLowerCase())
     const matchesStatus = statusFilter === "all" || entry.status.toLowerCase() === statusFilter;
     const matchesPayment = paymentFilter === "all" || entry.paymentMethod.toLowerCase() === paymentFilter;
     
@@ -144,9 +144,8 @@ const Analytics = () => {
 
   const getStatusBadge = (status: string) => {
     switch (status.toLowerCase()) {
-      case "completed":
-      case "paid":
-        return <Badge className="bg-success text-success-foreground">Completed</Badge>;
+      case "approved":
+        return <Badge className="bg-success text-success-foreground">Approved</Badge>;
       case "pending":
         return <Badge className="bg-warning text-warning-foreground">Pending</Badge>;
       case "overdue":
@@ -374,7 +373,7 @@ const Analytics = () => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 sm:gap-4">
-            <div className="relative">
+            <div className="relative lg:col-span-2">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search transactions..."
@@ -393,21 +392,15 @@ const Analytics = () => {
                 <SelectItem value="expense">Expenses</SelectItem>
               </SelectContent>
             </Select>
-            <Select value={subtypeFilter} onValueChange={setSubtypeFilter}>
-              <SelectTrigger>
-                <SelectValue placeholder="Sub-Type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Sub-Types</SelectItem>
-                <SelectItem value="sadqa">Sadqa</SelectItem>
-                <SelectItem value="zakat">Zakat</SelectItem>
-                <SelectItem value="operations">Operations</SelectItem>
-                <SelectItem value="utilities">Utilities</SelectItem>
-                <SelectItem value="programs">Programs</SelectItem>
-                <SelectItem value="technology">Technology</SelectItem>
-                <SelectItem value="marketing">Marketing</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="relative">
+              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search subtype..."
+                value={subtypeFilter}
+                onChange={(e) => setSubtypeFilter(e.target.value)}
+                className="pl-10"
+              />
+            </div>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger>
                 <SelectValue placeholder="Status" />
@@ -420,7 +413,7 @@ const Analytics = () => {
                 {/* <SelectItem value="overdue">Overdue</SelectItem> */}
               </SelectContent>
             </Select>
-            <Select value={paymentFilter} onValueChange={setPaymentFilter}>
+            {/* <Select value={paymentFilter} onValueChange={setPaymentFilter}>
               <SelectTrigger>
                 <SelectValue placeholder="Payment Method" />
               </SelectTrigger>
@@ -429,7 +422,7 @@ const Analytics = () => {
                 <SelectItem value="cash">Cash</SelectItem>
                 <SelectItem value="online">Online</SelectItem>
               </SelectContent>
-            </Select>
+            </Select> */}
             <Select value={dateRange} onValueChange={setDateRange}>
               <SelectTrigger>
                 <SelectValue placeholder="Date Range" />
@@ -448,6 +441,7 @@ const Analytics = () => {
                 setSearchTerm("");
                 setTypeFilter("all");
                 setStatusFilter("all");
+                setSubtypeFilter("");
                 setPaymentFilter("all");
                 setDateRange("all");
               }}
@@ -477,7 +471,6 @@ const Analytics = () => {
                   <TableHead>Description</TableHead>
                   <TableHead>Type</TableHead>
                   <TableHead>Sub-Type</TableHead>
-                  <TableHead>Payment Method</TableHead>
                   <TableHead className="text-right">Amount</TableHead>
                   <TableHead>Status</TableHead>
                 </TableRow>
@@ -504,7 +497,6 @@ const Analytics = () => {
                         {entry.subType}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-sm">{entry.paymentMethod}</TableCell>
                     <TableCell className={`text-right font-medium text-sm ${entry.isIncome ? "text-success" : "text-destructive"}`}>
                       {entry.isIncome ? "+" : "-"}{formatAmount(entry.amount)}
                     </TableCell>

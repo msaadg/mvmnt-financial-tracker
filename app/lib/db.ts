@@ -582,12 +582,8 @@ export async function getFundsData() {
     include: { collector: true },
   });
 
-  const expenses = await prisma.expenses.findMany({
-    include: {
-      payments: {
-        include: { collector: true },
-      },
-    },
+  const expenses = await prisma.payment.findMany({
+    include: { collector: true },
   });
 
   const collectors = await prisma.collectors.findMany();
@@ -600,16 +596,9 @@ export async function getFundsData() {
   // Calculate by type
   const zakatDonations = donations.filter((d: { type: string }) => d.type.toLowerCase() === 'zakat').reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
   const sadqaDonations = donations.filter((d: { type: string }) => d.type.toLowerCase() === 'sadqa').reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
-
-  const zakatExpenses = expenses.reduce((sum: number, e: { payments: Array<{ type: string; amount: number }> }) => {
-    const zakatPayments = e.payments.filter((p: { type: string }) => p.type.toLowerCase() === 'zakat');
-    return sum + zakatPayments.reduce((pSum: number, p: { amount: number }) => pSum + p.amount, 0);
-  }, 0);
-
-  const sadqaExpenses = expenses.reduce((sum: number, e: { payments: Array<{ type: string; amount: number }> }) => {
-    const sadqaPayments = e.payments.filter((p: { type: string }) => p.type.toLowerCase() === 'sadqa');
-    return sum + sadqaPayments.reduce((pSum: number, p: { amount: number }) => pSum + p.amount, 0);
-  }, 0);
+  
+  const zakatExpenses = expenses.filter((d: { type: string }) => d.type.toLowerCase() === 'zakat').reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
+  const sadqaExpenses = expenses.filter((d: { type: string }) => d.type.toLowerCase() === 'sadqa').reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
 
   const zakatBalance = zakatDonations - zakatExpenses;
   const sadqaBalance = sadqaDonations - sadqaExpenses;
@@ -627,32 +616,23 @@ export async function getFundsData() {
   // Calculate per collector
   const collectorData = collectors.map((collector: { collectorId: number; name: string }) => {
     const collectorDonations = donations.filter((d: { collectorId: number }) => d.collectorId === collector.collectorId);
-    const collectorExpensePayments = expenses.flatMap((e: { payments: Array<{ collectorId: number; paymentId: number; type: string; amount: number }> }) => 
-      e.payments.filter((p: { collectorId: number }) => p.collectorId === collector.collectorId)
-    );
+    const collectorPayments = expenses.filter((d: { collectorId: number }) => d.collectorId === collector.collectorId);
 
     const totalReceived = collectorDonations.reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
-    const totalPaid = collectorExpensePayments.reduce((sum: number, p: { amount: number }) => sum + p.amount, 0);
+    const totalPaid = collectorPayments.reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
     const totalBalance = totalReceived - totalPaid;
 
     const zakatReceived = collectorDonations.filter((d: { type: string }) => d.type.toLowerCase() === 'zakat').reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
     const sadqaReceived = collectorDonations.filter((d: { type: string }) => d.type.toLowerCase() === 'sadqa').reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
-
-    const zakatPaid = collectorExpensePayments.filter((p: { type: string }) => p.type.toLowerCase() === 'zakat').reduce((sum: number, p: { amount: number }) => sum + p.amount, 0);
-    const sadqaPaid = collectorExpensePayments.filter((p: { type: string }) => p.type.toLowerCase() === 'sadqa').reduce((sum: number, p: { amount: number }) => sum + p.amount, 0);
+    
+    const zakatPaid = collectorPayments.filter((d: { type: string }) => d.type.toLowerCase() === 'zakat').reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
+    const sadqaPaid = collectorPayments.filter((d: { type: string }) => d.type.toLowerCase() === 'sadqa').reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
 
     const onlineReceived = collectorDonations.filter((d: { paymentMethod: string }) => d.paymentMethod.toLowerCase() === 'online').reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
     const cashReceived = collectorDonations.filter((d: { paymentMethod: string }) => d.paymentMethod.toLowerCase() === 'cash').reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
-
-    const onlinePaid = collectorExpensePayments.filter((p: { paymentId: number }) => {
-      const expense = expenses.find((e: { payments: Array<{ paymentId: number }>; paymentMethod?: string | null }) => e.payments.some((ep: { paymentId: number }) => ep.paymentId === p.paymentId));
-      return expense?.paymentMethod?.toLowerCase() === 'online';
-    }).reduce((sum: number, p: { amount: number }) => sum + p.amount, 0);
-
-    const cashPaid = collectorExpensePayments.filter((p: { paymentId: number }) => {
-      const expense = expenses.find((e: { payments: Array<{ paymentId: number }>; paymentMethod?: string | null }) => e.payments.some((ep: { paymentId: number }) => ep.paymentId === p.paymentId));
-      return expense?.paymentMethod?.toLowerCase() === 'cash';
-    }).reduce((sum: number, p: { amount: number }) => sum + p.amount, 0);
+    
+    const onlinePaid = collectorPayments.filter((d: { paymentMethod: string }) => d.paymentMethod.toLowerCase() === 'online').reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
+    const cashPaid = collectorPayments.filter((d: { paymentMethod: string }) => d.paymentMethod.toLowerCase() === 'cash').reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
 
     return {
       name: collector.name,

@@ -19,19 +19,19 @@ export async function GET() {
         description: d.donorName,
         type: 'Donation',
         subType: d.type,
-        paymentMethod: d.paymentMethod,
+        // paymentMethod: d.paymentMethod,
         amount: d.amount,
         isIncome: true,
         status: d.status,
-        reference: `Donation from ${d.donorName}`
+        reference: d.notes
       })),
       ...expenses.map((e: Expense) => ({
         id: `E-${e.id}`,
         date: e.date,
-        description: e.vendorName,
+        description: e.description,
         type: 'Expense',
         subType: e.project,
-        paymentMethod: e.paymentMethod,
+        // paymentMethod: e.paymentMethod,
         amount: e.amount,
         isIncome: false,
         status: e.status,
