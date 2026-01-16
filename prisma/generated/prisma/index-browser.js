@@ -171,7 +171,8 @@ exports.Prisma.PaymentScalarFieldEnum = {
   type: 'type',
   amount: 'amount',
   date: 'date',
-  paymentMethod: 'paymentMethod'
+  paymentMethod: 'paymentMethod',
+  status: 'status'
 };
 
 exports.Prisma.SortOrder = {

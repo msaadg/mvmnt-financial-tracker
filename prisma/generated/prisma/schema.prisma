@@ -71,6 +71,7 @@ model Payment {
   amount        Int
   date          DateTime
   paymentMethod String
+  status        String   @default("Pending")
 
   collector Collectors? @relation(fields: [collectorId], references: [collectorId], onDelete: Cascade)
   vendor    Vendors?    @relation(fields: [vendorName], references: [vendorName], onDelete: Cascade)

@@ -301,7 +301,6 @@ export async function getMonthlyDonationStats() {
   // Get current month donations (from first day at 00:00:00 to just before first day of next month)
   const monthDonations = await prisma.donation.findMany({
     where: {
-      status: "Completed",
       date: {
         gte: firstDayOfMonth,
         lt: firstDayOfNextMonth,
@@ -318,7 +317,6 @@ export async function getMonthlyDonationStats() {
 
   const prevMonthDonations = await prisma.donation.findMany({
     where: {
-      status: "Completed",
       date: {
         gte: prevMonthFirst,
         lt: prevMonthEnd,
@@ -507,7 +505,6 @@ export async function getReferralLeaderboard() {
   const referrals = await prisma.referrals.findMany({
     include: {
       donations: {
-        where: { status: "Completed" },
       },
     },
   });
@@ -582,7 +579,6 @@ export async function getAnalyticsData() {
 
 export async function getFundsData() {
   const donations = await prisma.donation.findMany({
-    where: { status: "Completed" },
     include: { collector: true },
   });
 
@@ -911,6 +907,7 @@ export async function createPaymentForVendor(data: {
   amount: number;
   date: Date;
   paymentMethod: string;
+  status: string;
 }) {
   // Find the collector in the database
   const collector = await prisma.collectors.findFirst({
@@ -943,6 +940,7 @@ export async function createPaymentForVendor(data: {
       amount: data.amount,
       date: data.date,
       paymentMethod: data.paymentMethod,
+      status: data.status
     },
   });
 }
@@ -954,6 +952,7 @@ export async function updatePayment(id: number, data: {
   amount?: number;
   date?: Date;
   paymentMethod?: string;
+  status: string;
 }) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const updateData: any = {};
@@ -963,6 +962,7 @@ export async function updatePayment(id: number, data: {
   if (data.amount !== undefined) updateData.amount = data.amount;
   if (data.date) updateData.date = data.date;
   if (data.paymentMethod) updateData.paymentMethod = data.paymentMethod;
+  updateData.status = data.status;
 
   // Find collector if provided
   if (data.collectorName) {
@@ -996,7 +996,7 @@ export async function getAllPayments() {
     cacheStrategy: { ttl: 1 },
   });
 
-  return payments.map((payment: { paymentId: number; vendorName: string; collector: { name: string } | null; type: string; amount: number; date: Date; paymentMethod: string }) => ({
+  return payments.map((payment: { paymentId: number; vendorName: string; collector: { name: string } | null; type: string; amount: number; date: Date; paymentMethod: string, status: string}) => ({
     id: payment.paymentId,
     vendorName: payment.vendorName,
     collector: payment.collector?.name || "Unknown",
@@ -1004,6 +1004,7 @@ export async function getAllPayments() {
     amount: payment.amount,
     date: payment.date.toISOString().split("T")[0],
     paymentMethod: payment.paymentMethod,
+    status: payment.status
   }));
 }
 

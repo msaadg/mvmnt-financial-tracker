@@ -240,7 +240,7 @@ const DonationsContent = () => {
         <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
           <Button 
             variant="outline" 
-            className="flex items-center gap-2 w-full sm:w-auto"
+            className="flex items-center gap-2 my-4 w-full sm:w-auto"
             onClick={handleExportCSV}
             disabled={filteredDonations.length === 0}
           >
@@ -312,6 +312,7 @@ const DonationsContent = () => {
               <SelectContent>
                 <SelectItem value="all">All Status</SelectItem>
                 <SelectItem value="completed">Completed</SelectItem>
+                <SelectItem value="pending">Pending</SelectItem>
                 {/* <SelectItem value="pending">Pending</SelectItem> */}
                 {/* <SelectItem value="overdue">Overdue</SelectItem> */}
               </SelectContent>

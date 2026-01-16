@@ -216,7 +216,7 @@ const AddDonationDialog = ({ donation, onSubmit, triggerButton, open: controlled
         </DialogTrigger>
       ) : (
         <DialogTrigger asChild>
-          <Button className="flex items-center gap-2">
+          <Button className="flex items-center gap-2 my-4">
             <Plus className="h-4 w-4" />
             Add Donation
           </Button>

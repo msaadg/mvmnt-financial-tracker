@@ -23,13 +23,6 @@ export async function POST(request: NextRequest) {
     const role = await getUserRole(session.user?.email || "");
     const isAdmin = role.role === "admin" 
 
-    if (!isAdmin) {
-      return NextResponse.json(
-        { message: 'Only admins can create payments' },
-        { status: 403 }
-      );
-    }
-
     // Validate required fields
     if (!vendorName || !collector || !type || amount === undefined || !paymentMethod) {
       return NextResponse.json(
@@ -54,6 +47,7 @@ export async function POST(request: NextRequest) {
       amount: parsedAmount,
       date: date ? new Date(date) : new Date(),
       paymentMethod,
+      status : isAdmin ? "Approved" : "Pending"
     });
 
     return NextResponse.json({
@@ -121,6 +115,7 @@ export async function PUT(request: NextRequest) {
       amount: amount !== undefined ? Number(amount) : undefined,
       date: date ? new Date(date) : undefined,
       paymentMethod,
+      status: isAdmin ? "Approved" : "Pending",
     });
 
     return NextResponse.json({

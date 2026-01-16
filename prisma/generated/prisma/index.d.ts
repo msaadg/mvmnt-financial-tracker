@@ -8088,6 +8088,7 @@ export namespace Prisma {
     amount: number | null
     date: Date | null
     paymentMethod: string | null
+    status: string | null
   }
 
   export type PaymentMaxAggregateOutputType = {
@@ -8098,6 +8099,7 @@ export namespace Prisma {
     amount: number | null
     date: Date | null
     paymentMethod: string | null
+    status: string | null
   }
 
   export type PaymentCountAggregateOutputType = {
@@ -8108,6 +8110,7 @@ export namespace Prisma {
     amount: number
     date: number
     paymentMethod: number
+    status: number
     _all: number
   }
 
@@ -8132,6 +8135,7 @@ export namespace Prisma {
     amount?: true
     date?: true
     paymentMethod?: true
+    status?: true
   }
 
   export type PaymentMaxAggregateInputType = {
@@ -8142,6 +8146,7 @@ export namespace Prisma {
     amount?: true
     date?: true
     paymentMethod?: true
+    status?: true
   }
 
   export type PaymentCountAggregateInputType = {
@@ -8152,6 +8157,7 @@ export namespace Prisma {
     amount?: true
     date?: true
     paymentMethod?: true
+    status?: true
     _all?: true
   }
 
@@ -8249,6 +8255,7 @@ export namespace Prisma {
     amount: number
     date: Date
     paymentMethod: string
+    status: string
     _count: PaymentCountAggregateOutputType | null
     _avg: PaymentAvgAggregateOutputType | null
     _sum: PaymentSumAggregateOutputType | null
@@ -8278,6 +8285,7 @@ export namespace Prisma {
     amount?: boolean
     date?: boolean
     paymentMethod?: boolean
+    status?: boolean
     collector?: boolean | Payment$collectorArgs<ExtArgs>
     vendor?: boolean | Payment$vendorArgs<ExtArgs>
   }, ExtArgs["result"]["payment"]>
@@ -8290,6 +8298,7 @@ export namespace Prisma {
     amount?: boolean
     date?: boolean
     paymentMethod?: boolean
+    status?: boolean
     collector?: boolean | Payment$collectorArgs<ExtArgs>
     vendor?: boolean | Payment$vendorArgs<ExtArgs>
   }, ExtArgs["result"]["payment"]>
@@ -8302,6 +8311,7 @@ export namespace Prisma {
     amount?: boolean
     date?: boolean
     paymentMethod?: boolean
+    status?: boolean
     collector?: boolean | Payment$collectorArgs<ExtArgs>
     vendor?: boolean | Payment$vendorArgs<ExtArgs>
   }, ExtArgs["result"]["payment"]>
@@ -8314,9 +8324,10 @@ export namespace Prisma {
     amount?: boolean
     date?: boolean
     paymentMethod?: boolean
+    status?: boolean
   }
 
-  export type PaymentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"paymentId" | "vendorName" | "collectorId" | "type" | "amount" | "date" | "paymentMethod", ExtArgs["result"]["payment"]>
+  export type PaymentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"paymentId" | "vendorName" | "collectorId" | "type" | "amount" | "date" | "paymentMethod" | "status", ExtArgs["result"]["payment"]>
   export type PaymentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     collector?: boolean | Payment$collectorArgs<ExtArgs>
     vendor?: boolean | Payment$vendorArgs<ExtArgs>
@@ -8344,6 +8355,7 @@ export namespace Prisma {
       amount: number
       date: Date
       paymentMethod: string
+      status: string
     }, ExtArgs["result"]["payment"]>
     composites: {}
   }
@@ -8776,6 +8788,7 @@ export namespace Prisma {
     readonly amount: FieldRef<"Payment", 'Int'>
     readonly date: FieldRef<"Payment", 'DateTime'>
     readonly paymentMethod: FieldRef<"Payment", 'String'>
+    readonly status: FieldRef<"Payment", 'String'>
   }
     
 
@@ -9311,7 +9324,8 @@ export namespace Prisma {
     type: 'type',
     amount: 'amount',
     date: 'date',
-    paymentMethod: 'paymentMethod'
+    paymentMethod: 'paymentMethod',
+    status: 'status'
   };
 
   export type PaymentScalarFieldEnum = (typeof PaymentScalarFieldEnum)[keyof typeof PaymentScalarFieldEnum]
@@ -9742,6 +9756,7 @@ export namespace Prisma {
     amount?: IntFilter<"Payment"> | number
     date?: DateTimeFilter<"Payment"> | Date | string
     paymentMethod?: StringFilter<"Payment"> | string
+    status?: StringFilter<"Payment"> | string
     collector?: XOR<CollectorsNullableScalarRelationFilter, CollectorsWhereInput> | null
     vendor?: XOR<VendorsNullableScalarRelationFilter, VendorsWhereInput> | null
   }
@@ -9754,6 +9769,7 @@ export namespace Prisma {
     amount?: SortOrder
     date?: SortOrder
     paymentMethod?: SortOrder
+    status?: SortOrder
     collector?: CollectorsOrderByWithRelationInput
     vendor?: VendorsOrderByWithRelationInput
   }
@@ -9769,6 +9785,7 @@ export namespace Prisma {
     amount?: IntFilter<"Payment"> | number
     date?: DateTimeFilter<"Payment"> | Date | string
     paymentMethod?: StringFilter<"Payment"> | string
+    status?: StringFilter<"Payment"> | string
     collector?: XOR<CollectorsNullableScalarRelationFilter, CollectorsWhereInput> | null
     vendor?: XOR<VendorsNullableScalarRelationFilter, VendorsWhereInput> | null
   }, "paymentId">
@@ -9781,6 +9798,7 @@ export namespace Prisma {
     amount?: SortOrder
     date?: SortOrder
     paymentMethod?: SortOrder
+    status?: SortOrder
     _count?: PaymentCountOrderByAggregateInput
     _avg?: PaymentAvgOrderByAggregateInput
     _max?: PaymentMaxOrderByAggregateInput
@@ -9799,6 +9817,7 @@ export namespace Prisma {
     amount?: IntWithAggregatesFilter<"Payment"> | number
     date?: DateTimeWithAggregatesFilter<"Payment"> | Date | string
     paymentMethod?: StringWithAggregatesFilter<"Payment"> | string
+    status?: StringWithAggregatesFilter<"Payment"> | string
   }
 
   export type PowerUsersCreateInput = {
@@ -10116,6 +10135,7 @@ export namespace Prisma {
     amount: number
     date: Date | string
     paymentMethod: string
+    status?: string
     collector?: CollectorsCreateNestedOneWithoutPaymentsInput
     vendor?: VendorsCreateNestedOneWithoutPaymentsInput
   }
@@ -10128,6 +10148,7 @@ export namespace Prisma {
     amount: number
     date: Date | string
     paymentMethod: string
+    status?: string
   }
 
   export type PaymentUpdateInput = {
@@ -10135,6 +10156,7 @@ export namespace Prisma {
     amount?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
     collector?: CollectorsUpdateOneWithoutPaymentsNestedInput
     vendor?: VendorsUpdateOneWithoutPaymentsNestedInput
   }
@@ -10147,6 +10169,7 @@ export namespace Prisma {
     amount?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
   }
 
   export type PaymentCreateManyInput = {
@@ -10157,6 +10180,7 @@ export namespace Prisma {
     amount: number
     date: Date | string
     paymentMethod: string
+    status?: string
   }
 
   export type PaymentUpdateManyMutationInput = {
@@ -10164,6 +10188,7 @@ export namespace Prisma {
     amount?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
   }
 
   export type PaymentUncheckedUpdateManyInput = {
@@ -10174,6 +10199,7 @@ export namespace Prisma {
     amount?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -10537,6 +10563,7 @@ export namespace Prisma {
     amount?: SortOrder
     date?: SortOrder
     paymentMethod?: SortOrder
+    status?: SortOrder
   }
 
   export type PaymentAvgOrderByAggregateInput = {
@@ -10553,6 +10580,7 @@ export namespace Prisma {
     amount?: SortOrder
     date?: SortOrder
     paymentMethod?: SortOrder
+    status?: SortOrder
   }
 
   export type PaymentMinOrderByAggregateInput = {
@@ -10563,6 +10591,7 @@ export namespace Prisma {
     amount?: SortOrder
     date?: SortOrder
     paymentMethod?: SortOrder
+    status?: SortOrder
   }
 
   export type PaymentSumOrderByAggregateInput = {
@@ -11116,6 +11145,7 @@ export namespace Prisma {
     amount: number
     date: Date | string
     paymentMethod: string
+    status?: string
     vendor?: VendorsCreateNestedOneWithoutPaymentsInput
   }
 
@@ -11126,6 +11156,7 @@ export namespace Prisma {
     amount: number
     date: Date | string
     paymentMethod: string
+    status?: string
   }
 
   export type PaymentCreateOrConnectWithoutCollectorInput = {
@@ -11181,6 +11212,7 @@ export namespace Prisma {
     amount?: IntFilter<"Payment"> | number
     date?: DateTimeFilter<"Payment"> | Date | string
     paymentMethod?: StringFilter<"Payment"> | string
+    status?: StringFilter<"Payment"> | string
   }
 
   export type ExpensesCreateWithoutVendorInput = {
@@ -11215,6 +11247,7 @@ export namespace Prisma {
     amount: number
     date: Date | string
     paymentMethod: string
+    status?: string
     collector?: CollectorsCreateNestedOneWithoutPaymentsInput
   }
 
@@ -11225,6 +11258,7 @@ export namespace Prisma {
     amount: number
     date: Date | string
     paymentMethod: string
+    status?: string
   }
 
   export type PaymentCreateOrConnectWithoutVendorInput = {
@@ -11530,6 +11564,7 @@ export namespace Prisma {
     amount: number
     date: Date | string
     paymentMethod: string
+    status?: string
   }
 
   export type DonationUpdateWithoutCollectorInput = {
@@ -11572,6 +11607,7 @@ export namespace Prisma {
     amount?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
     vendor?: VendorsUpdateOneWithoutPaymentsNestedInput
   }
 
@@ -11582,6 +11618,7 @@ export namespace Prisma {
     amount?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
   }
 
   export type PaymentUncheckedUpdateManyWithoutCollectorInput = {
@@ -11591,6 +11628,7 @@ export namespace Prisma {
     amount?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
   }
 
   export type ExpensesCreateManyVendorInput = {
@@ -11609,6 +11647,7 @@ export namespace Prisma {
     amount: number
     date: Date | string
     paymentMethod: string
+    status?: string
   }
 
   export type ExpensesUpdateWithoutVendorInput = {
@@ -11642,6 +11681,7 @@ export namespace Prisma {
     amount?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
     collector?: CollectorsUpdateOneWithoutPaymentsNestedInput
   }
 
@@ -11652,6 +11692,7 @@ export namespace Prisma {
     amount?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
   }
 
   export type PaymentUncheckedUpdateManyWithoutVendorInput = {
@@ -11661,6 +11702,7 @@ export namespace Prisma {
     amount?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentMethod?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
   }
 
 

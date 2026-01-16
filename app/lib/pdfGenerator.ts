@@ -126,16 +126,10 @@ export const generateDonationReceiptPDF = async (donation: DonationData) => {
 interface ExpenseData {
   id: string;
   vendorName: string;
+  project: string;
   amount: number;
-  category: string;
-  paymentMethod: string;
   date: string;
   description: string;
-  collectors?: Array<{
-    name: string;
-    type: string;
-    amount: number;
-  }>;
 }
 
 export const generateExpenseReceiptPDF = async (expense: ExpenseData) => {
@@ -147,11 +141,11 @@ export const generateExpenseReceiptPDF = async (expense: ExpenseData) => {
   });
 
   // Generate collectors section
-  const collectorsSection = expense.collectors && expense.collectors.length > 0
-    ? expense.collectors.map(c => 
-        `\\textbf{${c.name}} & (${c.type}: PKR ${c.amount.toLocaleString()}) \\\\[0.2cm]`
-      ).join('\n')
-    : '\\textbf{N/A} & \\\\[0.2cm]';
+  // const collectorsSection = expense.collectors && expense.collectors.length > 0
+  //   ? expense.collectors.map(c => 
+  //       `\\textbf{${c.name}} & (${c.type}: PKR ${c.amount.toLocaleString()}) \\\\[0.2cm]`
+  //     ).join('\n')
+  //   : '\\textbf{N/A} & \\\\[0.2cm]';
 
   // Generate LaTeX content
   const latexContent = `\\documentclass{article}
@@ -199,13 +193,9 @@ export const generateExpenseReceiptPDF = async (expense: ExpenseData) => {
 \\receiptbox{
 \\textbf{RECEIPT NUMBER:} & ${expense.id} \\\\[0.3cm]
 \\textbf{VENDOR/PROJECT:} & ${expense.vendorName} \\\\[0.3cm]
-\\textbf{CATEGORY:} & ${expense.category} \\\\[0.3cm]
 \\textbf{DESCRIPTION:} & \\parbox[t]{0.5\\textwidth}{${expense.description}} \\\\[0.3cm]
 \\textbf{AMOUNT PAID:} & PKR ${expense.amount.toLocaleString()} \\\\[0.3cm]
 \\textbf{IN WORDS:} & \\parbox[t]{0.5\\textwidth}{${amountInWords} rupees only} \\\\[0.3cm]
-\\textbf{PAYMENT METHOD:} & ${expense.paymentMethod} \\\\[0.3cm]
-\\textbf{COLLECTORS:} & \\\\[0.2cm]
-${collectorsSection}
 }
 
 \\vspace{1cm}
@@ -260,25 +250,82 @@ export const exportExpensesToCSV = (expenses: ExpenseData[], filename: string = 
   // Define CSV headers
   const headers = [
     'Receipt Number',
-    'Vendor/Project',
+    'Vendor',
+    'Project',
     'Amount (PKR)',
-    'Category',
-    'Payment Method',
     'Date',
     'Description',
-    'Collectors'
   ];
 
   // Convert expenses to CSV rows
   const csvRows = expenses.map(expense => [
     expense.id,
     expense.vendorName,
+    expense.project,
     expense.amount,
-    expense.category,
-    expense.paymentMethod,
     new Date(expense.date).toLocaleDateString('en-GB'),
     expense.description || '',
-    expense.collectors?.map(c => `${c.name} (${c.type}: ${c.amount})`).join('; ') || ''
+  ]);
+
+  // Combine headers and rows
+  const csvContent = [
+    headers.join(','),
+    ...csvRows.map(row => 
+      row.map(cell => {
+        // Escape fields that contain commas or quotes
+        const cellStr = String(cell);
+        if (cellStr.includes(',') || cellStr.includes('"') || cellStr.includes('\n')) {
+          return `"${cellStr.replace(/"/g, '""')}"`;
+        }
+        return cellStr;
+      }).join(',')
+    )
+  ].join('\n');
+
+  // Create blob and download
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+  
+  link.setAttribute('href', url);
+  link.setAttribute('download', filename);
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+interface PaymentData {
+  id: string;
+  vendorName: string;
+  collector: string;
+  amount: number;
+  type: string;
+  paymentMethod: string;
+  date: string;
+}
+
+export const exportPaymentsToCSV = (payments: PaymentData[], filename: string = 'payments.csv') => {
+  // Define CSV headers
+  const headers = [
+    'Payment Number',
+    'Vendor',
+    'Collector',
+    'Amount (PKR)',
+    'Type',
+    'Payment Method',
+    'Date',
+  ];
+
+  // Convert expenses to CSV rows
+  const csvRows = payments.map(payment => [
+    payment.id,
+    payment.vendorName,
+    payment.collector,
+    payment.amount,
+    payment.type,
+    payment.paymentMethod,
+    new Date(payment.date).toLocaleDateString('en-GB'),
   ]);
 
   // Combine headers and rows

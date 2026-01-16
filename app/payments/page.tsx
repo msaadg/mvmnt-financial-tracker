@@ -23,6 +23,7 @@ import {
 import PaymentDialog from "@/app/components/PaymentDialog";
 import { useToast } from "@/app/hooks/use-toast";
 import { SessionProvider, useSession } from "next-auth/react";
+import { exportPaymentsToCSV } from "@/app/lib/pdfGenerator";
 import axios from "axios";
 
 function Payments() {
@@ -32,10 +33,10 @@ function Payments() {
 const PaymentsContent = () => {
   const [showZeroBalance, setShowZeroBalance] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [vendorFilter, setVendorFilter] = useState("all");
   const [collectorFilter, setCollectorFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
   const [paymentMethodFilter, setPaymentMethodFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
 
@@ -145,16 +146,16 @@ const PaymentsContent = () => {
 
   const filteredPayments = payments.filter((payment) => {
     const matchesSearch = payment.vendorName.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesVendor = vendorFilter === "all" || payment.vendorName === vendorFilter;
     const matchesCollector = collectorFilter === "all" || payment.collector === collectorFilter;
     const matchesType = typeFilter === "all" || payment.type.toLowerCase() === typeFilter;
     const matchesPaymentMethod = paymentMethodFilter === "all" || payment.paymentMethod.toLowerCase() === paymentMethodFilter;
+    const matchesStatus = statusFilter === "all" || payment.status.toLowerCase() === statusFilter;
 
     const paymentDate = new Date(payment.date);
     const matchesDateFrom = !dateFrom || paymentDate >= new Date(dateFrom);
     const matchesDateTo = !dateTo || paymentDate <= new Date(dateTo);
 
-    return matchesSearch && matchesVendor && matchesCollector && matchesType && matchesPaymentMethod && matchesDateFrom && matchesDateTo;
+    return matchesSearch && matchesCollector && matchesType && matchesPaymentMethod && matchesDateFrom && matchesDateTo && matchesStatus;
   });
 
   const totalPayments = filteredPayments.reduce((sum, p) => sum + Number(p.amount || 0), 0);
@@ -178,17 +179,68 @@ const PaymentsContent = () => {
     );
   }
 
+  const getStatusBadge = (status: string) => {
+    switch (status.toLowerCase()) {
+      case "approved":
+        return <Badge className="bg-success text-success-foreground">Approved</Badge>;
+      case "pending":
+        return <Badge className="bg-warning text-warning-foreground">Pending</Badge>;
+      case "overdue":
+        return <Badge className="bg-destructive text-destructive-foreground">Overdue</Badge>;
+      default:
+        return <Badge variant="secondary">{status}</Badge>;
+    }
+  };
+
+  const handleExportCSV = () => {
+    try {
+      const csvData = filteredPayments.map(p => ({
+        id: p.id.toString(),
+        vendorName: p.vendorName || "N/A",
+        collector: p.collector || "N/A",
+        amount: p.amount,
+        type: p.type,
+        paymentMethod: p.paymentMethod,
+        date: p.date,
+      }));
+      
+      exportPaymentsToCSV(csvData, `payments-${new Date().toISOString().split('T')[0]}.csv`);
+      
+      toast({
+        title: "CSV Exported",
+        description: `Exported ${csvData.length} payment records to CSV.`,
+      });
+    } catch (error) {
+      toast({
+        title: "Export Failed",
+        description: "Failed to export payments to CSV.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 sm:mb-8">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 sm:mb-8">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Payments</h1>
           <p className="text-muted-foreground mt-2 text-sm sm:text-base">
             Manage vendor payments and track balances
           </p>
         </div>
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+          <Button 
+            variant="outline" 
+            className="flex items-center gap-2 my-4 w-full sm:w-auto"
+            onClick={handleExportCSV}
+            disabled={filteredPayments.length === 0}
+          >
+            <Download className="h-4 w-4" />
+            <span className="hidden sm:inline">Export CSV</span>
+            <span className="sm:hidden">Export</span>
+          </Button>
+        </div>
       </div>
-
       {error && (
         <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
           <p className="text-sm text-yellow-800">{error}</p>
@@ -276,23 +328,21 @@ const PaymentsContent = () => {
                         <TableCell>
                           <TooltipProvider>
                             <div className="flex gap-1">
-                              {isAdmin && (
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      className="h-8 w-8 p-0"
-                                      onClick={() => handlePayClick(vendor.vendorName)}
-                                    >
-                                      <DollarSign className="h-3 w-3" />
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    <p>Make payment</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              )}
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-8 w-8 p-0"
+                                    onClick={() => handlePayClick(vendor.vendorName)}
+                                  >
+                                    <DollarSign className="h-3 w-3" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Make payment</p>
+                                </TooltipContent>
+                              </Tooltip>
                               {isAdmin && (
                                 <Tooltip>
                                   <TooltipTrigger asChild>
@@ -333,7 +383,7 @@ const PaymentsContent = () => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
-            <div className="relative">
+            <div className="relative lg:col-span-1">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search vendors..."
@@ -342,17 +392,14 @@ const PaymentsContent = () => {
                 className="pl-10"
               />
             </div>
-            <Select value={vendorFilter} onValueChange={setVendorFilter}>
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger>
-                <SelectValue placeholder="Vendor" />
+                <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Vendors</SelectItem>
-                {uniqueVendors.map((v) => (
-                  <SelectItem key={v} value={v}>
-                    {v}
-                  </SelectItem>
-                ))}
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="Approved">Approved</SelectItem>
+                <SelectItem value="Pending">Pending</SelectItem>
               </SelectContent>
             </Select>
             <Select value={collectorFilter} onValueChange={setCollectorFilter}>
@@ -403,10 +450,10 @@ const PaymentsContent = () => {
             variant="outline"
             onClick={() => {
               setSearchTerm("");
-              setVendorFilter("all");
               setCollectorFilter("all");
               setTypeFilter("all");
               setPaymentMethodFilter("all");
+              setStatusFilter("all");
               setDateFrom("");
               setDateTo("");
             }}
@@ -427,12 +474,13 @@ const PaymentsContent = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Date</TableHead>
                     <TableHead>Vendor</TableHead>
                     <TableHead>Collector</TableHead>
-                    <TableHead>Type</TableHead>
                     <TableHead>Amount</TableHead>
+                    <TableHead>Type</TableHead>
                     <TableHead>Payment Method</TableHead>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Status</TableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -446,9 +494,9 @@ const PaymentsContent = () => {
                   ) : (
                     filteredPayments.map((payment) => (
                       <TableRow key={payment.id}>
-                        <TableCell className="text-sm">{new Date(payment.date).toLocaleDateString("en-GB")}</TableCell>
                         <TableCell className="font-medium text-foreground text-sm">{payment.vendorName}</TableCell>
                         <TableCell className="text-sm">{payment.collector}</TableCell>
+                        <TableCell className="font-medium text-success text-sm">{formatAmount(payment.amount)}</TableCell>
                         <TableCell>
                           <Badge
                             variant="outline"
@@ -459,8 +507,9 @@ const PaymentsContent = () => {
                             {payment.type}
                           </Badge>
                         </TableCell>
-                        <TableCell className="font-medium text-success text-sm">{formatAmount(payment.amount)}</TableCell>
                         <TableCell className="text-sm capitalize">{payment.paymentMethod}</TableCell>
+                        <TableCell className="text-sm">{new Date(payment.date).toLocaleDateString("en-GB")}</TableCell>
+                        <TableCell>{getStatusBadge(payment.status)}</TableCell>
                         <TableCell>
                           <TooltipProvider>
                             <div className="flex gap-1">
@@ -547,7 +596,7 @@ const PaymentsContent = () => {
           <AlertDialogHeader>
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete{" "}
+              This action cannot be undone. This will permanently delete{" "}. Note that you must first delete any expenses against this vendor.
               <strong>{deleteTarget?.name}</strong>.
             </AlertDialogDescription>
           </AlertDialogHeader>

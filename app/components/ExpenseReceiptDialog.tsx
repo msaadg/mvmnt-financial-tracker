@@ -43,12 +43,10 @@ const ExpenseReceiptDialog = ({ expense, open, onOpenChange }: ExpenseReceiptDia
       await generateExpenseReceiptPDF({
         id: expense.id,
         vendorName: expense.vendorName,
+        project: "", // disabled
         amount: expense.amount,
-        category: expense.category,
-        paymentMethod: expense.paymentMethod,
         date: expense.date,
         description: expense.description,
-        collectors: expense.collectors,
       });
       
       toast({

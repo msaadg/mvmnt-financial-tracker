@@ -34,6 +34,7 @@ function Expenses() {
 
 const ExpensesContent = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [projectSearchTerm, setProjectSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [selectedExpense, setSelectedExpense] = useState<any>(null);
@@ -89,14 +90,13 @@ const ExpensesContent = () => {
   }
 
   const filteredExpenses = expenses.filter(expense => {
-    const vendorName = expense.vendorName || expense.vendorProject?.name || "";
+    const vendorName = expense.vendorName || "";
     const description = expense.description || "";
     const project = expense.project?.name || "";
     
-    const matchesSearch = vendorName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = vendorName.toLowerCase().includes(searchTerm.toLowerCase()) || description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesProject = project.toLowerCase().includes(projectSearchTerm.toLowerCase());
     const matchesStatus = statusFilter === "all" || expense.status.toLowerCase() === statusFilter;
-    const matchesProject = project.toLowerCase().includes(searchTerm.toLowerCase());
     
     const expenseDate = new Date(expense.date);
     const matchesDateFrom = !dateFrom || expenseDate >= new Date(dateFrom);
@@ -125,24 +125,6 @@ const ExpensesContent = () => {
       default:
         return <Badge variant="secondary">{status}</Badge>;
     }
-  };
-
-  const getCategoryBadge = (category: string) => {
-    const colors = {
-      operations: "bg-blue-100 text-blue-800 border-blue-200",
-      utilities: "bg-green-100 text-green-800 border-green-200",
-      programs: "bg-purple-100 text-purple-800 border-purple-200",
-      technology: "bg-orange-100 text-orange-800 border-orange-200",
-      marketing: "bg-pink-100 text-pink-800 border-pink-200",
-    };
-    
-    const colorClass = colors[category.toLowerCase() as keyof typeof colors] || "bg-gray-100 text-gray-800 border-gray-200";
-    
-    return (
-      <Badge variant="outline" className={colorClass}>
-        {category}
-      </Badge>
-    );
   };
 
   const formatAmount = (amount: number) => {
@@ -203,12 +185,10 @@ const ExpensesContent = () => {
       const csvData = filteredExpenses.map(e => ({
         id: e.id.toString(),
         vendorName: e.vendorName || "N/A",
+        project: e.project || "N/A",
         amount: e.amount,
-        category: e.category,
-        paymentMethod: e.paymentMethod,
         date: e.date,
         description: e.description || '',
-        collectors: e.collectors
       }));
       
       exportExpensesToCSV(csvData, `expenses-${new Date().toISOString().split('T')[0]}.csv`);
@@ -238,7 +218,7 @@ const ExpensesContent = () => {
         <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
           <Button 
             variant="outline" 
-            className="flex items-center gap-2 w-full sm:w-auto"
+            className="flex items-center gap-2 my-4 w-full sm:w-auto"
             onClick={handleExportCSV}
             disabled={filteredExpenses.length === 0}
           >
@@ -300,12 +280,22 @@ const ExpensesContent = () => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 sm:gap-4">
-            <div className="relative lg:col-span-2">
+            <div className="relative lg:col-span-3">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search vendors or description..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            
+            <div className="relative lg:col-span-2">
+              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search projects..."
+                value={projectSearchTerm}
+                onChange={(e) => setProjectSearchTerm(e.target.value)}
                 className="pl-10"
               />
             </div>
@@ -316,46 +306,9 @@ const ExpensesContent = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="paid">Paid</SelectItem>
+                <SelectItem value="approved">Approved</SelectItem>
                 <SelectItem value="pending">Pending</SelectItem>
                 {/* <SelectItem value="overdue">Overdue</SelectItem> */}
-              </SelectContent>
-            </Select>
-            
-            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-              <SelectTrigger>
-                <SelectValue placeholder="Category" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
-                <SelectItem value="operations">Operations</SelectItem>
-                <SelectItem value="utilities">Utilities</SelectItem>
-                <SelectItem value="programs">Programs</SelectItem>
-                <SelectItem value="technology">Technology</SelectItem>
-                <SelectItem value="marketing">Marketing</SelectItem>
-              </SelectContent>
-            </Select>
-            
-            <Select value={paymentFilter} onValueChange={setPaymentFilter}>
-              <SelectTrigger>
-                <SelectValue placeholder="Payment Method" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Methods</SelectItem>
-                <SelectItem value="cash">Cash</SelectItem>
-                <SelectItem value="online">Online</SelectItem>
-              </SelectContent>
-            </Select>
-            
-            <Select value={collectorFilter} onValueChange={setCollectorFilter}>
-              <SelectTrigger>
-                <SelectValue placeholder="Collector" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Collectors</SelectItem>
-                {collectors.map((collector) => (
-                  <SelectItem key={collector} value={collector}>{collector}</SelectItem>
-                ))}
               </SelectContent>
             </Select>
           </div>
@@ -411,8 +364,8 @@ const ExpensesContent = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead>Vendor</TableHead>
-                  <TableHead>Amount</TableHead>
                   <TableHead>Project</TableHead>
+                  <TableHead>Amount</TableHead>
                   <TableHead>Date</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Actions</TableHead>
@@ -429,11 +382,15 @@ const ExpensesContent = () => {
                         <p className="text-xs text-muted-foreground truncate max-w-[150px]">{expense.description}</p>
                       </div>
                     </TableCell>
+                    <TableCell>
+                      <div>
+                        <p className="font-medium text-foreground text-sm">
+                          {expense.project || "N/A"}
+                        </p>
+                      </div>
+                    </TableCell>
                     <TableCell className="font-medium text-destructive text-sm">
                       {formatAmount(expense.amount)}
-                    </TableCell>
-                    <TableCell>
-                      {getCategoryBadge(expense.project)}
                     </TableCell>
                     <TableCell className="text-sm">{new Date(expense.date).toLocaleDateString('en-GB')}</TableCell>
                     <TableCell>{getStatusBadge(expense.status)}</TableCell>

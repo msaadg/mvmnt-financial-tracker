@@ -140,9 +140,9 @@ export default function PaymentDialog({
       if (!payment) {
         setVendorName(initialVendorName || "");
         setCollector("");
-        setType("zakat");
+        setType("Zakat");
         setAmount("");
-        setPaymentMethod("cash");
+        setPaymentMethod("Cash");
         setDate(new Date().toISOString().split("T")[0]);
       }
 
@@ -226,13 +226,13 @@ export default function PaymentDialog({
               <Label>Payment Type</Label>
               <RadioGroup value={type} onValueChange={setType}>
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="zakat" id="zakat" />
+                  <RadioGroupItem value="Zakat" id="zakat" />
                   <Label htmlFor="zakat" className="font-normal cursor-pointer">
                     Zakat
                   </Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="sadqa" id="sadqa" />
+                  <RadioGroupItem value="Sadqa" id="sadqa" />
                   <Label htmlFor="sadqa" className="font-normal cursor-pointer">
                     Sadqa
                   </Label>
@@ -245,13 +245,13 @@ export default function PaymentDialog({
               <Label>Payment Method</Label>
               <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod}>
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="cash" id="cash" />
+                  <RadioGroupItem value="Cash" id="cash" />
                   <Label htmlFor="cash" className="font-normal cursor-pointer">
                     Cash
                   </Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="online" id="online" />
+                  <RadioGroupItem value="Online" id="online" />
                   <Label htmlFor="online" className="font-normal cursor-pointer">
                     Online
                   </Label>
