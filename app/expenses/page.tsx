@@ -36,7 +36,6 @@ const ExpensesContent = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [projectSearchTerm, setProjectSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [categoryFilter, setCategoryFilter] = useState("all");
   const [selectedExpense, setSelectedExpense] = useState<any>(null);
   const [receiptOpen, setReceiptOpen] = useState(false);
   const [editingExpense, setEditingExpense] = useState<any>(null);
@@ -92,7 +91,7 @@ const ExpensesContent = () => {
   const filteredExpenses = expenses.filter(expense => {
     const vendorName = expense.vendorName || "";
     const description = expense.description || "";
-    const project = expense.project?.name || "";
+    const project = expense.project || "";
     
     const matchesSearch = vendorName.toLowerCase().includes(searchTerm.toLowerCase()) || description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesProject = project.toLowerCase().includes(projectSearchTerm.toLowerCase());
@@ -339,7 +338,7 @@ const ExpensesContent = () => {
             onClick={() => {
               setSearchTerm("");
               setStatusFilter("all");
-              setCategoryFilter("all");
+              setProjectSearchTerm("");
               setPaymentFilter("all");
               setCollectorFilter("all");
               setDateFrom("");

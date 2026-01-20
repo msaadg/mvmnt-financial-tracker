@@ -28,7 +28,7 @@ export async function GET() {
       ...expenses.map((e: Expense) => ({
         id: `E-${e.id}`,
         date: e.date,
-        description: e.description,
+        description: e.vendorName,
         type: 'Expense',
         subType: e.project,
         // paymentMethod: e.paymentMethod,
