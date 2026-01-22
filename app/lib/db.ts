@@ -249,6 +249,17 @@ export async function getAllVendors() {
   });
 }
 
+export async function getAllProjects() {
+  return prisma.expenses.findMany({
+    distinct: ['project'],
+    select: {
+      project: true,
+    },
+    cacheStrategy: { ttl: 1 },
+  });
+}
+
+
 export async function getAllExpenses() {
   const expenses = await prisma.expenses.findMany({
     cacheStrategy: { ttl: 1 },
@@ -1016,6 +1027,28 @@ export async function getVendorBalances(includeZeroBalance: boolean = false) {
   }
 
   return vendorBalances;
+}
+
+export async function getVendorBalance(name: string) {
+  const vendor = await prisma.vendors.findUnique({
+    where: { vendorName: name },
+    include: {
+      expenses: true,
+      payments: true,
+    },
+    cacheStrategy: { ttl: 1 },
+  });
+
+  const totalExpenses = vendor.expenses.reduce((sum: number, e: { amount: number }) => sum + e.amount, 0);
+  const totalPayments = vendor.payments.reduce((sum: number, p: { amount: number }) => sum + p.amount, 0);
+  const balance = totalExpenses - totalPayments;
+
+    return {
+      vendorName: vendor.vendorName,
+      totalExpenses,
+      totalPayments,
+      balance,
+    };
 }
 
 export async function getCollectorBalance(name: string) {

@@ -51,12 +51,15 @@ const AddExpenseDialog = ({ expense, onSubmit, triggerButton, open: controlledOp
   const setOpen = onOpenChange || setInternalOpen;
   // Fetch collectors from database
   const [vendors, setVendors] = useState<string[]>([]);
+  const [projects, setProjects] = useState<string[]>([]);
   const [vendorsLoading, setVendorsLoading] = useState(false); 
+  const [projectsLoading, setProjectsLoading] = useState(false); 
   
   // Fetch vendors when dialog opens
   useEffect(() => {
     if (open) {
       fetchVendors();
+      fetchProjects();
     }
   }, [open]);
   
@@ -68,6 +71,19 @@ const AddExpenseDialog = ({ expense, onSubmit, triggerButton, open: controlledOp
       console.log('Fetched vendors:', vendors);
     } catch (error) {
       console.error('Failed to fetch vendors:', error);
+    } finally {
+      setVendorsLoading(false);
+    }
+  };
+
+  const fetchProjects = async () => {
+    try {
+      setProjectsLoading(true);
+      const response = await axios.get('/api/projects');
+      setProjects(response.data.projects || []);
+      console.log('Fetched projects:', projects);
+    } catch (error) {
+      console.error('Failed to fetch projects:', error);
     } finally {
       setVendorsLoading(false);
     }
@@ -282,11 +298,17 @@ const AddExpenseDialog = ({ expense, onSubmit, triggerButton, open: controlledOp
               <Label htmlFor="project">Project</Label>
               <Input
                 id="project"
+                list="project-options" // This links to the datalist ID
                 type="text"
                 value={formData.project}
-                onChange={(e) => setFormData({...formData, project: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, project: e.target.value })}
                 placeholder="Enter project name"
               />
+                <datalist id="project-options">
+                {projects.map((project) => (
+                  <option key={project} value={project} />
+                ))}
+              </datalist>
             </div>
           </div>
 

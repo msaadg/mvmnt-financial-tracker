@@ -52,14 +52,16 @@ export default function PaymentDialog({
 }: PaymentDialogProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [loadingBalance, setLoadingBalance] = useState(false);
+  const [loadingVendorBalance, setLoadingVendorBalance] = useState(false);
+  const [loadingCollectorBalance, setLoadingCollectorBalance] = useState(false);
   const [collectors, setCollectors] = useState<string[]>([]);
   const { toast } = useToast();
 
   // Form state
   const [vendorName, setVendorName] = useState(payment?.vendorName || initialVendorName || "");
   const [collector, setCollector] = useState(payment?.collector || "");
-  const [balance, setBalance] = useState(0);
+  const [vendorBalance, setVendorBalance] = useState(0);
+  const [collectorBalance, setCollectorBalance] = useState(0);
   const [type, setType] = useState(payment?.type || "zakat");
   const [amount, setAmount] = useState(payment?.amount?.toString() || "");
   const [paymentMethod, setPaymentMethod] = useState(payment?.paymentMethod || "cash");
@@ -76,7 +78,11 @@ export default function PaymentDialog({
   }, []);
 
   useEffect(() => {
-    fetchBalance();
+    fetchVendorBalance();
+  }, [vendorName]);
+
+  useEffect(() => {
+    fetchCollectorBalance();
   }, [collector]);
 
   useEffect(() => {
@@ -101,18 +107,33 @@ export default function PaymentDialog({
     }
   };
 
-  const fetchBalance = async () => {
+  const fetchVendorBalance = async () => {
+    if (!vendorName) return;
+    setLoadingVendorBalance(true);
+    try {
+      const response = await axios.get("/api/vendors/balance", {
+        params: { name: vendorName },
+      });
+      setVendorBalance(response.data.balance);
+    } catch (err) {
+      console.error("Failed to fetch vendor balance:", err);
+    } finally {
+      setLoadingVendorBalance(false);
+    }
+  };
+
+  const fetchCollectorBalance = async () => {
     if (!collector) return;
-    setLoadingBalance(true);
+    setLoadingCollectorBalance(true);
     try {
       const response = await axios.get("/api/collectors/balance", {
         params: { name: collector },
       });
-      setBalance(response.data.balance);
+      setCollectorBalance(response.data.balance);
     } catch (err) {
-      console.error("Failed to fetch balance:", err);
+      console.error("Failed to fetch collector balance:", err);
     } finally {
-      setLoadingBalance(false);
+      setLoadingCollectorBalance(false);
     }
   };
 
@@ -209,6 +230,23 @@ export default function PaymentDialog({
                 disabled={!!initialVendorName || !!payment}
                 required
               />
+              {vendorName && (
+                <div className="mt-1 p-2.5 bg-orange-50 border border-orange-200 rounded-md">
+                  <p className="text-sm flex items-center">
+                    {loadingVendorBalance ? (
+                      <>
+                        <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
+                        <span>Loading balance...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="font-medium">Remaining Balance:</span>{" "}
+                        <span className="font-semibold ml-1 text-orange-700">PKR {vendorBalance.toLocaleString()}</span>
+                      </>
+                    )}
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Collector */}
@@ -229,15 +267,15 @@ export default function PaymentDialog({
               {collector && (
                 <div className="mt-2 p-2.5 bg-gray-200 rounded-md">
                   <p className="text-sm flex items-center">
-                    {loadingBalance ? (
+                    {loadingCollectorBalance ? (
                       <>
                         <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
                         <span>Loading balance...</span>
                       </>
                     ) : (
                       <>
-                        <span className="font-medium">Current Balance:</span>{" "}
-                        <span className="font-semibold ml-1">PKR {balance.toLocaleString()}</span>
+                        <span className="font-medium">Collector Balance:</span>{" "}
+                        <span className="font-semibold ml-1">PKR {collectorBalance.toLocaleString()}</span>
                       </>
                     )}
                   </p>
