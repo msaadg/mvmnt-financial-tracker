@@ -398,8 +398,8 @@ const PaymentsContent = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="Approved">Approved</SelectItem>
-                <SelectItem value="Pending">Pending</SelectItem>
+                <SelectItem value="approved">Approved</SelectItem>
+                <SelectItem value="pending">Pending</SelectItem>
               </SelectContent>
             </Select>
             <Select value={collectorFilter} onValueChange={setCollectorFilter}>
