@@ -407,8 +407,7 @@ const Analytics = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="completed">Completed</SelectItem>
-                <SelectItem value="paid">Paid</SelectItem>
+                <SelectItem value="approved">Approved</SelectItem>
                 <SelectItem value="pending">Pending</SelectItem>
                 {/* <SelectItem value="overdue">Overdue</SelectItem> */}
               </SelectContent>

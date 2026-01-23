@@ -1,0 +1,128 @@
+paymentId,vendorName,collectorId,type,amount,date,paymentMethod,status
+1,Opening Balance,4,Sadqa,10400,2025-03-01 00:00:00,Cash,Completed
+2,Opening Balance,5,Sadqa,500,2025-03-01 00:00:00,Cash,Completed
+3,Badshah Bhai for ration,1,Sadqa,5000,2025-03-05 00:00:00,Online,Completed
+4,Usama for Miscelleneous Expenses,1,Sadqa,12200,2025-03-05 00:00:00,Online,Completed
+5,General Help,3,Sadqa,5000,2025-03-05 00:00:00,Cash,Completed
+6,School Case c/o Arqam,3,Sadqa,5000,2025-03-08 00:00:00,Cash,Completed
+7,Debt Help,3,Sadqa,5000,2025-03-08 00:00:00,Cash,Completed
+8,Surf for M.Ali Dastar,1,Sadqa,2000,2025-03-10 00:00:00,Cash,Completed
+9,Badshah Bhai for ration,1,Sadqa,7500,2025-03-10 00:00:00,Cash,Completed
+10,Thar Madarasa Eidi,5,Sadqa,48000,2025-03-12 00:00:00,Cash,Completed
+11,Rickshaw Payment,1,Sadqa,10000,2025-03-13 00:00:00,Cash,Completed
+12,Burhan Payment,1,Sadqa,200000,2025-03-13 00:00:00,Online,Completed
+13,Huzaifa Payment,1,Sadqa,100000,2025-03-13 00:00:00,Online,Completed
+14,Tariq Road Dastar,1,Sadqa,150000,2025-03-14 00:00:00,Online,Completed
+15,Ramazan Help,3,Sadqa,10000,2025-03-15 00:00:00,Cash,Completed
+16,Chicken Payment,1,Sadqa,200000,2025-03-15 00:00:00,Online,Completed
+17,Rickshaw Payment,1,Sadqa,30000,2025-03-16 00:00:00,Cash,Completed
+18,Burhan Payment,3,Sadqa,150000,2025-03-20 00:00:00,Online,Completed
+19,Transfer,1,Sadqa,55000,2025-03-23 00:00:00,Online,Completed
+20,Ilyas for Transport,1,Sadqa,5000,2025-03-23 00:00:00,Online,Completed
+21,General Help,3,Sadqa,10000,2025-03-24 00:00:00,Cash,Completed
+22,Rickshaw Payment,1,Sadqa,5000,2025-03-25 00:00:00,Cash,Completed
+23,Burhan Payment,4,Sadqa,150000,2025-03-26 00:00:00,Cash,Completed
+24,Transfer,1,Sadqa,800000,2025-03-26 00:00:00,Cash,Completed
+25,Clothes Payment,4,Sadqa,150000,2025-03-25 00:00:00,Cash,Completed
+26,Burhan Payment,8,Sadqa,500000,2025-03-26 00:00:00,Cash,Completed
+27,Dilawar Guard ,1,Sadqa,30000,2025-03-28 00:00:00,Cash,Completed
+28,Eidi at SITE Dastar,3,Sadqa,30000,2025-03-28 00:00:00,Cash,Completed
+29,Used for Help,3,Sadqa,2500,2025-03-28 00:00:00,Cash,Completed
+30,Ice payment M.Ali Dastar,1,Sadqa,8000,2025-03-28 00:00:00,Cash,Completed
+31,Huzaifa Payment,1,Sadqa,190000,2025-03-30 00:00:00,Cash,Completed
+32,General Help,3,Sadqa,5000,2025-03-30 00:00:00,Cash,Completed
+33,M.Ali Dastar Workers,1,Sadqa,39000,2025-03-30 00:00:00,Cash,Completed
+34,Chase Up,9,Sadqa,1100000,2025-03-30 00:00:00,Cash,Completed
+35,Transfer,2,Sadqa,55000,2025-03-30 00:00:00,Cash,Completed
+36,Burhan Payment,4,Sadqa,10000,2025-03-30 00:00:00,Cash,Completed
+37,Transfer,6,Sadqa,434902,2025-03-30 00:00:00,Cash,Completed
+38,Rickshaw Payment,4,Sadqa,12000,2025-03-30 00:00:00,Cash,Completed
+39,Transfer,6,Sadqa,270000,2025-03-30 00:00:00,Cash,Completed
+40,Chicken Payment,2,Sadqa,192540,2025-03-30 00:00:00,Cash,Completed
+41,Burhan Payment,3,Sadqa,790000,2025-03-30 00:00:00,Cash,Completed
+42,Rickshaw Payment,1,Sadqa,59500,2025-03-30 00:00:00,Cash,Completed
+43,Burhan Payment,4,Sadqa,150000,2025-03-30 00:00:00,Cash,Completed
+44,Huzaifa Payment,4,Sadqa,444000,2025-03-30 00:00:00,Cash,Completed
+45,Transfer,7,Sadqa,62000,2025-03-30 00:00:00,Cash,Completed
+46,Transfer,9,Sadqa,80000,2025-03-30 00:00:00,Cash,Completed
+47,Tent Payment,1,Sadqa,35000,2025-03-31 00:00:00,Cash,Completed
+48,Aalma Course Case,1,Sadqa,10000,2025-04-02 00:00:00,Cash,Completed
+49,Shaadi Case,5,Sadqa,142500,2025-04-05 00:00:00,Cash,Completed
+50,Shaadi Case,3,Sadqa,7000,2025-04-05 00:00:00,Cash,Completed
+51,Transfer,1,Sadqa,30000,2025-04-06 00:00:00,Cash,Completed
+52,Transfer,4,Sadqa,110882,2025-04-06 00:00:00,Cash,Completed
+53,Transfer,7,Sadqa,99515,2025-04-06 00:00:00,Cash,Completed
+54,Transfer,3,Sadqa,54365,2025-04-06 00:00:00,Cash,Completed
+55,Transfer,3,Sadqa,500,2025-04-06 00:00:00,Cash,Completed
+56,Clothes Payment,1,Sadqa,121000,2025-04-10 00:00:00,Cash,Completed
+57,Clothes Payment,1,Sadqa,102000,2025-04-10 00:00:00,Cash,Completed
+58,Transfer,1,Sadqa,25000,2025-04-06 00:00:00,Cash,Completed
+59,Transfer,3,Sadqa,137124,2025-04-06 00:00:00,Cash,Completed
+60,Transfer,3,Sadqa,272601,2025-04-06 00:00:00,Cash,Completed
+61,Shadi Help Case,3,Sadqa,15000,2025-04-10 00:00:00,Cash,Completed
+62,School Course,3,Sadqa,20000,2025-04-10 00:00:00,Cash,Completed
+63,School Fees,3,Sadqa,5000,2025-04-10 00:00:00,Cash,Completed
+64,Uzair for Miscelleneous Expenses,4,Sadqa,40000,2025-04-22 00:00:00,Cash,Completed
+65,Imran Khan School Case,3,Sadqa,7000,2025-04-26 00:00:00,Cash,Completed
+66,General Help,3,Sadqa,5000,2025-04-27 00:00:00,Cash,Completed
+67,Shaadi Case,3,Sadqa,10000,2025-04-27 00:00:00,Cash,Completed
+68,Ramazan Expenses,1,Sadqa,4500,2025-05-02 00:00:00,Cash,Completed
+69,School Course Help,3,Sadqa,20000,2025-05-03 00:00:00,Cash,Completed
+70,Monthly Help Case of 6 Families,4,Sadqa,24000,2025-05-03 00:00:00,Cash,Completed
+71,Transport,1,Sadqa,1800,2025-05-06 00:00:00,Cash,Completed
+72,Baqra Eid Food,3,Sadqa,15000,2025-05-10 00:00:00,Cash,Completed
+73,Rashan Help,3,Sadqa,17500,2025-05-10 00:00:00,Cash,Completed
+74,Medicine Help for Family,3,Sadqa,15000,2025-05-10 00:00:00,Cash,Completed
+75,School Fees,3,Sadqa,10000,2025-05-10 00:00:00,Cash,Completed
+76,Broken Bone Case,3,Sadqa,20000,2025-05-17 00:00:00,Cash,Completed
+77,School Expense,3,Sadqa,10000,2025-05-19 00:00:00,Cash,Completed
+78,Cancer Case,3,Sadqa,10000,2025-05-19 00:00:00,Cash,Completed
+79,Usman for case,1,Sadqa,5000,2025-05-19 00:00:00,Cash,Completed
+80,Opening Balance,3,Zakat,100690,2025-03-01 00:00:00,Cash,Completed
+81,Chase Up,1,Zakat,1100000,2025-03-06 00:00:00,Online,Completed
+82,Transfer,2,Zakat,10000,2025-03-05 00:00:00,Cash,Completed
+83,School Fees,3,Zakat,10000,2025-03-18 00:00:00,Online,Completed
+84,Zubair Ahmed Khan Monthly Help,3,Zakat,30000,2025-03-18 00:00:00,Online,Completed
+85,School Fees,3,Zakat,9000,2025-03-18 00:00:00,Online,Completed
+86,Transfer,6,Zakat,590000,2025-03-23 00:00:00,Cash,Completed
+87,Transfer,6,Zakat,475100,2025-03-25 00:00:00,Cash,Completed
+88,Help of a women,3,Zakat,5000,2025-03-28 00:00:00,Cash,Completed
+89,Help of labour,3,Zakat,7000,2025-03-28 00:00:00,Cash,Completed
+90,Bilal Case,1,Zakat,50000,2025-03-28 00:00:00,Cash,Completed
+91,Hospital Case c/o Usama,4,Zakat,5000,2025-03-29 00:00:00,Cash,Completed
+92,Transfer,2,Zakat,10000,2025-03-30 00:00:00,Cash,Completed
+93,Chase Up,9,Zakat,1100000,2025-03-30 00:00:00,Cash,Completed
+94,Transfer,2,Zakat,106000,2025-03-30 00:00:00,Cash,Completed
+95,Transfer,6,Zakat,245098,2025-03-30 00:00:00,Cash,Completed
+96,Transfer,6,Zakat,100000,2025-03-30 00:00:00,Cash,Completed
+97,Chase Up,9,Zakat,266500,2025-03-30 00:00:00,Cash,Completed
+98,Transfer,9,Zakat,100000,2025-03-30 00:00:00,Cash,Completed
+99,Transfer,4,Zakat,467000,2025-03-30 00:00:00,Cash,Completed
+100,Chase Up,7,Zakat,139615,2025-03-31 00:00:00,Cash,Completed
+101,Shaadi Case,5,Zakat,20350,2025-04-05 00:00:00,Cash,Completed
+102,School Fees,3,Zakat,5000,2025-04-05 00:00:00,Cash,Completed
+103,Transfer,2,Zakat,60000,2025-04-06 00:00:00,Cash,Completed
+104,Monthly Help Case of 5 Families,4,Zakat,20500,2025-04-06 00:00:00,Cash,Completed
+105,Transfer,2,Zakat,110882,2025-04-06 00:00:00,Cash,Completed
+106,Transfer,4,Zakat,99515,2025-04-06 00:00:00,Cash,Completed
+107,Transfer,4,Zakat,54365,2025-04-06 00:00:00,Cash,Completed
+108,Transfer,5,Zakat,500,2025-04-06 00:00:00,Cash,Completed
+109,Transfer,3,Zakat,800000,2025-04-06 00:00:00,Cash,Completed
+110,Transfer,1,Zakat,137124,2025-04-06 00:00:00,Cash,Completed
+111,Transfer,4,Zakat,272601,2025-04-06 00:00:00,Cash,Completed
+112,Transfer,8,Zakat,365000,2025-04-06 00:00:00,Cash,Completed
+113,Chase Up,8,Zakat,760500,2025-04-15 00:00:00,Cash,Completed
+114,Transfer,2,Zakat,8000,2025-04-15 00:00:00,Cash,Completed
+115,Chase Up,5,Zakat,400000,2025-04-16 00:00:00,Cash,Completed
+116,Bewa Help Case,5,Zakat,7000,2025-04-18 00:00:00,Cash,Completed
+117,Bewa Help Case,5,Zakat,7000,2025-04-18 00:00:00,Cash,Completed
+118,Chase Up,3,Zakat,300000,2025-04-26 00:00:00,Cash,Completed
+119,Transfer,1,Zakat,20000,2025-04-27 00:00:00,Cash,Completed
+120,Hammad Naviwala Case,1,Zakat,304506,2025-04-30 00:00:00,Cash,Completed
+121,Chase Up,3,Zakat,365000,2025-04-30 00:00:00,Cash,Completed
+122,Chase Up,3,Zakat,250000,2025-05-05 00:00:00,Cash,Completed
+123,Zubaida Bill,1,Zakat,100000,2025-05-09 00:00:00,Cash,Completed
+124,Chase Up,3,Zakat,300000,2025-05-10 00:00:00,Cash,Completed
+125,School Course,1,Zakat,5000,2025-05-12 00:00:00,Cash,Completed
+126,Chase Up,3,Zakat,300000,2025-05-19 00:00:00,Cash,Completed
+127,Chase Up,5,Zakat,100000,2025-05-20 00:00:00,Cash,Completed

@@ -311,7 +311,7 @@ const DonationsContent = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="completed">Completed</SelectItem>
+                <SelectItem value="completed">Approved</SelectItem>
                 <SelectItem value="pending">Pending</SelectItem>
                 {/* <SelectItem value="pending">Pending</SelectItem> */}
                 {/* <SelectItem value="overdue">Overdue</SelectItem> */}

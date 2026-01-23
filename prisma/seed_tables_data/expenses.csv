@@ -1,0 +1,128 @@
+transacId,date,amount,vendorName,project,description,status
+1,2025-03-01 00:00:00,10400,Opening Balance,Opening Balance,,Pending
+2,2025-03-01 00:00:00,500,Opening Balance,Opening Balance,,Pending
+3,2025-03-05 00:00:00,5000,Badshah Bhai for ration,Badshah Bhai for ration,,Pending
+4,2025-03-05 00:00:00,12200,Usama for Miscelleneous Expenses,Usama for Miscelleneous Expenses,,Pending
+5,2025-03-05 00:00:00,5000,General Help,General Help,,Pending
+6,2025-03-08 00:00:00,5000,School Case c/o Arqam,School Case c/o Arqam,,Pending
+7,2025-03-08 00:00:00,5000,Debt Help,Debt Help,,Pending
+8,2025-03-10 00:00:00,2000,Surf for M.Ali Dastar,Surf for M.Ali Dastar,,Pending
+9,2025-03-10 00:00:00,7500,Badshah Bhai for ration,Badshah Bhai for ration,,Pending
+10,2025-03-12 00:00:00,48000,Thar Madarasa Eidi,Thar Madarasa Eidi,,Pending
+11,2025-03-13 00:00:00,10000,Rickshaw Payment,Rickshaw Payment,,Pending
+12,2025-03-13 00:00:00,200000,Burhan Payment,Burhan Payment,,Pending
+13,2025-03-13 00:00:00,100000,Huzaifa Payment,Huzaifa Payment,,Pending
+14,2025-03-14 00:00:00,150000,Tariq Road Dastar,Tariq Road Dastar,,Pending
+15,2025-03-15 00:00:00,10000,Ramazan Help,Ramazan Help,,Pending
+16,2025-03-15 00:00:00,200000,Chicken Payment,Chicken Payment,,Pending
+17,2025-03-16 00:00:00,30000,Rickshaw Payment,Rickshaw Payment,,Pending
+18,2025-03-20 00:00:00,150000,Burhan Payment,Burhan Payment,,Pending
+19,2025-03-23 00:00:00,55000,Transfer,Transfer,,Pending
+20,2025-03-23 00:00:00,5000,Ilyas for Transport,Ilyas for Transport,,Pending
+21,2025-03-24 00:00:00,10000,General Help,General Help,,Pending
+22,2025-03-25 00:00:00,5000,Rickshaw Payment,Rickshaw Payment,,Pending
+23,2025-03-26 00:00:00,150000,Burhan Payment,Burhan Payment,,Pending
+24,2025-03-26 00:00:00,800000,Transfer,Transfer,,Pending
+25,2025-03-25 00:00:00,150000,Clothes Payment,Clothes Payment,,Pending
+26,2025-03-26 00:00:00,500000,Burhan Payment,Burhan Payment,,Pending
+27,2025-03-28 00:00:00,30000,Dilawar Guard ,Dilawar Guard ,,Pending
+28,2025-03-28 00:00:00,30000,Eidi at SITE Dastar,Eidi at SITE Dastar,,Pending
+29,2025-03-28 00:00:00,2500,Used for Help,Used for Help,,Pending
+30,2025-03-28 00:00:00,8000,Ice payment M.Ali Dastar,Ice payment M.Ali Dastar,,Pending
+31,2025-03-30 00:00:00,190000,Huzaifa Payment,Huzaifa Payment,,Pending
+32,2025-03-30 00:00:00,5000,General Help,General Help,,Pending
+33,2025-03-30 00:00:00,39000,M.Ali Dastar Workers,M.Ali Dastar Workers,,Pending
+34,2025-03-30 00:00:00,1100000,Chase Up,Chase Up,,Pending
+35,2025-03-30 00:00:00,55000,Transfer,Transfer,,Pending
+36,2025-03-30 00:00:00,10000,Burhan Payment,Burhan Payment,,Pending
+37,2025-03-30 00:00:00,434902,Transfer,Transfer,,Pending
+38,2025-03-30 00:00:00,12000,Rickshaw Payment,Rickshaw Payment,,Pending
+39,2025-03-30 00:00:00,270000,Transfer,Transfer,,Pending
+40,2025-03-30 00:00:00,192540,Chicken Payment,Chicken Payment,,Pending
+41,2025-03-30 00:00:00,790000,Burhan Payment,Burhan Payment,,Pending
+42,2025-03-30 00:00:00,59500,Rickshaw Payment,Rickshaw Payment,,Pending
+43,2025-03-30 00:00:00,150000,Burhan Payment,Burhan Payment,,Pending
+44,2025-03-30 00:00:00,444000,Huzaifa Payment,Huzaifa Payment,,Pending
+45,2025-03-30 00:00:00,62000,Transfer,Transfer,,Pending
+46,2025-03-30 00:00:00,80000,Transfer,Transfer,,Pending
+47,2025-03-31 00:00:00,35000,Tent Payment,Tent Payment,,Pending
+48,2025-04-02 00:00:00,10000,Aalma Course Case,Aalma Course Case,,Pending
+49,2025-04-05 00:00:00,142500,Shaadi Case,Shaadi Case,,Pending
+50,2025-04-05 00:00:00,7000,Shaadi Case,Shaadi Case,,Pending
+51,2025-04-06 00:00:00,30000,Transfer,Transfer,,Pending
+52,2025-04-06 00:00:00,110882,Transfer,Transfer,,Pending
+53,2025-04-06 00:00:00,99515,Transfer,Transfer,,Pending
+54,2025-04-06 00:00:00,54365,Transfer,Transfer,,Pending
+55,2025-04-06 00:00:00,500,Transfer,Transfer,,Pending
+56,2025-04-10 00:00:00,121000,Clothes Payment,Clothes Payment,,Pending
+57,2025-04-10 00:00:00,102000,Clothes Payment,Clothes Payment,,Pending
+58,2025-04-06 00:00:00,25000,Transfer,Transfer,,Pending
+59,2025-04-06 00:00:00,137124,Transfer,Transfer,,Pending
+60,2025-04-06 00:00:00,272601,Transfer,Transfer,,Pending
+61,2025-04-10 00:00:00,15000,Shadi Help Case,Shadi Help Case,,Pending
+62,2025-04-10 00:00:00,20000,School Course,School Course,,Pending
+63,2025-04-10 00:00:00,5000,School Fees,School Fees,,Pending
+64,2025-04-22 00:00:00,40000,Uzair for Miscelleneous Expenses,Uzair for Miscelleneous Expenses,,Pending
+65,2025-04-26 00:00:00,7000,Imran Khan School Case,Imran Khan School Case,,Pending
+66,2025-04-27 00:00:00,5000,General Help,General Help,,Pending
+67,2025-04-27 00:00:00,10000,Shaadi Case,Shaadi Case,,Pending
+68,2025-05-02 00:00:00,4500,Ramazan Expenses,Ramazan Expenses,,Pending
+69,2025-05-03 00:00:00,20000,School Course Help,School Course Help,,Pending
+70,2025-05-03 00:00:00,24000,Monthly Help Case of 6 Families,Monthly Help Case of 6 Families,,Pending
+71,2025-05-06 00:00:00,1800,Transport,Transport,,Pending
+72,2025-05-10 00:00:00,15000,Baqra Eid Food,Baqra Eid Food,,Pending
+73,2025-05-10 00:00:00,17500,Rashan Help,Rashan Help,,Pending
+74,2025-05-10 00:00:00,15000,Medicine Help for Family,Medicine Help for Family,,Pending
+75,2025-05-10 00:00:00,10000,School Fees,School Fees,,Pending
+76,2025-05-17 00:00:00,20000,Broken Bone Case,Broken Bone Case,,Pending
+77,2025-05-19 00:00:00,10000,School Expense,School Expense,,Pending
+78,2025-05-19 00:00:00,10000,Cancer Case,Cancer Case,,Pending
+79,2025-05-19 00:00:00,5000,Usman for case,Usman for case,,Pending
+80,2025-03-01 00:00:00,100690,Opening Balance,Opening Balance,,Pending
+81,2025-03-06 00:00:00,1100000,Chase Up,Chase Up,,Pending
+82,2025-03-05 00:00:00,10000,Transfer,Transfer,,Pending
+83,2025-03-18 00:00:00,10000,School Fees,School Fees,,Pending
+84,2025-03-18 00:00:00,30000,Zubair Ahmed Khan Monthly Help,Zubair Ahmed Khan Monthly Help,,Pending
+85,2025-03-18 00:00:00,9000,School Fees,School Fees,,Pending
+86,2025-03-23 00:00:00,590000,Transfer,Transfer,,Pending
+87,2025-03-25 00:00:00,475100,Transfer,Transfer,,Pending
+88,2025-03-28 00:00:00,5000,Help of a women,Help of a women,,Pending
+89,2025-03-28 00:00:00,7000,Help of labour,Help of labour,,Pending
+90,2025-03-28 00:00:00,50000,Bilal Case,Bilal Case,,Pending
+91,2025-03-29 00:00:00,5000,Hospital Case c/o Usama,Hospital Case c/o Usama,,Pending
+92,2025-03-30 00:00:00,10000,Transfer,Transfer,,Pending
+93,2025-03-30 00:00:00,1100000,Chase Up,Chase Up,,Pending
+94,2025-03-30 00:00:00,106000,Transfer,Transfer,,Pending
+95,2025-03-30 00:00:00,245098,Transfer,Transfer,,Pending
+96,2025-03-30 00:00:00,100000,Transfer,Transfer,,Pending
+97,2025-03-30 00:00:00,266500,Chase Up,Chase Up,,Pending
+98,2025-03-30 00:00:00,100000,Transfer,Transfer,,Pending
+99,2025-03-30 00:00:00,467000,Transfer,Transfer,,Pending
+100,2025-03-31 00:00:00,139615,Chase Up,Chase Up,,Pending
+101,2025-04-05 00:00:00,20350,Shaadi Case,Shaadi Case,,Pending
+102,2025-04-05 00:00:00,5000,School Fees,School Fees,,Pending
+103,2025-04-06 00:00:00,60000,Transfer,Transfer,,Pending
+104,2025-04-06 00:00:00,20500,Monthly Help Case of 5 Families,Monthly Help Case of 5 Families,,Pending
+105,2025-04-06 00:00:00,110882,Transfer,Transfer,,Pending
+106,2025-04-06 00:00:00,99515,Transfer,Transfer,,Pending
+107,2025-04-06 00:00:00,54365,Transfer,Transfer,,Pending
+108,2025-04-06 00:00:00,500,Transfer,Transfer,,Pending
+109,2025-04-06 00:00:00,800000,Transfer,Transfer,,Pending
+110,2025-04-06 00:00:00,137124,Transfer,Transfer,,Pending
+111,2025-04-06 00:00:00,272601,Transfer,Transfer,,Pending
+112,2025-04-06 00:00:00,365000,Transfer,Transfer,,Pending
+113,2025-04-15 00:00:00,760500,Chase Up,Chase Up,,Pending
+114,2025-04-15 00:00:00,8000,Transfer,Transfer,,Pending
+115,2025-04-16 00:00:00,400000,Chase Up,Chase Up,,Pending
+116,2025-04-18 00:00:00,7000,Bewa Help Case,Bewa Help Case,,Pending
+117,2025-04-18 00:00:00,7000,Bewa Help Case,Bewa Help Case,,Pending
+118,2025-04-26 00:00:00,300000,Chase Up,Chase Up,,Pending
+119,2025-04-27 00:00:00,20000,Transfer,Transfer,,Pending
+120,2025-04-30 00:00:00,304506,Hammad Naviwala Case,Hammad Naviwala Case,,Pending
+121,2025-04-30 00:00:00,365000,Chase Up,Chase Up,,Pending
+122,2025-05-05 00:00:00,250000,Chase Up,Chase Up,,Pending
+123,2025-05-09 00:00:00,100000,Zubaida Bill,Zubaida Bill,,Pending
+124,2025-05-10 00:00:00,300000,Chase Up,Chase Up,,Pending
+125,2025-05-12 00:00:00,5000,School Course,School Course,,Pending
+126,2025-05-19 00:00:00,300000,Chase Up,Chase Up,,Pending
+127,2025-05-20 00:00:00,100000,Chase Up,Chase Up,,Pending
