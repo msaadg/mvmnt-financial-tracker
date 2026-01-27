@@ -8,9 +8,21 @@ import AddDonationDialog from "@/app/components/AddDonationDialog";
 import AddExpenseDialog from "@/app/components/AddExpenseDialog";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { SessionProvider, useSession } from "next-auth/react";
 
-const Dashboard = () => {
+export const Dashboard = () => {
+  return (
+  <SessionProvider>
+    <DashboardContent />;
+  </SessionProvider>
+  );
+}
+
+const DashboardContent = () => {
   const router = useRouter();
+
+  const { data: session } = useSession();
+  const isAdmin = !!(session?.user as any)?.role && (session?.user as any).role === "admin";
   
   // Separate state for each component
   const [donationStats, setDonationStats] = useState<any>(null);
@@ -160,7 +172,7 @@ const Dashboard = () => {
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
       {/* Welcome Header */}
       <div className="mb-6 sm:mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Welcome, Admin</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Welcome, {isAdmin ? "Admin" : "User"}</h1>
         <p className="text-muted-foreground mt-2 text-sm sm:text-base">
           Here&apos;s an overview of your organization&apos;s financial status
         </p>
