@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { SessionProvider, useSession } from "next-auth/react";
 
-export const Dashboard = () => {
+const Dashboard = () => {
   return (
   <SessionProvider>
     <DashboardContent />;
